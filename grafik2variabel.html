@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Two-Variable Equations & Their Graphs | Year 8 Mathematics</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..900&family=Outfit:wght@300..900&family=JetBrains+Mono:wght@400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  :root {
+    --bg: #0e1419;
+    --bg-2: #161f2a;
+    --bg-3: #1f2a37;
+    --fg: #f0f4f8;
+    --muted: #8b9bb4;
+    --accent: #fbbf24;
+    --accent-2: #f87171;
+    --accent-3: #34d399;
+    --accent-4: #38bdf8;
+    --card: rgba(255,255,255,0.04);
+    --border: rgba(255,255,255,0.1);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    overflow: hidden;
+    height: 100vh;
+    position: relative;
+  }
+  .font-display { font-family: 'Fraunces', serif; }
+  .font-mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* Ambient background */
+  .ambient-bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(251,191,36,0.08), transparent 40%),
+      radial-gradient(circle at 85% 75%, rgba(248,113,113,0.06), transparent 45%),
+      radial-gradient(circle at 50% 50%, rgba(52,211,153,0.04), transparent 60%);
+    pointer-events: none;
+  }
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  }
+
+  /* Progress bar */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    z-index: 100;
+    transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 0 20px rgba(251,191,36,0.5);
+  }
+
+  /* Slides */
+  .slides-container { position: relative; width: 100%; height: 100vh; overflow: hidden; }
+  .slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s ease, transform 0.5s ease;
+    transform: translateX(60px);
+    overflow-y: auto;
+    padding: 70px 80px 100px;
+  }
+  .slide.active { opacity: 1; pointer-events: auto; transform: translateX(0); }
+  .slide.prev { transform: translateX(-60px); }
+  .slide::-webkit-scrollbar { width: 8px; }
+  .slide::-webkit-scrollbar-track { background: transparent; }
+  .slide::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 4px; }
+
+  /* Navigation dots */
+  .nav-dots {
+    position: fixed;
+    right: 28px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    z-index: 100;
+  }
+  .nav-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.15);
+    cursor: pointer;
+    transition: all 0.3s;
+    border: none;
+    padding: 0;
+    position: relative;
+  }
+  .nav-dot.active { background: var(--accent); transform: scale(1.5); box-shadow: 0 0 12px var(--accent); }
+  .nav-dot:hover::after {
+    content: attr(data-label);
+    position: absolute;
+    right: 22px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--bg-3);
+    padding: 5px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-size: 11px;
+    border: 1px solid var(--border);
+    color: var(--fg);
+    font-family: 'Outfit', sans-serif;
+  }
+
+  /* Bottom nav */
+  .bottom-nav {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background: rgba(22, 31, 42, 0.85);
+    backdrop-filter: blur(12px);
+    padding: 10px 22px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    z-index: 100;
+  }
+  .nav-arrow {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--card);
+    border: 1px solid var(--border);
+    color: var(--fg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+  }
+  .nav-arrow:hover { background: var(--accent); color: #1a1a1a; border-color: var(--accent); }
+  .nav-arrow:disabled { opacity: 0.3; cursor: not-allowed; }
+  .nav-arrow:disabled:hover { background: var(--card); color: var(--fg); border-color: var(--border); }
+
+  /* Buttons */
+  .btn-primary {
+    background: var(--accent);
+    color: #1a1a1a;
+    padding: 12px 26px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(251,191,36,0.35); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--fg);
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-weight: 500;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: all 0.3s;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
+  .btn-secondary:hover { background: rgba(251,191,36,0.08); border-color: var(--accent); color: var(--accent); }
+  .btn-ixl {
+    background: linear-gradient(135deg, var(--accent-3), var(--accent-4));
+    color: #0a1419;
+    padding: 10px 20px;
+    border-radius: 50px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    font-size: 13px;
+  }
+  .btn-ixl:hover { transform: translateY(-2px); box-shadow: 0 10px 30px rgba(52,211,153,0.3); }
+
+  /* Cards */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    transition: all 0.3s;
+  }
+  .card-glow { position: relative; overflow: hidden; }
+  .card-glow::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: 16px;
+    padding: 1px;
+    background: linear-gradient(135deg, var(--accent), transparent, var(--accent-2));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  /* Slide badge */
+  .slide-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(251,191,36,0.1);
+    color: var(--accent);
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: 11px;
+    font-weight: 600;
+    border: 1px solid rgba(251,191,36,0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .slide-num {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 8rem;
+    line-height: 0.85;
+    color: rgba(255,255,255,0.04);
+    position: absolute;
+    top: 30px;
+    right: 80px;
+    pointer-events: none;
+  }
+
+  /* Inputs */
+  .input-field {
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    color: var(--fg);
+    font-family: 'Outfit', sans-serif;
+    font-size: 15px;
+    transition: all 0.3s;
+    width: 100%;
+  }
+  .input-field:focus { outline: none; border-color: var(--accent); background: rgba(0,0,0,0.4); box-shadow: 0 0 0 3px rgba(251,191,36,0.1); }
+  .input-field::placeholder { color: var(--muted); }
+
+  /* Range slider */
+  input[type="range"] { -webkit-appearance: none; appearance: none; background: transparent; cursor: pointer; width: 100%; }
+  input[type="range"]::-webkit-slider-runnable-track { background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; }
+  input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; margin-top: -7px; background-color: var(--accent); height: 20px; width: 20px; border-radius: 50%; box-shadow: 0 0 12px var(--accent); }
+  input[type="range"]::-moz-range-track { background: rgba(255,255,255,0.1); height: 6px; border-radius: 3px; }
+  input[type="range"]::-moz-range-thumb { background-color: var(--accent); height: 20px; width: 20px; border-radius: 50%; border: none; box-shadow: 0 0 12px var(--accent); }
+
+  /* Equation display */
+  .equation-display {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 1.4rem;
+    background: rgba(0,0,0,0.5);
+    padding: 14px 22px;
+    border-radius: 12px;
+    border-left: 3px solid var(--accent);
+    display: inline-block;
+    letter-spacing: 0.5px;
+  }
+
+  /* Quiz */
+  .quiz-option {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    text-align: left;
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--fg);
+    margin-bottom: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+    gap: 12px;
+  }
+  .quiz-option:hover { border-color: var(--accent); background: rgba(251,191,36,0.05); }
+  .quiz-option.selected { border-color: var(--accent); background: rgba(251,191,36,0.1); }
+  .quiz-option.correct { border-color: var(--accent-3); background: rgba(52,211,153,0.12); }
+  .quiz-option.incorrect { border-color: var(--accent-2); background: rgba(248,113,113,0.12); }
+  .option-letter {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  .quiz-option.correct .option-letter { background: var(--accent-3); color: #0a1419; }
+  .quiz-option.incorrect .option-letter { background: var(--accent-2); color: #fff; }
+
+  /* Steps */
+  .step-item {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    padding: 14px;
+    border-radius: 12px;
+    transition: all 0.3s;
+  }
+  .step-item:hover { background: rgba(255,255,255,0.02); }
+  .step-num {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    color: #1a1a1a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    flex-shrink: 0;
+    font-family: 'Fraunces', serif;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    top: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(-120px);
+    background: var(--bg-3);
+    color: var(--fg);
+    padding: 14px 24px;
+    border-radius: 12px;
+    border: 1px solid var(--accent);
+    z-index: 1000;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 500;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--accent-3); }
+  .toast.error { border-color: var(--accent-2); }
+
+  /* Cover animations */
+  @keyframes float-point {
+    0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+    50% { transform: translate(20px, -30px); opacity: 0.8; }
+  }
+  .floating-point {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 16px var(--accent);
+    animation: float-point 8s ease-in-out infinite;
+  }
+  @keyframes draw-line {
+    from { stroke-dashoffset: 1000; }
+    to { stroke-dashoffset: 0; }
+  }
+  .draw-line { stroke-dasharray: 1000; animation: draw-line 3s ease-out forwards; }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 40px rgba(251,191,36,0.15); }
+    50% { box-shadow: 0 0 60px rgba(251,191,36,0.3); }
+  }
+  .pulse-glow { animation: pulse-glow 4s ease-in-out infinite; }
+
+  /* Reflection cards */
+  .reflect-card {
+    background: linear-gradient(135deg, rgba(251,191,36,0.06), rgba(248,113,113,0.04));
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    text-align: left;
+    transition: all 0.3s;
+  }
+  .reflect-card:hover { transform: translateY(-4px); border-color: var(--accent); }
+
+  /* Mini graph container */
+  .mini-graph {
+    background: #0a0e14;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 8px;
+    aspect-ratio: 1;
+  }
+
+  /* Tables */
+  .data-table { width: 100%; border-collapse: collapse; }
+  .data-table th, .data-table td {
+    padding: 10px 14px;
+    text-align: center;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+  }
+  .data-table th { background: rgba(251,191,36,0.08); color: var(--accent); font-weight: 600; }
+  .data-table td input {
+    width: 60px;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    color: var(--fg);
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .data-table td input:focus { outline: none; border-color: var(--accent); }
+  .data-table td.correct { color: var(--accent-3); }
+  .data-table td.incorrect { color: var(--accent-2); }
+
+  /* Reveal animation */
+  @keyframes reveal-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .slide.active .reveal { animation: reveal-up 0.6s ease forwards; }
+  .reveal { opacity: 0; }
+  .reveal:nth-child(1) { animation-delay: 0.1s; }
+  .reveal:nth-child(2) { animation-delay: 0.2s; }
+  .reveal:nth-child(3) { animation-delay: 0.3s; }
+  .reveal:nth-child(4) { animation-delay: 0.4s; }
+  .reveal:nth-child(5) { animation-delay: 0.5s; }
+
+  /* Tab system */
+  .tab-button {
+    padding: 10px 18px;
+    background: transparent;
+    color: var(--muted);
+    border: none;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.3s;
+    font-weight: 500;
+    font-family: 'Outfit', sans-serif;
+    font-size: 14px;
+  }
+  .tab-button.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* Quiz question card */
+  .question-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    transition: all 0.3s;
+  }
+  .question-card.answered { border-color: rgba(251,191,36,0.3); }
+  .question-card.correct { border-color: rgba(52,211,153,0.4); background: rgba(52,211,153,0.04); }
+  .question-card.incorrect { border-color: rgba(248,113,113,0.4); background: rgba(248,113,113,0.04); }
+
+  .explanation-box {
+    background: rgba(52,211,153,0.06);
+    border-left: 3px solid var(--accent-3);
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-top: 14px;
+    font-size: 13px;
+    line-height: 1.6;
+    display: none;
+  }
+  .explanation-box.show { display: block; animation: reveal-up 0.4s ease forwards; }
+
+  /* Quiz stats bar */
+  .quiz-stats {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 10px 24px;
+    margin-bottom: 24px;
+  }
+  .stat-item { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+  .stat-value { font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+
+  /* Cover hero text */
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+  }
+  .gradient-text {
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Confetti */
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    pointer-events: none;
+    z-index: 200;
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .slide { padding: 70px 24px 100px; }
+    .nav-dots { right: 12px; }
+    .hero-title { font-size: 3rem !important; }
+    .slide-num { font-size: 5rem; right: 24px; }
+  }
+</style>
+</head>
+<body>
+  <div class="ambient-bg"></div>
+  <div class="progress-bar" id="progressBar" style="width: 10%"></div>
+
+  <div class="slides-container">
+
+    <!-- ====================== SLIDE 1: COVER ====================== -->
+    <section class="slide active" data-slide="1">
+      <div class="grid-bg"></div>
+      <div id="floatingPoints" style="position:absolute;inset:0;pointer-events:none;"></div>
+      
+      <div class="relative h-full flex flex-col justify-center max-w-5xl">
+        <div class="reveal">
+          <div class="slide-badge mb-6">
+            <i class="fas fa-compass-drafting"></i>
+            Cambridge Lower Secondary • Year 8 • Mathematics
+          </div>
+        </div>
+
+        <h1 class="hero-text reveal" style="font-size: 5.5rem;">
+          Two-Variable Equations
+          <span class="block gradient-text" style="font-size: 4.5rem; margin-top: 8px;">& Their Graphs</span>
+        </h1>
+
+        <p class="reveal mt-6 text-lg max-w-2xl leading-relaxed" style="color: var(--muted);">
+          Discover how equations come alive on the Cartesian plane. Plot points, draw lines, and uncover the stories that numbers tell when given a stage to dance on.
+        </p>
+
+        <div class="reveal mt-10 card card-glow pulse-glow" style="max-width: 480px;">
+          <label class="block text-sm font-semibold mb-3" style="color: var(--accent);">
+            <i class="fas fa-user-astronaut mr-2"></i>WHO'S EXPLORING TODAY?
+          </label>
+          <input type="text" id="studentName" class="input-field" placeholder="Type your name to begin..." maxlength="30" />
+          <button class="btn-primary mt-4 w-full justify-center" onclick="startJourney()">
+            Begin Your Journey <i class="fas fa-arrow-right"></i>
+          </button>
+        </div>
+
+        <div class="reveal mt-12 flex gap-8 items-center text-sm" style="color: var(--muted);">
+          <span><i class="fas fa-clock mr-2" style="color: var(--accent);"></i> 60 minutes</span>
+          <span><i class="fas fa-layer-group mr-2" style="color: var(--accent-2);"></i> 10 interactive slides</span>
+          <span><i class="fas fa-trophy mr-2" style="color: var(--accent-3);"></i> Quiz & certificate</span>
+        </div>
+      </div>
+
+      <div class="slide-num">01</div>
+    </section>
+
+    <!-- ====================== SLIDE 2: WARMUP ====================== -->
+    <section class="slide" data-slide="2">
+      <div class="grid-bg"></div>
+      <div class="relative h-full">
+        <div class="reveal">
+          <div class="slide-badge mb-4">
+            <i class="fas fa-fire"></i> Warm-up
+          </div>
+          <h2 class="font-display font-black text-5xl mb-3">Let's Get the Brain Turning</h2>
+          <p class="text-base max-w-3xl mb-10" style="color: var(--muted);">
+            Before we graph anything, let's practise writing equations from word problems and completing tables of values. Two small warm-ups to wake up your algebra muscles.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 reveal">
+          <!-- Warmup 1: Write equation -->
+          <div class="card card-glow">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(251,191,36,0.15); color: var(--accent);">
+                  <i class="fas fa-pen"></i>
+                </div>
+                <h3 class="font-display font-bold text-xl">Write a Two-Variable Equation</h3>
+              </div>
+              <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(251,191,36,0.1); color: var(--accent);">WARM-UP A</span>
+            </div>
+            <p class="text-sm mb-4" style="color: var(--muted);">A pizza costs <span style="color: var(--accent);">£8 base</span> plus <span style="color: var(--accent);">£2 per topping</span>. Write an equation for the total cost <span class="font-mono">y</span> in terms of the number of toppings <span class="font-mono">x</span>.</p>
+            
+            <label class="block text-xs font-semibold mb-2 uppercase tracking-wider" style="color: var(--muted);">Your equation</label>
+            <div class="flex gap-2">
+              <input type="text" id="warmup1Answer" class="input-field font-mono" placeholder="y = ..." />
+              <button class="btn-secondary flex-shrink-0" onclick="checkWarmup(1)">
+                <i class="fas fa-check"></i> Check
+              </button>
+            </div>
+            <div id="warmup1Feedback" class="mt-3 text-sm" style="min-height: 22px;"></div>
+
+            <div class="mt-5 pt-5" style="border-top: 1px solid var(--border);">
+              <p class="text-xs mb-3 uppercase tracking-wider" style="color: var(--muted);">Ready for more? Practise on IXL:</p>
+              <a href="https://uk.ixl.com/maths/year-8/write-a-two-variable-equation?_gl=1*1s03cbt*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjwp9vTBhCWARIsANaUrjtMj0o55LzwJrDXoyoKEdDQPollyXHFXPdpeKqJKJHA9XbtuVIb-usaAusmEALw_wcB&gbraid=0AAAAADrr3AoQDqJiOtk-zXs7UQ08n-hd6" target="_blank" class="btn-ixl">
+                <i class="fas fa-external-link-alt"></i> Open IXL: Write a two-variable equation
+              </a>
+            </div>
+          </div>
+
+          <!-- Warmup 2: Complete a table -->
+          <div class="card card-glow">
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full flex items-center justify-center" style="background: rgba(248,113,113,0.15); color: var(--accent-2);">
+                  <i class="fas fa-table"></i>
+                </div>
+                <h3 class="font-display font-bold text-xl">Complete a Table</h3>
+              </div>
+              <span class="text-xs px-2 py-1 rounded-full" style="background: rgba(248,113,113,0.1); color: var(--accent-2);">WARM-UP B</span>
+            </div>
+            <p class="text-sm mb-4" style="color: var(--muted);">Given the equation <span class="font-mono" style="color: var(--accent-2);">y = 3x − 1</span>, complete the table of values below.</p>
+            
+            <table class="data-table">
+              <thead>
+                <tr><th>x</th><th>-2</th><th>-1</th><th>0</th><th>1</th><th>2</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color: var(--accent);">y</td>
+                  <td><input type="text" data-warmup2="-2" maxlength="4" /></td>
+                  <td><input type="text" data-warmup2="-1" maxlength="4" /></td>
+                  <td><input type="text" data-warmup2="0" maxlength="4" /></td>
+                  <td><input type="text" data-warmup2="1" maxlength="4" /></td>
+                  <td><input type="text" data-warmup2="2" maxlength="4" /></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <div class="flex gap-2 mt-4">
+              <button class="btn-secondary" onclick="checkWarmup(2)">
+                <i class="fas fa-check"></i> Check Answers
+              </button>
+              <button class="btn-secondary" onclick="revealWarmup2()">
+                <i class="fas fa-lightbulb"></i> Reveal
+              </button>
+            </div>
+            <div id="warmup2Feedback" class="mt-3 text-sm" style="min-height: 22px;"></div>
+
+            <div class="mt-5 pt-5" style="border-top: 1px solid var(--border);">
+              <p class="text-xs mb-3 uppercase tracking-wider" style="color: var(--muted);">Practise more on IXL:</p>
+              <a href="https://uk.ixl.com/maths/year-8/complete-a-table-and-graph-a-two-variable-equation?_gl=1*1e70i1c*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjwp9vTBhCWARIsANaUrjtMj0o55LzwJrDXoyoKEdDQPollyXHFXPdpeKqJKJHA9XbtuVIb-usaAusmEALw_wcB&gbraid=0AAAAADrr3AoQDqJiOtk-zXs7UQ08n-hd6" target="_blank" class="btn-ixl">
+                <i class="fas fa-external-link-alt"></i> Open IXL: Complete a table
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-num">02</div>
+    </section>
+
+    <!-- ====================== SLIDE 3: CARTESIAN PLANE ====================== -->
+    <section class="slide" data-slide="3">
+      <div class="grid-bg"></div>
+      <div class="relative h-full">
+        <div class="reveal">
+          <div class="slide-badge mb-4">
+            <i class="fas fa-map-location-dot"></i> Core Concept
+          </div>
+          <h2 class="font-display font-black text-5xl mb-3">Drawing Graphs on the Cartesian Plane</h2>
+          <p class="text-base max-w-3xl mb-8" style="color: var(--muted);">
+            A Cartesian plane has two perpendicular axes — the horizontal <span style="color: var(--accent);">x-axis</span> and the vertical <span style="color: var(--accent);">y-axis</span>. Every point is written as an ordered pair <span class="font-mono">(x, y)</span>. Here's how to graph a linear equation in three simple steps.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8 reveal">
+          <!-- LEFT: Steps + interactive -->
+          <div>
+            <div class="space-y-2 mb-6">
+              <div class="step-item">
+                <div class="step-num">1</div>
+                <div>
+                  <h4 class="font-semibold mb-1">Build a table of values</h4>
+                  <p class="text-sm" style="color: var(--muted);">Choose 4-5 x-values, substitute each into the equation, and compute the matching y-values.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">2</div>
+                <div>
+                  <h4 class="font-semibold mb-1">Plot the points</h4>
+                  <p class="text-sm" style="color: var(--muted);">Move x units right/left, then y units up/down. Mark each point clearly.</p>
+                </div>
+              </div>
+              <div class="step-item">
+                <div class="step-num">3</div>
+                <div>
+                  <h4 class="font-semibold mb-1">Draw the line</h4>
+                  <p class="text-sm" style="color: var(--muted);">Connect the points with a straight line. Extend it across the plane and add arrows on both ends.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interactive controls -->
+            <div class="card">
+              <h4 class="font-display font-bold text-lg mb-4 flex items-center gap-2">
+                <i class="fas fa-sliders" style="color: var(--accent);"></i> Try it yourself
+              </h4>
+              <div class="equation-display mb-4" id="eqDisplay">y = 1x + 0</div>
+              <div class="space-y-4">
+                <div>
+                  <label class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted);">Slope (m): <span id="mValue" style="color: var(--accent);">1</span></label>
+                  <input type="range" id="slopeM" min="-5" max="5" step="0.5" value="1" />
+                </div>
+                <div>
+                  <label class="text-xs font-semibold uppercase tracking-wider" style="color: var(--muted);">Y-intercept (b): <span id="bValue" style="color: var(--accent);">0</span></label>
+                  <input type="range" id="yIntercept" min="-8" max="8" step="1" value="0" />
+                </div>
+              </div>
+              <div class="mt-4 pt-4" style="border-top: 1px solid var(--border);">
+                <p class="text-sm mb-2" style="color: var(--muted);">Live values table:</p>
+                <div class="grid grid-cols-5 gap-2 text-xs font-mono" id="liveTable"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Cartesian canvas -->
+          <div>
+            <div class="canvas-wrapper" style="background: #0a0e14; border-radius: 16px; padding: 16px; border: 1px solid var(--border);">
+              <canvas id="cartesianCanvas" width="500" height="500" style="width: 100%; height: auto; display: block; cursor: crosshair;"></canvas>
+            </div>
+            <p class="text-xs mt-3 text-center" style="color: var(--muted);">
+              <i class="fas fa-mouse-pointer mr-1"></i> Click anywhere on the plane to plot a custom point
+            </p>
+
+            <!-- Practice question -->
+            <div class="card mt-5">
+              <h4 class="font-semibold mb-2 flex items-center gap-2">
+                <i class="fas fa-question-circle" style="color: var(--accent-2);"></i> Quick Practice
+              </h4>
+              <p class="text-sm mb-3" style="color: var(--muted);">Using the equation <span class="font-mono" style="color: var(--accent);">y = 2x − 3</span>, what is the y-coordinate when <span class="font-mono">x = 4</span>?</p>
+              <div class="flex gap-2">
+                <input type="number" id="practice3Answer" class="input-field font-mono" placeholder="y = ?" />
+                <button class="btn-secondary flex-shrink-0" onclick="checkPractice3()">
+                  <i class="fas fa-check"></i> Check
+                </button>
+              </div>
+              <div id="practice3Feedback" class="mt-3 text-sm" style="min-height: 22px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-num">03</div>
+    </section>
+
+    <!-- ====================== SLIDE 4: COMPLETE TABLE & GRAPH ====================== -->
+    <section class="slide" data-slide="4">
+      <div class="grid-bg"></div>
+      <div class="relative h-full">
+        <div class="reveal">
+          <div class="slide-badge mb-4" style="background: rgba(52,211,153,0.1); color: var(--accent-3); border-color: rgba(52,211,153,0.3);">
+            <i class="fas fa-chart-line"></i> Practice Lab 01
+          </div>
+          <h2 class="font-display font-black text-5xl mb-3">Complete a Table & Graph the Equation</h2>
+          <p class="text-base max-w-3xl mb-8" style="color: var(--muted);">
+            Time to put all three steps together. Build the table, plot the points, and draw the line — all in one fluid motion.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6 reveal">
+          <!-- Example table -->
+          <div class="card">
+            <h4 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
+              <i class="fas fa-table" style="color: var(--accent);"></i> Step 1: Table
+            </h4>
+            <p class="text-sm mb-3" style="color: var(--muted);">For <span class="font-mono" style="color: var(--accent);">y = 2x + 1</span>:</p>
+            <table class="data-table">
+              <thead>
+                <tr><th>x</th><th>-2</th><th>-1</th><th>0</th><th>1</th><th>2</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color: var(--accent-3);">y</td>
+                  <td style="color: var(--accent-3);">-3</td>
+                  <td style="color: var(--accent-3);">-1</td>
+                  <td style="color: var(--accent-3);">1</td>
+                  <td style="color: var(--accent-3);">3</td>
+                  <td style="color: var(--accent-3);">5</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Mini graph -->
+          <div class="card">
+            <h4 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
+              <i class="fas fa-thumbtack" style="color: var(--accent-2);"></i> Step 2: Plot
+            </h4>
+            <p class="text-sm mb-3" style="color: var(--muted);">Plot each (x, y) pair:</p>
+            <div class="mini-graph">
+              <svg viewBox="0 0 200 200" width="100%" height="100%">
+                <defs>
+                  <pattern id="grid4" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="200" height="200" fill="url(#grid4)"/>
+                <line x1="0" y1="100" x2="200" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="100" y1="0" x2="100" y2="200" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="60" y1="160" x2="140" y2="40" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+                <circle cx="60" cy="160" r="4" fill="#f87171"/>
+                <circle cx="80" cy="120" r="4" fill="#f87171"/>
+                <circle cx="100" cy="80" r="4" fill="#f87171"/>
+                <circle cx="120" cy="40" r="4" fill="#f87171"/>
+                <text x="190" y="115" fill="rgba(255,255,255,0.5)" font-size="9" font-family="JetBrains Mono">x</text>
+                <text x="105" y="12" fill="rgba(255,255,255,0.5)" font-size="9" font-family="JetBrains Mono">y</text>
+              </svg>
+            </div>
+          </div>
+
+          <!-- Final line -->
+          <div class="card">
+            <h4 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
+              <i class="fas fa-paint-brush" style="color: var(--accent-3);"></i> Step 3: Draw
+            </h4>
+            <p class="text-sm mb-3" style="color: var(--muted);">Connect into a straight line:</p>
+            <div class="mini-graph">
+              <svg viewBox="0 0 200 200" width="100%" height="100%">
+                <rect width="200" height="200" fill="rgba(255,255,255,0.02)"/>
+                <line x1="0" y1="100" x2="200" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="100" y1="0" x2="100" y2="200" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="20" y1="200" x2="180" y2="0" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" class="draw-line"/>
+                <text x="190" y="115" fill="rgba(255,255,255,0.5)" font-size="9" font-family="JetBrains Mono">x</text>
+                <text x="105" y="12" fill="rgba(255,255,255,0.5)" font-size="9" font-family="JetBrains Mono">y</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal mt-8 card flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h4 class="font-display font-bold text-xl mb-1">Ready to master this skill?</h4>
+            <p class="text-sm" style="color: var(--muted);">Practise completing tables and graphing equations on IXL. Aim for a SmartScore of 80+.</p>
+          </div>
+          <a href="https://uk.ixl.com/maths/year-8/complete-a-table-and-graph-a-two-variable-equation?_gl=1*1e70i1c*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjwp9vTBhCWARIsANaUrjtMj0o55LzwJrDXoyoKEdDQPollyXHFXPdpeKqJKJHA9XbtuVIb-usaAusmEALw_wcB&gbraid=0AAAAADrr3AoQDqJiOtk-zXs7UQ08n-hd6" target="_blank" class="btn-ixl">
+            <i class="fas fa-external-link-alt"></i> Open IXL Exercise
+          </a>
+        </div>
+      </div>
+      <div class="slide-num">04</div>
+    </section>
+
+    <!-- ====================== SLIDE 5: IDENTIFY GRAPH OF EQUATION ====================== -->
+    <section class="slide" data-slide="5">
+      <div class="grid-bg"></div>
+      <div class="relative h-full">
+        <div class="reveal">
+          <div class="slide-badge mb-4" style="background: rgba(56,189,248,0.1); color: var(--accent-4); border-color: rgba(56,189,248,0.3);">
+            <i class="fas fa-search"></i> Practice Lab 02
+          </div>
+          <h2 class="font-display font-black text-5xl mb-3">Identify the Graph of an Equation</h2>
+          <p class="text-base max-w-3xl mb-8" style="color: var(--muted);">
+            Given an equation, can you spot which graph matches? Look at the <span style="color: var(--accent);">y-intercept</span> and the <span style="color: var(--accent);">slope direction</span> — they're your two biggest clues.
+          </p>
+        </div>
+
+        <div class="reveal card mb-6">
+          <h4 class="font-display font-bold text-xl mb-4">Which graph represents <span class="equation-display">y = 2x + 1</span>?</h4>
+          <div class="grid grid-cols-3 gap-4">
+            <div class="mini-graph cursor-pointer" onclick="identifyGraph(this, false)" style="position: relative;">
+              <svg viewBox="0 0 200 200" width="100%" height="100%">
+                <line x1="0" y1="100" x2="200" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="100" y1="0" x2="100" y2="200" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="20" y1="40" x2="180" y2="200" stroke="#f87171" stroke-width="2.5"/>
+                <text x="170" y="35" fill="rgba(255,255,255,0.5)" font-size="11" font-family="JetBrains Mono">A</text>
+              </svg>
+            </div>
+            <div class="mini-graph cursor-pointer" onclick="identifyGraph(this, true)" style="position: relative; border-color: var(--accent);">
+              <svg viewBox="0 0 200 200" width="100%" height="100%">
+                <line x1="0" y1="100" x2="200" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="100" y1="0" x2="100" y2="200" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="20" y1="160" x2="180" y2="40" stroke="#34d399" stroke-width="2.5"/>
+                <text x="170" y="35" fill="rgba(255,255,255,0.5)" font-size="11" font-family="JetBrains Mono">B</text>
+              </svg>
+            </div>
+            <div class="mini-graph cursor-pointer" onclick="identifyGraph(this, false)" style="position: relative;">
+              <svg viewBox="0 0 200 200" width="100%" height="100%">
+                <line x1="0" y1="100" x2="200" y2="100" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="100" y1="0" x2="100" y2="200" stroke="rgba(255,255,255,0.3)" stroke-width="1"/>
+                <line x1="40" y1="20" x2="160" y2="180" stroke="#f87171" stroke-width="2.5"/>
+                <text x="170" y="35" fill="rgba(255,255,255,0.5)" font-size="11" font-family="JetBrains Mono">C</text>
+              </svg>
+            </div>
+          </div>
+          <div id="identifyFeedback" class="mt-4 text-sm" style="min-height: 22px;"></div>
+          <p class="text-xs mt-3" style="color: var(--muted);">
+            <i class="fas fa-lightbulb mr-1" style="color: var(--accent);"></i>
+            Tip: A positive slope (2) means the line rises left-to-right. The y-intercept (+1) means the line crosses the y-axis above the origin.
+          </p>
+        </div>
+
+        <div class="reveal card flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h4 class="font-display font-bold text-xl mb-1">Practise spotting the right graph</h4>
+            <p class="text-sm" style="color: var(--muted);">Head to IXL for more questions like this. Train your eye to read equations visually.</p>
+          </div>
+          <a href="https://uk.ixl.com/maths/year-8/identify-the-graph-of-an-equation?_gl=1*1bwgb6c*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjwp9vTBhCWARIsANaUrjtMj0o55LzwJrDXoyoKEdDQPollyXHFXPdpeKqJKJHA9XbtuVIb-usaAusmEALw_wcB&gbraid=0AAAAADrr3AoQDqJiOtk-zXs7UQ08n-hd6" target="_blank" class="btn-ixl">
+            <i class="fas fa-external-link-alt"></i> Open IXL Exercise
+          </a>
+        </div>
+      </div>
+      <div class="slide-num">05</div>
+    </section>
+
+    <!-- ====================== SLIDE 6: GRAPH A TWO-VARIABLE EQUATION ====================== -->
+    <section class="slide" data-slide="6">
+      <div class="grid-bg"></div>
+      <div class="relative h-full">
+        <div class="reveal">
+          <div class="slide-badge mb-4" style="background: rgba(248,113,113,0.1); color: var(--accent-2); border-color: rgba(248,113,113,0.3);">
+            <i class="fas fa-pencil-ruler"></i> Practice Lab 03
+          </div>
+          <h2 class="font-display font-black text-5xl mb-3">Graph a Two-Variable Equation</h2>
+          <p class="text-base max-w-3xl mb-8" style="color: var(--muted);">
+            Now you're the artist. Take any linear equation, build its table, plot the points, and draw a clean straight line through them.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-8 reveal">
+          <!-- Worked example -->
+          <div class="card">
+            <h4 class="font-display font-bold text-xl mb-4"><i class="fas fa-flask" style="color: var(--accent);"></i> Worked Example</h4>
+            <p class="text-sm mb-3">Graph the equation <span class="equation-display">y = −x + 4</span></p>
+            
+            <p class="text-xs font-semibold uppercase mb-2" style="color: var(--muted);">Step 1 — Table of values:</p>
+            <table class="data-table mb-4">
+              <thead>
+                <tr><th>x</th><th>-1</th><th>0</th><th>1</th><th>2</th><th>3</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color: var(--accent);">y</td>
+                  <td>5</td><td>4</td><td>3</td><td>2</td><td>1</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <p class="text-xs font-semibold uppercase mb-2" style="color: var(--muted);">Step 2 & 3 — Plot and draw:</p>
+            <div class="mini-graph mt-2">
+              <svg viewBox="0 0 200 200" width="100%" height="100%">
+                <defs>
+                  <pattern id="grid6" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="200" height="200" fill="url(#grid6)"/>
+                <line x1="0" y1="100" x2="200" y2="100" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                <line x1="100" y1="0" x2="100" y2="200" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                <line x1="20" y1="20" x2="180" y2="180" stroke="#fbbf24" stroke-width="2.5"/>
+                <circle cx="80" cy="20" r="3.5" fill="#f87171"/>
+                <circle cx="100" cy="40" r="3.5" fill="#f87171"/>
+                <circle cx="120" cy="60" r="3.5" fill="#f87171"/>
+                <circle cx="140" cy="80" r="3.5" fill="#f87171"/>
+                <circle cx="160" cy="100" r="3.5" fill="#f87171"/>
+                <text x="190" y="115" fill="rgba(255,255,255,0.5)" font-size="9" font-family="JetBrains Mono">x</text>
+                <text x="105" y="12" fill="rgba(255,255,255,0.5)" font-size="9" font-family="JetBrains Mono">y</text>
+              </svg>
+            </div>
+            <p class="text-xs mt-3" style="color: var(--muted);">
+              <i class="fas fa-info-circle mr-1" style="color: var(--accent-2);"></i>
+              Notice: the slope is negative (−1), so the line goes downhill from left to right.
+            </p>
+          </div>
+
+          <!-- Tips + button -->
+          <div>
+            <div class="card mb-4">
+              <h4 class="font-display font-bold text-xl mb-4"><i class="fas fa-lightbulb" style="color: var(--accent);"></i> Pro Tips</h4>
+              <ul class="space-y-3 text-sm">
+                <li class="flex gap-3">
+                  <i class="fas fa-check-circle mt-1" style="color: var(--accent-3);"></i>
+                  <span><b>Use easy x-values:</b> −1, 0, 1, 2, 3 are quick to compute.</span>
+                </li>
+                <li class="flex gap-3">
+                  <i class="fas fa-check-circle mt-1" style="color: var(--accent-3);"></i>
+                  <span><b>Always include x = 0:</b> that gives you the y-intercept directly.</span>
+                </li>
+                <li class="flex gap-3">
+                  <i class="fas fa-check-circle mt-1" style="color: var(--accent-3);"></i>
+                  <span><b>Plot at least 3 points:</b> if they line up, your equation is correct.</span>
+                </li>
+                <li class="flex gap-3">
+                  <i class="fas fa-check-circle mt-1" style="color: var(--accent-3);"></i>
+                  <span><b>Extend the line:</b> a linear equation has infinitely many points — don't stop at the table.</span>
+                </li>
+                <li class="flex gap-3">
+                  <i class="fas fa-check-circle mt-1" style="color: var(--accent-3);"></i>
+                  <span><b>Use a ruler:</b> neatness matters when communicating mathematics.</span>
+                </li>
+              </ul>
+            </div>
+
+            <div class="card flex items-center justify-between flex-wrap gap-3" style="background: linear-gradient(135deg, rgba(248,113,113,0.06), rgba(251,191,36,0.04));">
+              <div>
+                <h4 class="font-display font-bold text-lg mb-1">Try it on IXL</h4>
+                <p class="text-sm" style="color: var(--muted);">Graph equations from start to finish.</p>
+              </div>
+              <a href="https://uk.ixl.com/maths/year-8/graph-a-two-variable-equation?_gl=1*juzlw7*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjwp9vTBhCWARIsANaUrjtMj0o55LzwJrDXoyoKEdDQPollyXHFXPdpeKqJKJHA9XbtuVIb-usaAusmEALw_wcB&gbraid=0AAAAADrr3AoQDqJiOtk-zXs7UQ08n-hd6" target="_blank" class="btn-ixl">
+                <i class="fas fa-external-link-alt"></i> Open IXL
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="slide-num">06</div>
+    </section>
+
+    <!-- ====================== SLIDE 7: INTERPRET A GRAPH ====================== -->
+    <section class="slide" data-slide="7">
+      <div class="grid-bg"></div>
+      <div class="relative h-full">
+        <div class="reveal">
+          <div class="slide-badge mb-4" style="background: rgba(52,211,153,0.1); color: var(--accent-3); border-color: rgba(52,211,153,0.3);">
+            <i class="fas fa-glasses"></i> Practice Lab 04
+          </div>
+          <h2 class="font-display font-black text-5xl mb-3">Interpret a Graph: Word Problems</h2>
+          <p class="text-base max-w-3xl mb-8" style="color: var(--muted);">
+            Graphs tell stories. A distance-time graph can show a journey — when someone walks fast, slow, or stops to rest. Learn to read the story behind the line.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6 reveal">
+          <!-- Scenario graph -->
+          <div class="card">
+            <h4 class="font-display font-bold text-xl mb-3"><i class="fas fa-walking" style="color: var(--accent);"></i> Maya's Walk to School</h4>
+            <p class="text-sm mb-4" style="color: var(--muted);">Maya walks to school. The graph shows her distance from home over time.</p>
+            <div class="mini-graph" style="aspect-ratio: 4/3;">
+              <svg viewBox="0 0 400 300" width="100%" height="100%">
+                <defs>
+                  <pattern id="grid7" width="40" height="30" patternUnits="userSpaceOnUse">
+                    <path d="M 40 0 L 0 0 0 30" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="400" height="300" fill="url(#grid7)"/>
+                <line x1="50" y1="250" x2="380" y2="250" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+                <line x1="50" y1="30" x2="50" y2="250" stroke="rgba(255,255,255,0.4)" stroke-width="1.5"/>
+                <text x="380" y="270" fill="rgba(255,255,255,0.6)" font-size="11" font-family="JetBrains Mono">Time (min)</text>
+                <text x="20" y="35" fill="rgba(255,255,255,0.6)" font-size="11" font-family="JetBrains Mono" transform="rotate(-90 30 35)">Distance (m)</text>
+                <!-- Maya's journey: walk fast, rest, walk slow -->
+                <polyline points="50,250 130,90 200,90 280,60 380,60" fill="none" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="130" cy="90" r="5" fill="#f87171"/>
+                <circle cx="200" cy="90" r="5" fill="#f87171"/>
+                <circle cx="280" cy="60" r="5" fill="#f87171"/>
+                <text x="60" y="245" fill="rgba(255,255,255,0.4)" font-size="9">0</text>
+                <text x="120" y="245" fill="rgba(255,255,255,0.4)" font-size="9">5</text>
+                <text x="190" y="245" fill="rgba(255,255,255,0.4)" font-size="9">10</text>
+                <text x="270" y="245" fill="rgba(255,255,255,0.4)" font-size="9">15</text>
+              </svg>
+            </div>
+            <p class="text-xs mt-3" style="color: var(--muted);">
+              <i class="fas fa-circle mr-1" style="color: var(--accent-2); font-size: 6px;"></i> Red dots mark key moments in the journey
+            </p>
+          </div>
+
+          <!-- Interpretation -->
+          <div class="card">
+            <h4 class="font-display font-bold text-xl mb-3"><i class="fas fa-book-reader" style="color: var(--accent);"></i> Reading the Story</h4>
+            <div class="space-y-3 text-sm">
+              <div class="p-3 rounded-lg" style="background: rgba(251,191,36,0.06); border-left: 3px solid var(--accent);">
+                <b style="color: var(--accent);">0 → 5 min:</b> Steep uphill line means Maya walks quickly. She covers a lot of distance in a short time.
+              </div>
+              <div class="p-3 rounded-lg" style="background: rgba(248,113,113,0.06); border-left: 3px solid var(--accent-2);">
+                <b style="color: var(--accent-2);">5 → 10 min:</b> Flat horizontal line means her distance doesn't change. She stopped to rest or wait.
+              </div>
+              <div class="p-3 rounded-lg" style="background: rgba(52,211,153,0.06); border-left: 3px solid var(--accent-3);">
+                <b style="color: var(--accent-3);">10 → 15 min:</b> Gentle uphill line means she walks again, but more slowly than before.
+              </div>
+              <div class="p-3 rounded-lg" style="background: rgba(56,189,248,0.06); border-left: 3px solid var(--accent-4);">
+                <b style="color: var(--accent-4);">Steepness = speed:</b> The steeper the line, the faster the movement. Flat sections mean no movement.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="reveal mt-6 card flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h4 class="font-display font-bold text-xl mb-1">Practise interpreting graphs</h4>
+            <p class="text-sm" style="color: var(--muted);">Real-world word problems on IXL. Translate graphs into stories and back.</p>
+          </div>
+          <a href="https://uk.ixl.com/maths/year-8/interpret-a-graph-word-problems?_gl=1*1apgmuh*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjwp9vTBhCWARIsANaUrjtMj0o55LzwJrDXoyoKEdDQPollyXHFXPdpeKqJKJHA9XbtuVIb-usaAusmEALw_wcB&gbraid=0AAAAADrr3AoQDqJiOtk-zXs7UQ08n-hd6" target="_blank" class="btn-ixl">
+            <i class="fas fa-external-link-alt"></i> Open IXL Exercise
+          </a>
+        </div>
+      </div>
+      <div class="slide-num">07</div>
+    </section>
+
+    <!-- ====================== SLIDE 8: WRITE EQUATION FROM GRAPH ====================== -->
+    <section class="slide" data-slide="8">
+      <div class="grid-bg"></div>
+      <div class="relative h-full">
+        <div class="reveal">
+          <div class="slide-badge mb-4" style="background: rgba(56,189,248,0.1); color: var(--accent-4); border-color: rgba(56,189,248,0.3);">
+            <i class="fas fa-undo"></i> Practice Lab 05
+          </div>
+          <h2 class="font-display font-black text-5xl mb-3">Write an Equation from a Graph Using a Table</h2>
+          <p class="text-base max-w-3xl mb-8" style="color: var(--muted);">
+            Reverse engineer the equation. Read points off the graph, build a table, then figure out what equation could produce those values.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6 reveal">
+          <!-- Step 1: Read points -->
+          <div class="card">
+            <h4 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
+              <span class="step-num" style="width:30px;height:30px;font-size:14px;">1</span>
+              Read points from the graph
+            </h4>
+            <div class="mini-graph mb-3">
+              <svg viewBox="0 0 200 200" width="100%" height="100%">
+                <defs>
+                  <pattern id="grid8" width="20" height="20" patternUnits="userSpaceOnUse">
+                    <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="0.5"/>
+                  </pattern>
+                </defs>
+                <rect width="200" height="200" fill="url(#grid8)"/>
+                <line x1="0" y1="100" x2="200" y2="100" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                <line x1="100" y1="0" x2="100" y2="200" stroke="rgba(255,255,255,0.4)" stroke-width="1"/>
+                <line x1="0" y1="180" x2="200" y2="20" stroke="#fbbf24" stroke-width="2.5"/>
+                <circle cx="60" cy="140" r="4" fill="#f87171"/>
+                <circle cx="100" cy="100" r="4" fill="#f87171"/>
+                <circle cx="140" cy="60" r="4" fill="#f87171"/>
+                <text x="50" y="155" fill="rgba(255,255,255,0.7)" font-size="9" font-family="JetBrains Mono">(−2,1)</text>
+                <text x="105" y="95" fill="rgba(255,255,255,0.7)" font-size="9" font-family="JetBrains Mono">(0,2)</text>
+                <text x="135" y="55" fill="rgba(255,255,255,0.7)" font-size="9" font-family="JetBrains Mono">(2,3)</text>
+              </svg>
+            </div>
+            <p class="text-xs" style="color: var(--muted);">Pick 3 clear points where the line crosses grid intersections.</p>
+          </div>
+
+          <!-- Step 2: Build table -->
+          <div class="card">
+            <h4 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
+              <span class="step-num" style="width:30px;height:30px;font-size:14px;">2</span>
+              Build a table
+            </h4>
+            <table class="data-table">
+              <thead>
+                <tr><th>x</th><th>-2</th><th>0</th><th>2</th></tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="color: var(--accent);">y</td>
+                  <td>1</td><td>2</td><td>3</td>
+                </tr>
+              </tbody>
+            </table>
+            <p class="text-xs mt-3" style="color: var(--muted);">
+              <i class="fas fa-info-circle mr-1" style="color: var(--accent);"></i>
+              From x = 0, we read the y-intercept: <b style="color: var(--accent);">b = 2</b>
+            </p>
+            <p class="text-xs mt-3" style="color: var(--muted);">
+              <i class="fas fa-info-circle mr-1" style="color: var(--accent);"></i>
+              Slope: <span class="font-mono">m = Δy/Δx = (3−1)/(2−(−2)) = 2/4 = ½</span>
+            </p>
+          </div>
+
+          <!-- Step 3: Write equation -->
+          <div class="card">
+            <h4 class="font-display font-bold text-lg mb-3 flex items-center gap-2">
+              <span class="step-num" style="width:30px;height:30px;font-size:14px;">3</span>
+              Write the equation
+            </h4>
+            <p class="text-sm mb-3" style="color: var(--muted);">Substitute m and b into <span class="font-mono" style="color: var(--accent);">y = mx + b</span>:</p>
+            <div class="equation-display" style="font-size: 1.6rem;">
+              y = ½x + 2
+            </div>
+            <p class="text-xs mt-4" style="color: var(--muted);">
+              <i class="fas fa-check-circle mr-1" style="color: var(--accent-3);"></i>
+              Verify with point (2, 3): <span class="font-mono">½(2) + 2 = 1 + 2 = 3 ✓</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="reveal mt-8 card flex items-center justify-between flex-wrap gap-4">
+          <div>
+            <h4 class="font-display font-bold text-xl mb-1">Reverse the process on IXL</h4>
+            <p class="text-sm" style="color: var(--muted);">Look at graphs, build tables, and discover the hidden equation.</p>
+          </div>
+          <a href="https://uk.ixl.com/maths/year-8/write-an-equation-from-a-graph-using-a-table?_gl=1*19uysxa*_up*MQ..*_gs*MQ..&gclid=Cj0KCQjwp9vTBhCWARIsANaUrjtMj0o55LzwJrDXoyoKEdDQPollyXHFXPdpeKqJKJHA9XbtuVIb-usaAusmEALw_wcB&gbraid=0AAAAADrr3AoQDqJiOtk-zXs7UQ08n-hd6" target="_blank" class="btn-ixl">
+            <i class="fas fa-external-link-alt"></i> Open IXL Exercise
+          </a>
+        </div>
+      </div>
+      <div class="slide-num">08</div>
+    </section>
+
+    <!-- ====================== SLIDE 9: QUIZ ====================== -->
+    <section class="slide" data-slide="9">
+      <div class="grid-bg"></div>
+      <div class="relative h-full">
+        <div class="reveal">
+          <div class="slide-badge mb-4" style="background: rgba(248,113,113,0.1); color: var(--accent-2); border-color: rgba(248,113,113,0.3);">
+            <i class="fas fa-trophy"></i> Final Challenge
+          </div>
+          <h2 class="font-display font-black text-5xl mb-3">Today's Quiz — 10 Critical Questions</h2>
+          <p class="text-base max-w-3xl mb-6" style="color: var(--muted);">
+            Think carefully. Each question tests a different concept from today's lesson. Use the translate button if you need help understanding. Good luck!
+          </p>
+        </div>
+
+        <!-- Quiz stats -->
+        <div class="reveal quiz-stats">
+          <div class="stat-item">
+            <i class="fas fa-check-circle" style="color: var(--accent-3);"></i>
+            <span>Answered:</span>
+            <span class="stat-value" id="answeredCount">0</span>
+            <span style="color: var(--muted);">/ 10</span>
+          </div>
+          <div class="stat-item">
+            <i class="fas fa-star" style="color: var(--accent);"></i>
+            <span>Score:</span>
+            <span class="stat-value" id="scoreCount">0</span>
+            <span style="color: var(--muted);">/ 10</span>
+          </div>
+          <div class="stat-item" style="margin-left: auto;">
+            <i class="fas fa-percentage" style="color: var(--accent-4);"></i>
+            <span class="stat-value" id="percentCount">0%</span>
+          </div>
+        </div>
+
+        <div id="quizContainer" class="reveal"></div>
+      </div>
+      <div class="slide-num">09</div>
+    </section>
+
+    <!-- ====================== SLIDE 10: REFLECTION ====================== -->
+    <section class="slide" data-slide="10">
+      <div class="grid-bg"></div>
+      <div class="relative h-full">
+        <div class="reveal">
+          <div class="slide-badge mb-4" style="background: rgba(52,211,153,0.1); color: var(--accent-3); border-color: rgba(52,211,153,0.3);">
+            <i class="fas fa-hand-sparkles"></i> Reflection & Closing
+          </div>
+          <h2 class="hero-text font-display font-black text-6xl mb-3">
+            You Did It, <span class="gradient-text" id="studentNameDisplay">Mathematician</span>!
+          </h2>
+          <p class="text-base max-w-3xl mb-10" style="color: var(--muted);">
+            Take a moment to think back on everything we explored today. Reflection is how learning sticks.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-3 gap-6 reveal mb-8">
+          <div class="reflect-card">
+            <div class="w-12 h-12 rounded-full flex items-center justify-center mb-3" style="background: rgba(251,191,36,0.15); color: var(--accent);">
+              <i class="fas fa-lightbulb text-xl"></i>
+            </div>
+            <h4 class="font-display font-bold text-lg mb-2">What I Learned</h4>
+            <p class="text-sm" style="color: var(--muted);">Name two new things you discovered about graphs and equations today. Was there a moment that surprised you?</p>
+          </div>
+          <div class="reflect-card">
+            <div class="w-12 h-12 rounded-full flex items-center justify-center mb-3" style="background: rgba(248,113,113,0.15); color: var(--accent-2);">
+              <i class="fas fa-puzzle-piece text-xl"></i>
+            </div>
+            <h4 class="font-display font-bold text-lg mb-2">What Was Tricky</h4>
+            <p class="text-sm" style="color: var(--muted);">Which part was the hardest? Negative slopes? Reading word-problem graphs? Naming it helps you conquer it next time.</p>
+          </div>
+          <div class="reflect-card">
+            <div class="w-12 h-12 rounded-full flex items-center justify-center mb-3" style="background: rgba(52,211,153,0.15); color: var(--accent-3);">
+              <i class="fas fa-rocket text-xl"></i>
+            </div>
+            <h4 class="font-display font-bold text-lg mb-2">Where I'll Use This</h4>
+            <p class="text-sm" style="color: var(--muted);">Linear relationships are everywhere: phone bills, taxi fares, savings growth. Where will you spot one in real life this week?</p>
+          </div>
+        </div>
+
+        <div class="reveal card card-glow mb-6">
+          <h4 class="font-display font-bold text-xl mb-4 flex items-center gap-2">
+            <i class="fas fa-list-check" style="color: var(--accent);"></i> Key Takeaways from Today
+          </h4>
+          <div class="grid grid-cols-2 gap-3 text-sm">
+            <div class="flex gap-3"><i class="fas fa-check mt-1" style="color: var(--accent-3);"></i><span>A linear equation in two variables graphs as a <b>straight line</b>.</span></div>
+            <div class="flex gap-3"><i class="fas fa-check mt-1" style="color: var(--accent-3);"></i><span>Use a <b>table of values</b> to find points before plotting.</span></div>
+            <div class="flex gap-3"><i class="fas fa-check mt-1" style="color: var(--accent-3);"></i><span>The <b>y-intercept</b> is where the line crosses the y-axis (when x = 0).</span></div>
+            <div class="flex gap-3"><i class="fas fa-check mt-1" style="color: var(--accent-3);"></i><span>The <b>slope</b> tells you how steep the line is and its direction.</span></div>
+            <div class="flex gap-3"><i class="fas fa-check mt-1" style="color: var(--accent-3);"></i><span>Positive slope = uphill. Negative slope = downhill.</span></div>
+            <div class="flex gap-3"><i class="fas fa-check mt-1" style="color: var(--accent-3);"></i><span>Graphs can tell <b>real-world stories</b> — read them like sentences.</span></div>
+          </div>
+        </div>
+
+        <div class="reveal text-center">
+          <h3 class="font-display font-black text-4xl mb-3 gradient-text">Thank you for today!</h3>
+          <p class="text-base mb-6" style="color: var(--muted);">Every great mathematician started exactly where you are now — curious, and willing to try. Keep plotting those points.</p>
+          <button class="btn-primary" onclick="goToSlide(1)">
+            <i class="fas fa-redo"></i> Restart the Lesson
+          </button>
+        </div>
+      </div>
+      <div class="slide-num">10</div>
+    </section>
+
+  </div>
+
+  <!-- Navigation dots -->
+  <nav class="nav-dots">
+    <button class="nav-dot active" data-slide="1" data-label="Cover"></button>
+    <button class="nav-dot" data-slide="2" data-label="Warm-up"></button>
+    <button class="nav-dot" data-slide="3" data-label="Cartesian Plane"></button>
+    <button class="nav-dot" data-slide="4" data-label="Table & Graph"></button>
+    <button class="nav-dot" data-slide="5" data-label="Identify Graph"></button>
+    <button class="nav-dot" data-slide="6" data-label="Graph Equation"></button>
+    <button class="nav-dot" data-slide="7" data-label="Interpret Graph"></button>
+    <button class="nav-dot" data-slide="8" data-label="Equation from Graph"></button>
+    <button class="nav-dot" data-slide="9" data-label="Quiz"></button>
+    <button class="nav-dot" data-slide="10" data-label="Reflection"></button>
+  </nav>
+
+  <!-- Bottom navigation -->
+  <div class="bottom-nav">
+    <button class="nav-arrow" id="prevBtn" onclick="changeSlide(-1)"><i class="fas fa-chevron-left"></i></button>
+    <span class="font-mono text-sm" id="slideCounter">01 / 10</span>
+    <button class="nav-arrow" id="nextBtn" onclick="changeSlide(1)"><i class="fas fa-chevron-right"></i></button>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast">
+    <i class="fas fa-info-circle"></i>
+    <span id="toastMsg">Message</span>
+  </div>
+
+<script>
+/* ============ STATE ============ */
+let currentSlide = 1;
+const totalSlides = 10;
+let studentName = '';
+let quizAnswered = new Array(10).fill(false);
+let quizCorrect = new Array(10).fill(false);
+let quizLanguages = new Array(10).fill('en');
+
+/* ============ NAVIGATION ============ */
+function goToSlide(n) {
+  if (n < 1 || n > totalSlides) return;
+  const slides = document.querySelectorAll('.slide');
+  const dots = document.querySelectorAll('.nav-dot');
+  slides.forEach((s, i) => {
+    s.classList.remove('active', 'prev');
+    if (i + 1 === n) s.classList.add('active');
+    else if (i + 1 < n) s.classList.add('prev');
+  });
+  dots.forEach((d, i) => d.classList.toggle('active', i + 1 === n));
+  currentSlide = n;
+  document.getElementById('slideCounter').textContent = String(n).padStart(2, '0') + ' / ' + String(totalSlides).padStart(2, '0');
+  document.getElementById('progressBar').style.width = (n / totalSlides * 100) + '%';
+  document.getElementById('prevBtn').disabled = n === 1;
+  document.getElementById('nextBtn').disabled = n === totalSlides;
+  // Re-trigger reveal animations
+  const active = document.querySelector('.slide.active');
+  if (active) {
+    active.querySelectorAll('.reveal').forEach(el => {
+      el.style.animation = 'none';
+      void el.offsetWidth;
+      el.style.animation = '';
+    });
+  }
+  // Initialize quiz if entering slide 9
+  if (n === 9) initQuiz();
+  // Initialize canvas if entering slide 3
+  if (n === 3) initCartesian();
+  // Scroll to top of slide
+  if (active) active.scrollTop = 0;
+}
+
+function changeSlide(dir) {
+  goToSlide(currentSlide + dir);
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight') changeSlide(1);
+  if (e.key === 'ArrowLeft') changeSlide(-1);
+});
+
+// Nav dots
+document.querySelectorAll('.nav-dot').forEach(d => {
+  d.addEventListener('click', () => goToSlide(parseInt(d.dataset.slide)));
+});
+
+/* ============ COVER NAME ============ */
+function startJourney() {
+  const nameInput = document.getElementById('studentName');
+  const name = nameInput.value.trim();
+  if (!name) {
+    showToast('Please type your name first!', 'error');
+    nameInput.focus();
+    return;
+  }
+  studentName = name;
+  document.getElementById('studentNameDisplay').textContent = name;
+  showToast(`Welcome aboard, ${name}! Let's begin.`, 'success');
+  setTimeout(() => goToSlide(2), 800);
+}
+
+// Generate floating points on cover
+function initFloatingPoints() {
+  const container = document.getElementById('floatingPoints');
+  const colors = ['#fbbf24', '#f87171', '#34d399', '#38bdf8'];
+  for (let i = 0; i < 24; i++) {
+    const p = document.createElement('div');
+    p.className = 'floating-point';
+    p.style.left = Math.random() * 100 + '%';
+    p.style.top = Math.random() * 100 + '%';
+    p.style.background = colors[Math.floor(Math.random() * colors.length)];
+    p.style.boxShadow = `0 0 16px ${colors[Math.floor(Math.random() * colors.length)]}`;
+    p.style.animationDelay = Math.random() * 8 + 's';
+    p.style.animationDuration = (6 + Math.random() * 6) + 's';
+    p.style.opacity = (0.3 + Math.random() * 0.4);
+    container.appendChild(p);
+  }
+}
+initFloatingPoints();
+
+/* ============ TOAST ============ */
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  const m = document.getElementById('toastMsg');
+  m.textContent = msg;
+  t.className = 'toast show ' + type;
+  const icon = t.querySelector('i');
+  icon.className = type === 'success' ? 'fas fa-check-circle' : type === 'error' ? 'fas fa-exclamation-circle' : 'fas fa-info-circle';
+  setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+/* ============ WARMUP CHECKS ============ */
+function checkWarmup(num) {
+  if (num === 1) {
+    const ans = document.getElementById('warmup1Answer').value.replace(/\s/g, '').toLowerCase();
+    const fb = document.getElementById('warmup1Feedback');
+    if (ans === 'y=2x+8' || ans === 'y=8+2x' || ans === 'y=2x+8') {
+      fb.innerHTML = '<span style="color: var(--accent-3);"><i class="fas fa-check-circle"></i> Perfect! £8 fixed plus £2 per topping gives y = 2x + 8.</span>';
+      showToast('Correct! Great equation writing.', 'success');
+    } else if (ans === '') {
+      fb.innerHTML = '<span style="color: var(--accent-2);"><i class="fas fa-exclamation-circle"></i> Type your equation first.</span>';
+    } else {
+      fb.innerHTML = '<span style="color: var(--accent-2);"><i class="fas fa-times-circle"></i> Not quite. The base is £8 (constant) and each topping adds £2. Try y = 2x + 8.</span>';
+    }
+  } else if (num === 2) {
+    const inputs = document.querySelectorAll('[data-warmup2]');
+    const expected = { '-2': -7, '-1': -4, '0': -1, '1': 2, '2': 5 };
+    let correct = 0;
+    inputs.forEach(inp => {
+      const x = inp.dataset.warmup2;
+      const val = parseFloat(inp.value);
+      const parent = inp.parentElement;
+      parent.classList.remove('correct', 'incorrect');
+      if (isNaN(val)) {
+        parent.classList.add('incorrect');
+      } else if (val === expected[x]) {
+        parent.classList.add('correct');
+        correct++;
+      } else {
+        parent.classList.add('incorrect');
+      }
+    });
+    const fb = document.getElementById('warmup2Feedback');
+    if (correct === 5) {
+      fb.innerHTML = '<span style="color: var(--accent-3);"><i class="fas fa-check-circle"></i> All correct! You\'ve mastered completing tables.</span>';
+      showToast('Perfect score on the table!', 'success');
+    } else {
+      fb.innerHTML = `<span style="color: var(--accent-2);"><i class="fas fa-times-circle"></i> ${correct}/5 correct. Check the highlighted cells.</span>`;
+    }
+  }
+}
+
+function revealWarmup2() {
+  const expected = { '-2': -7, '-1': -4, '0': -1, '1': 2, '2': 5 };
+  document.querySelectorAll('[data-warmup2]').forEach(inp => {
+    inp.value = expected[inp.dataset.warmup2];
+    inp.parentElement.classList.add('correct');
+  });
+  showToast('Answers revealed. Study the pattern!', 'info');
+}
+
+/* ============ CARTESIAN CANVAS ============ */
+let cartesianInitialized = false;
+let customPoints = [];
+
+function initCartesian() {
+  if (cartesianInitialized) return;
+  cartesianInitialized = true;
+  const canvas = document.getElementById('cartesianCanvas');
+  const mSlider = document.getElementById('slopeM');
+  const bSlider = document.getElementById('yIntercept');
+  
+  function draw() {
+    drawCartesian(canvas, parseFloat(mSlider.value), parseFloat(bSlider.value));
+    document.getElementById('mValue').textContent = mSlider.value;
+    document.getElementById('bValue').textContent = bSlider.value;
+    const m = parseFloat(mSlider.value);
+    const b = parseFloat(bSlider.value);
+    const sign = b >= 0 ? '+' : '−';
+    document.getElementById('eqDisplay').textContent = `y = ${m}x ${sign} ${Math.abs(b)}`;
+    // Update live table
+    const tbl = document.getElementById('liveTable');
+    let html = '';
+    for (let x = -2; x <= 2; x++) {
+      const y = m * x + b;
+      html += `<div class="p-2 rounded" style="background: rgba(255,255,255,0.03);"><div style="color: var(--muted);">x=${x}</div><div style="color: var(--accent);">y=${y.toFixed(1)}</div></div>`;
+    }
+    tbl.innerHTML = html;
+  }
+  
+  mSlider.addEventListener('input', draw);
+  bSlider.addEventListener('input', draw);
+  
+  canvas.addEventListener('click', (e) => {
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const cx = (e.clientX - rect.left) * scaleX;
+    const cy = (e.clientY - rect.top) * scaleY;
+    const scale = 22;
+    const originX = canvas.width / 2;
+    const originY = canvas.height / 2;
+    const xVal = Math.round((cx - originX) / scale * 10) / 10;
+    const yVal = Math.round((originY - cy) / scale * 10) / 10;
+    customPoints.push({ x: xVal, y: yVal });
+    draw();
+  });
+  
+  draw();
+}
+
+function drawCartesian(canvas, m, b) {
+  const ctx = canvas.getContext('2d');
+  const w = canvas.width;
+  const h = canvas.height;
+  const scale = 22;
+  const cx = w / 2;
+  const cy = h / 2;
+  
+  // Background
+  ctx.fillStyle = '#0a0e14';
+  ctx.fillRect(0, 0, w, h);
+  
+  // Grid lines
+  ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+  ctx.lineWidth = 1;
+  for (let i = -12; i <= 12; i++) {
+    ctx.beginPath();
+    ctx.moveTo(cx + i * scale, 0);
+    ctx.lineTo(cx + i * scale, h);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(0, cy + i * scale);
+    ctx.lineTo(w, cy + i * scale);
+    ctx.stroke();
+  }
+  
+  // Axes
+  ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, cy);
+  ctx.lineTo(w, cy);
+  ctx.moveTo(cx, 0);
+  ctx.lineTo(cx, h);
+  ctx.stroke();
+  
+  // Axis labels
+  ctx.fillStyle = 'rgba(255,255,255,0.5)';
+  ctx.font = 'bold 13px JetBrains Mono';
+  ctx.fillText('x', w - 18, cy - 8);
+  ctx.fillText('y', cx + 10, 16);
+  
+  // Tick numbers
+  ctx.font = '10px JetBrains Mono';
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  for (let i = -10; i <= 10; i++) {
+    if (i === 0) continue;
+    if (cx + i * scale > 0 && cx + i * scale < w) {
+      ctx.fillText(i, cx + i * scale - 4, cy + 14);
+    }
+    if (cy - i * scale > 0 && cy - i * scale < h) {
+      ctx.fillText(i, cx + 6, cy - i * scale + 3);
+    }
+  }
+  
+  // Draw line y = mx + b
+  const x1 = -15, y1 = m * x1 + b;
+  const x2 = 15, y2 = m * x2 + b;
+  // Glow
+  ctx.strokeStyle = 'rgba(251,191,36,0.2)';
+  ctx.lineWidth = 8;
+  ctx.beginPath();
+  ctx.moveTo(cx + x1 * scale, cy - y1 * scale);
+  ctx.lineTo(cx + x2 * scale, cy - y2 * scale);
+  ctx.stroke();
+  // Main line
+  ctx.strokeStyle = '#fbbf24';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(cx + x1 * scale, cy - y1 * scale);
+  ctx.lineTo(cx + x2 * scale, cy - y2 * scale);
+  ctx.stroke();
+  
+  // Plot key points for x = -2 to 2
+  ctx.fillStyle = '#f87171';
+  ctx.strokeStyle = '#fff';
+  ctx.lineWidth = 2;
+  for (let x = -2; x <= 2; x++) {
+    const y = m * x + b;
+    const px = cx + x * scale;
+    const py = cy - y * scale;
+    if (py > 0 && py < h) {
+      ctx.beginPath();
+      ctx.arc(px, py, 6, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      // Label
+      ctx.fillStyle = 'rgba(255,255,255,0.9)';
+      ctx.font = 'bold 11px JetBrains Mono';
+      ctx.fillText(`(${x}, ${y.toFixed(1)})`, px + 10, py - 8);
+      ctx.fillStyle = '#f87171';
+    }
+  }
+  
+  // Y-intercept highlight
+  const yInterceptY = cy - b * scale;
+  if (yInterceptY > 0 && yInterceptY < h) {
+    ctx.fillStyle = '#34d399';
+    ctx.beginPath();
+    ctx.arc(cx, yInterceptY, 8, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+  
+  // Custom points
+  customPoints.forEach(p => {
+    const px = cx + p.x * scale;
+    const py = cy - p.y * scale;
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath();
+    ctx.arc(px, py, 5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = '#fff';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(56,189,248,1)';
+    ctx.font = 'bold 11px JetBrains Mono';
+    ctx.fillText(`(${p.x}, ${p.y})`, px + 8, py - 6);
+  });
+}
+
+function checkPractice3() {
+  const ans = parseFloat(document.getElementById('practice3Answer').value);
+  const fb = document.getElementById('practice3Feedback');
+  if (isNaN(ans)) {
+    fb.innerHTML = '<span style="color: var(--accent-2);"><i class="fas fa-exclamation-circle"></i> Enter a number.</span>';
+  } else if (ans === 5) {
+    fb.innerHTML = '<span style="color: var(--accent-3);"><i class="fas fa-check-circle"></i> Correct! y = 2(4) − 3 = 5.</span>';
+    showToast('Nice work!', 'success');
+  } else {
+    fb.innerHTML = `<span style="color: var(--accent-2);"><i class="fas fa-times-circle"></i> Not quite. Substitute x = 4: y = 2(4) − 3 = 8 − 3 = 5.</span>`;
+  }
+}
+
+/* ============ IDENTIFY GRAPH (slide 5) ============ */
+function identifyGraph(el, isCorrect) {
+  // Reset all
+  document.querySelectorAll('#slide-5 .mini-graph, [onclick*="identifyGraph"]').forEach(g => {
+    g.style.borderColor = '';
+  });
+  const fb = document.getElementById('identifyFeedback');
+  if (isCorrect) {
+    el.style.borderColor = 'var(--accent-3)';
+    fb.innerHTML = '<span style="color: var(--accent-3);"><i class="fas fa-check-circle"></i> Excellent! Graph B has a positive slope and crosses the y-axis at +1 — exactly matching y = 2x + 1.</span>';
+    showToast('Correct identification!', 'success');
+  } else {
+    el.style.borderColor = 'var(--accent-2)';
+    fb.innerHTML = '<span style="color: var(--accent-2);"><i class="fas fa-times-circle"></i> Look again. The y-intercept must be +1 (above origin) and slope must be positive (going up to the right).</span>';
+  }
+}
+
+/* ============ QUIZ ============ */
+const quizQuestions = [
+  {
+    en: { q: "What does the equation y = 2x + 3 represent on a coordinate plane?", options: ["A curve", "A straight line", "A single point", "A circle"] },
+    id: { q: "Apa yang direpresentasikan oleh persamaan y = 2x + 3 pada bidang koordinat?", options: ["Sebuah kurva", "Sebuah garis lurus", "Satu titik", "Sebuah lingkaran"] },
+    correct: 1,
+    explanation: "Persamaan y = 2x + 3 adalah persamaan linear karena pangkat tertinggi variabelnya adalah 1. Pada bidang koordinat kartesius, persamaan linear selalu membentuk garis lurus. Bentuk umumnya y = mx + c, di mana m adalah gradien dan c adalah perpotongan dengan sumbu y."
+  },
+  {
+    en: { q: "If y = −x + 4, what is the value of y when x = −2?", options: ["2", "4", "6", "−2"] },
+    id: { q: "Jika y = −x + 4, berapakah nilai y ketika x = −2?", options: ["2", "4", "6", "−2"] },
+    correct: 2,
+    explanation: "Substitusi x = −2 ke dalam persamaan: y = −(−2) + 4 = 2 + 4 = 6. Ingat bahwa negatif dikali negatif menghasilkan positif."
+  },
+  {
+    en: { q: "Which equation has a graph that passes through the origin (0, 0)?", options: ["y = 3x + 1", "y = 2x", "y = x − 5", "y = −x + 2"] },
+    id: { q: "Persamaan manakah yang grafiknya melalui titik origin (0, 0)?", options: ["y = 3x + 1", "y = 2x", "y = x − 5", "y = −x + 2"] },
+    correct: 1,
+    explanation: "Titik origin (0,0) berarti ketika x = 0, y harus sama dengan 0. Hanya persamaan y = 2x yang memenuhi: y = 2(0) = 0. Persamaan lain memiliki konstanta tambahan (intercept) yang membuat y ≠ 0 saat x = 0."
+  },
+  {
+    en: { q: "The graph of y = 5 is a:", options: ["Diagonal line going up", "Vertical line", "Horizontal line", "Curve"] },
+    id: { q: "Grafik dari y = 5 adalah:", options: ["Garis diagonal naik", "Garis vertikal", "Garis horizontal", "Kurva"] },
+    correct: 2,
+    explanation: "Persamaan y = 5 berarti nilai y selalu 5 tidak peduli berapapun nilai x. Grafiknya berupa garis horizontal yang sejajar dengan sumbu x, berada pada ketinggian y = 5."
+  },
+  {
+    en: { q: "Two points on a line are (1, 2) and (3, 6). What is the equation of the line?", options: ["y = 2x", "y = 3x", "y = 2x + 1", "y = x + 1"] },
+    id: { q: "Dua titik pada sebuah garis adalah (1, 2) dan (3, 6). Berapakah persamaan garisnya?", options: ["y = 2x", "y = 3x", "y = 2x + 1", "y = x + 1"] },
+    correct: 0,
+    explanation: "Gradien m = (6 − 2) / (3 − 1) = 4 / 2 = 2. Substitusi titik (1, 2): 2 = 2(1) + c → c = 0. Jadi persamaannya y = 2x. Verifikasi dengan titik (3, 6): y = 2(3) = 6 ✓"
+  },
+  {
+    en: { q: "If the equation is y = −2x + 5, as x increases, what happens to y?", options: ["Increases", "Decreases", "Stays the same", "Becomes zero"] },
+    id: { q: "Jika persamaannya y = −2x + 5, saat x bertambah, apa yang terjadi pada y?", options: ["Bertambah", "Berkurang", "Tetap sama", "Menjadi nol"] },
+    correct: 1,
+    explanation: "Karena gradien m = −2 bernilai negatif, maka ketika x bertambah, y akan berkurang. Garis akan miring ke bawah dari kiri ke kanan. Ini adalah ciri khas persamaan dengan gradien negatif."
+  },
+  {
+    en: { q: "Which equation matches a line passing through (0, −3) and (2, 1)?", options: ["y = 2x − 3", "y = −2x − 3", "y = 2x + 3", "y = x − 3"] },
+    id: { q: "Persamaan manakah yang sesuai dengan garis melalui (0, −3) dan (2, 1)?", options: ["y = 2x − 3", "y = −2x − 3", "y = 2x + 3", "y = x − 3"] },
+    correct: 0,
+    explanation: "Dari titik (0, −3), kita tahu perpotongan sumbu y adalah c = −3. Gradien m = (1 − (−3)) / (2 − 0) = 4 / 2 = 2. Maka persamaannya y = 2x − 3. Verifikasi: y = 2(2) − 3 = 1 ✓"
+  },
+  {
+    en: { q: "The point (4, 0) lies on which equation's graph?", options: ["y = x + 4", "y = x − 4", "y = 4x", "y = −4x"] },
+    id: { q: "Titik (4, 0) terletak pada grafik persamaan mana?", options: ["y = x + 4", "y = x − 4", "y = 4x", "y = −4x"] },
+    correct: 1,
+    explanation: "Substitusi titik (4, 0) ke setiap persamaan: y = x − 4 → 0 = 4 − 4 = 0 ✓. Persamaan lain tidak menghasilkan 0 ketika x = 4. Titik (4, 0) juga merupakan perpotongan garis dengan sumbu x."
+  },
+  {
+    en: { q: "A taxi charges £3 fixed fee plus £2 per kilometer. Which equation represents the total cost y for x kilometers?", options: ["y = 2x", "y = 3x + 2", "y = 2x + 3", "y = 5x"] },
+    id: { q: "Sebuah taksi mengenakan biaya tetap £3 ditambah £2 per kilometer. Persamaan manakah yang mewakili total biaya y untuk x kilometer?", options: ["y = 2x", "y = 3x + 2", "y = 2x + 3", "y = 5x"] },
+    correct: 2,
+    explanation: "Biaya tetap £3 adalah konstanta (perpotongan sumbu y, c = 3). Biaya per kilometer £2 adalah gradien (m = 2, karena setiap kenaikan 1 km menambah £2). Maka persamaannya y = 2x + 3. Saat x = 0 (belum bergerak), y = 3 (hanya bayar biaya tetap)."
+  },
+  {
+    en: { q: "The graph of x = 3 is a:", options: ["Horizontal line", "Vertical line", "Diagonal line", "Parabola"] },
+    id: { q: "Grafik dari x = 3 adalah:", options: ["Garis horizontal", "Garis vertikal", "Garis diagonal", "Parabola"] },
+    correct: 1,
+    explanation: "Persamaan x = 3 berarti nilai x selalu 3 tidak peduli berapapun nilai y. Grafiknya berupa garis vertikal yang sejajar dengan sumbu y, berada pada posisi x = 3. Ini berbeda dengan y = 3 yang berupa garis horizontal."
+  }
+];
+
+function initQuiz() {
+  if (document.getElementById('quizContainer').children.length > 0) return;
+  const container = document.getElementById('quizContainer');
+  quizQuestions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `qcard-${i}`;
+    card.innerHTML = `
+      <div class="flex items-start justify-between mb-3 gap-3 flex-wrap">
+        <div class="flex items-center gap-3">
+          <span class="w-9 h-9 rounded-full flex items-center justify-center font-display font-bold text-sm" style="background: linear-gradient(135deg, var(--accent), var(--accent-2)); color: #1a1a1a;">${i + 1}</span>
+          <h4 class="font-semibold text-base" id="qtext-${i}" data-lang="en">${q.en.q}</h4>
+        </div>
+        <button class="btn-secondary text-xs" style="padding: 6px 14px;" onclick="toggleLang(${i})" id="langbtn-${i}">
+          <i class="fas fa-language"></i> Translate to Indonesian
+        </button>
+      </div>
+      <div class="space-y-2 mb-3" id="qopts-${i}" data-lang="en"></div>
+      <div class="flex gap-2 flex-wrap">
+        <button class="btn-secondary text-xs" style="padding: 7px 16px;" onclick="checkAnswer(${i})" id="checkbtn-${i}">
+          <i class="fas fa-check"></i> Check Answer
+        </button>
+        <button class="btn-secondary text-xs" style="padding: 7px 16px;" onclick="toggleExplanation(${i})" id="expbtn-${i}">
+          <i class="fas fa-book-open"></i> Show Explanation
+        </button>
+      </div>
+      <div class="explanation-box" id="exp-${i}">
+        <b style="color: var(--accent-3);"><i class="fas fa-graduation-cap mr-1"></i>Pembahasan:</b><br>
+        ${q.explanation}
+      </div>
+    `;
+    container.appendChild(card);
+    renderOptions(i, 'en');
+  });
+}
+
+function renderOptions(qIdx, lang) {
+  const optsContainer = document.getElementById(`qopts-${qIdx}`);
+  const q = quizQuestions[qIdx];
+  const data = lang === 'en' ? q.en : q.id;
+  optsContainer.innerHTML = '';
+  optsContainer.dataset.lang = lang;
+  data.options.forEach((opt, oi) => {
+    const btn = document.createElement('button');
+    btn.className = 'quiz-option';
+    btn.dataset.qi = qIdx;
+    btn.dataset.oi = oi;
+    btn.innerHTML = `<span class="option-letter">${String.fromCharCode(65 + oi)}</span><span>${opt}</span>`;
+    btn.onclick = () => selectOption(qIdx, oi);
+    optsContainer.appendChild(btn);
+  });
+  // Restore selected state if any
+  if (quizAnswered[qIdx]) {
+    const selected = optsContainer.querySelectorAll('.quiz-option');
+    selected.forEach((s, si) => {
+      if (si === quizQuestions[qIdx].correct) s.classList.add('correct');
+      else if (s.classList.contains('selected-was')) s.classList.add('incorrect');
+    });
+  }
+}
+
+let selectedOptions = new Array(10).fill(null);
+
+function selectOption(qIdx, optIdx) {
+  if (quizAnswered[qIdx]) return; // Lock after checking
+  const optsContainer = document.getElementById(`qopts-${qIdx}`);
+  optsContainer.querySelectorAll('.quiz-option').forEach((btn, i) => {
+    btn.classList.toggle('selected', i === optIdx);
+  });
+  selectedOptions[qIdx] = optIdx;
+}
+
+function checkAnswer(qIdx) {
+  const q = quizQuestions[qIdx];
+  if (selectedOptions[qIdx] === null) {
+    showToast('Select an answer first!', 'error');
+    return;
+  }
+  if (quizAnswered[qIdx]) return;
+  quizAnswered[qIdx] = true;
+  const isCorrect = selectedOptions[qIdx] === q.correct;
+  quizCorrect[qIdx] = isCorrect;
+  
+  const optsContainer = document.getElementById(`qopts-${qIdx}`);
+  optsContainer.querySelectorAll('.quiz-option').forEach((btn, i) => {
+    btn.classList.remove('selected');
+    if (i === q.correct) btn.classList.add('correct');
+    else if (i === selectedOptions[qIdx] && !isCorrect) btn.classList.add('incorrect');
+  });
+  
+  const card = document.getElementById(`qcard-${qIdx}`);
+  card.classList.add('answered', isCorrect ? 'correct' : 'incorrect');
+  
+  // Disable check button
+  document.getElementById(`checkbtn-${qIdx}`).style.opacity = '0.5';
+  document.getElementById(`checkbtn-${qIdx}`).style.pointerEvents = 'none';
+  
+  // Update stats
+  const answered = quizAnswered.filter(Boolean).length;
+  const score = quizCorrect.filter(Boolean).length;
+  document.getElementById('answeredCount').textContent = answered;
+  document.getElementById('scoreCount').textContent = score;
+  document.getElementById('percentCount').textContent = Math.round(score / 10 * 100) + '%';
+  
+  if (isCorrect) {
+    showToast(`Correct! (+1 point)`, 'success');
+  } else {
+    showToast(`Not quite — see the explanation below.`, 'error');
+    // Auto-show explanation
+    setTimeout(() => toggleExplanation(qIdx), 400);
+  }
+  
+  // If all answered, celebrate
+  if (answered === 10) {
+    setTimeout(() => {
+      if (score === 10) {
+        showToast('Perfect score! You\'re a graphing master!', 'success');
+        celebrate();
+      } else if (score >= 7) {
+        showToast(`Great job! ${score}/10 — well done!`, 'success');
+        celebrate();
+      } else {
+        showToast(`Quiz complete: ${score}/10. Review the explanations and try again!`, 'info');
+      }
+    }, 600);
+  }
+}
+
+function toggleExplanation(qIdx) {
+  const exp = document.getElementById(`exp-${qIdx}`);
+  const btn = document.getElementById(`expbtn-${qIdx}`);
+  if (exp.classList.contains('show')) {
+    exp.classList.remove('show');
+    btn.innerHTML = '<i class="fas fa-book-open"></i> Show Explanation';
+  } else {
+    exp.classList.add('show');
+    btn.innerHTML = '<i class="fas fa-book-open"></i> Hide Explanation';
+  }
+}
+
+function toggleLang(qIdx) {
+  const current = quizLanguages[qIdx];
+  const newLang = current === 'en' ? 'id' : 'en';
+  quizLanguages[qIdx] = newLang;
+  const q = quizQuestions[qIdx];
+  const data = newLang === 'en' ? q.en : q.id;
+  document.getElementById(`qtext-${qIdx}`).textContent = data.q;
+  renderOptions(qIdx, newLang);
+  // Restore selected option visual if answered
+  if (quizAnswered[qIdx]) {
+    const optsContainer = document.getElementById(`qopts-${qIdx}`);
+    optsContainer.querySelectorAll('.quiz-option').forEach((btn, i) => {
+      if (i === q.correct) btn.classList.add('correct');
+      else if (i === selectedOptions[qIdx] && i !== q.correct) btn.classList.add('incorrect');
+    });
+  } else if (selectedOptions[qIdx] !== null) {
+    const optsContainer = document.getElementById(`qopts-${qIdx}`);
+    optsContainer.querySelectorAll('.quiz-option').forEach((btn, i) => {
+      if (i === selectedOptions[qIdx]) btn.classList.add('selected');
+    });
+  }
+  const btn = document.getElementById(`langbtn-${qIdx}`);
+  btn.innerHTML = newLang === 'en' 
+    ? '<i class="fas fa-language"></i> Translate to Indonesian'
+    : '<i class="fas fa-language"></i> Translate to English';
+}
+
+function celebrate() {
+  const colors = ['#fbbf24', '#f87171', '#34d399', '#38bdf8'];
+  for (let i = 0; i < 60; i++) {
+    setTimeout(() => {
+      const c = document.createElement('div');
+      c.className = 'confetti';
+      c.style.left = Math.random() * 100 + 'vw';
+      c.style.top = '-20px';
+      c.style.background = colors[Math.floor(Math.random() * colors.length)];
+      c.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+      c.style.transform = `rotate(${Math.random() * 360}deg)`;
+      document.body.appendChild(c);
+      const duration = 2000 + Math.random() * 2000;
+      c.animate([
+        { transform: `translate(0, 0) rotate(0deg)`, opacity: 1 },
+        { transform: `translate(${(Math.random() - 0.5) * 200}px, ${window.innerHeight + 50}px) rotate(${Math.random() * 720}deg)`, opacity: 0 }
+      ], { duration, easing: 'cubic-bezier(0.4, 0, 0.6, 1)' });
+      setTimeout(() => c.remove(), duration);
+    }, i * 30);
+  }
+}
+
+/* ============ INIT ============ */
+goToSlide(1);
+</script>
+</body>
+</html>

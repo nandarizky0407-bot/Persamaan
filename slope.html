@@ -1,0 +1,2122 @@
+<!DOCTYPE html>
+<html lang="en" class="lang-en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Linear Equations — Grade 8 Cambridge</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --bg:#FFF8EC;--bg-alt:#FFE8D6;--primary:#E76F51;--secondary:#2A9D8F;
+  --accent:#F4A261;--highlight:#E9C46A;--dark:#264653;--muted:#6B7280;
+  --card:#FFFFFF;--border:#F4DDB5;--correct:#10B981;--wrong:#EF4444;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:'Plus Jakarta Sans',sans-serif;
+  background:
+    radial-gradient(circle at 8% 12%,rgba(231,111,81,.10) 0%,transparent 38%),
+    radial-gradient(circle at 92% 88%,rgba(42,157,143,.10) 0%,transparent 38%),
+    radial-gradient(circle at 50% 50%,rgba(244,162,97,.06) 0%,transparent 60%),
+    linear-gradient(135deg,#FFF8EC 0%,#FFEED9 100%);
+  color:var(--dark);min-height:100vh;overflow-x:hidden}
+h1,h2,h3,h4,.display{font-family:'Bricolage Grotesque',sans-serif;font-weight:700;letter-spacing:-.02em}
+.slides-wrapper{min-height:100vh;padding:84px 24px 110px;display:flex;flex-direction:column;align-items:center}
+.slide{display:none;width:100%;max-width:1200px;animation:slideIn .5s ease}
+.slide.active{display:block}
+@keyframes slideIn{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.top-bar{position:fixed;top:0;left:0;right:0;background:rgba(255,248,236,.85);backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);z-index:50;padding:12px 24px;display:flex;align-items:center;justify-content:space-between}
+.brand{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px;display:flex;align-items:center;gap:10px}
+.brand .logo-icon{width:34px;height:34px;background:linear-gradient(135deg,var(--primary),var(--accent));
+  border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-size:15px;
+  box-shadow:0 4px 12px rgba(231,111,81,.35)}
+.bottom-bar{position:fixed;bottom:0;left:0;right:0;background:rgba(255,248,236,.92);backdrop-filter:blur(14px);
+  border-top:1px solid var(--border);z-index:50;padding:12px 24px;display:flex;align-items:center;justify-content:center;gap:16px;flex-wrap:wrap}
+.nav-btn{background:var(--dark);color:white;border:none;padding:10px 20px;border-radius:10px;
+  font-family:inherit;font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px}
+.nav-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 20px rgba(38,70,83,.25)}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed}
+.progress-dots{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:center;max-width:60vw}
+.progress-dot{height:8px;width:8px;border-radius:50%;background:var(--border);cursor:pointer;transition:all .25s}
+.progress-dot.active{background:var(--primary);width:28px;border-radius:4px}
+.progress-dot:hover{background:var(--accent)}
+.lang-toggle{background:white;border:2px solid var(--border);border-radius:999px;padding:6px 14px;
+  font-family:inherit;font-weight:600;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s}
+.lang-toggle:hover{border-color:var(--primary);transform:translateY(-1px)}
+.card{background:var(--card);border-radius:20px;padding:28px;box-shadow:0 6px 28px rgba(38,70,83,.07);border:1px solid var(--border)}
+.btn{background:var(--primary);color:white;border:none;padding:10px 20px;border-radius:10px;font-family:inherit;
+  font-weight:600;font-size:14px;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:6px}
+.btn:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(231,111,81,.3)}
+.btn-secondary{background:var(--secondary)}
+.btn-secondary:hover{box-shadow:0 6px 16px rgba(42,157,143,.3)}
+.btn-ghost{background:transparent;color:var(--dark);border:2px solid var(--border)}
+.btn-ghost:hover{background:var(--bg-alt);transform:translateY(-1px)}
+.btn-sm{padding:7px 14px;font-size:13px}
+.question-card{background:var(--card);border-radius:14px;padding:18px;margin-bottom:14px;border:2px solid var(--border);transition:all .3s}
+.question-card.correct{border-color:var(--correct);background:rgba(16,185,129,.05)}
+.question-card.wrong{border-color:var(--wrong);background:rgba(239,68,68,.05)}
+.question-text{font-weight:600;margin-bottom:12px;color:var(--dark);font-size:15px;line-height:1.5}
+.q-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+  background:var(--primary);color:white;border-radius:50%;font-size:13px;font-weight:700;margin-right:8px}
+.option{display:block;padding:10px 14px;margin-bottom:8px;border:2px solid var(--border);border-radius:10px;
+  cursor:pointer;transition:all .15s;background:var(--bg);font-size:14px}
+.option:hover{border-color:var(--accent);background:var(--bg-alt)}
+.option.selected{border-color:var(--primary);background:rgba(231,111,81,.1)}
+.option.correct-answer{border-color:var(--correct);background:rgba(16,185,129,.15);font-weight:600}
+.option.wrong-answer{border-color:var(--wrong);background:rgba(239,68,68,.15)}
+.feedback{margin-top:10px;padding:10px 14px;border-radius:8px;font-size:13px;display:none;font-weight:500}
+.feedback.show{display:block;animation:slideIn .3s}
+.feedback.correct{background:rgba(16,185,129,.15);color:#047857}
+.feedback.wrong{background:rgba(239,68,68,.15);color:#B91C1C}
+.explanation{margin-top:10px;padding:12px 16px;background:var(--bg-alt);border-left:4px solid var(--secondary);
+  border-radius:8px;font-size:13px;display:none;line-height:1.6}
+.explanation.show{display:block;animation:slideIn .3s}
+.tabs{display:flex;gap:4px;background:var(--bg-alt);padding:6px;border-radius:14px;margin-bottom:24px;flex-wrap:wrap}
+.tab{padding:10px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;color:var(--muted);
+  transition:all .2s;flex:1;text-align:center;min-width:120px}
+.tab.active{background:white;color:var(--primary);box-shadow:0 2px 8px rgba(38,70,83,.1)}
+.tab-content{display:none;animation:slideIn .4s}
+.tab-content.active{display:block}
+.math{font-family:'JetBrains Mono',monospace;background:var(--bg-alt);padding:2px 8px;border-radius:6px;font-size:.95em;font-weight:500}
+.math-block{font-family:'JetBrains Mono',monospace;background:var(--dark);color:white;padding:16px 20px;
+  border-radius:12px;font-size:17px;margin:14px 0;text-align:center;font-weight:500;letter-spacing:.5px}
+.math-block .accent{color:var(--highlight)}
+.cover-hero{text-align:center;padding:30px 20px;position:relative}
+.cover-title{font-size:clamp(48px,8vw,86px);line-height:.95;font-weight:800;
+  background:linear-gradient(135deg,var(--primary) 0%,var(--accent) 50%,var(--secondary) 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;margin:18px 0}
+.deco-shape{position:absolute;border-radius:50%;filter:blur(50px);opacity:.5;pointer-events:none;z-index:-1}
+.canvas-container{background:white;border-radius:16px;padding:14px;border:2px solid var(--border);position:relative}
+canvas{display:block;max-width:100%;touch-action:none}
+.input-field{width:100%;padding:14px 18px;border:2px solid var(--border);border-radius:12px;
+  font-family:inherit;font-size:16px;background:white;transition:all .2s}
+.input-field:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 4px rgba(231,111,81,.15)}
+.eq-card{background:white;border:2px solid var(--border);border-radius:12px;padding:14px;text-align:center;
+  cursor:pointer;transition:all .2s;font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500}
+.eq-card:hover{transform:translateY(-3px);border-color:var(--accent);box-shadow:0 6px 16px rgba(244,162,97,.2)}
+.eq-card.selected-linear{border-color:var(--correct);background:rgba(16,185,129,.08)}
+.eq-card.selected-nonlinear{border-color:var(--wrong);background:rgba(239,68,68,.08)}
+.eq-card.reveal-linear{border-color:var(--correct);background:rgba(16,185,129,.15)}
+.eq-card.reveal-nonlinear{border-color:var(--wrong);background:rgba(239,68,68,.15)}
+.slope-display{background:var(--dark);color:white;padding:12px 20px;border-radius:12px;
+  font-family:'JetBrains Mono',monospace;font-size:18px;text-align:center;margin-top:12px;font-weight:500}
+.slope-display .pos{color:#6EE7B7}
+.slope-display .neg{color:#FCA5A5}
+.slider-row{display:flex;align-items:center;gap:14px;margin:10px 0;flex-wrap:wrap}
+.slider-row label{font-weight:700;min-width:60px;font-family:'JetBrains Mono',monospace;color:var(--primary)}
+input[type="range"]{flex:1;min-width:140px;accent-color:var(--primary);height:6px}
+.slider-val{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--dark);min-width:40px;text-align:right}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.floating{animation:float 4s ease-in-out infinite}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:var(--dark);color:white;padding:12px 24px;border-radius:12px;opacity:0;transition:all .3s;z-index:100;pointer-events:none;font-weight:500}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+html.lang-en [data-lang="id"]{display:none!important}
+html.lang-id [data-lang="en"]{display:none!important}
+.grid-bg{position:absolute;inset:0;background-image:
+  linear-gradient(rgba(231,111,81,.08) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(231,111,81,.08) 1px,transparent 1px);
+  background-size:42px 42px;
+  -webkit-mask-image:radial-gradient(circle at center,black 30%,transparent 75%);
+  mask-image:radial-gradient(circle at center,black 30%,transparent 75%);
+  pointer-events:none;z-index:-1}
+.stat-pill{display:inline-flex;align-items:center;gap:8px;background:white;border:2px solid var(--border);
+  padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;color:var(--muted)}
+.stat-pill i{color:var(--primary)}
+.obj-card{background:white;border-radius:16px;padding:22px;border-left:6px solid var(--primary);
+  box-shadow:0 4px 16px rgba(38,70,83,.06);transition:all .3s;display:flex;gap:14px;align-items:flex-start}
+.obj-card:hover{transform:translateX(8px);box-shadow:0 8px 24px rgba(231,111,81,.15)}
+.obj-card:nth-child(2){border-left-color:var(--secondary)}
+.obj-card:nth-child(3){border-left-color:var(--accent)}
+.obj-card:nth-child(4){border-left-color:var(--highlight)}
+.obj-card:nth-child(5){border-left-color:var(--primary)}
+.obj-icon{width:42px;height:42px;border-radius:10px;background:var(--bg-alt);display:flex;align-items:center;justify-content:center;color:var(--primary);flex-shrink:0;font-size:18px}
+.obj-card:nth-child(2) .obj-icon{color:var(--secondary)}
+.obj-card:nth-child(3) .obj-icon{color:var(--accent)}
+.obj-card:nth-child(4) .obj-icon{color:#D4A017}
+.obj-card:nth-child(5) .obj-icon{color:var(--primary)}
+.score-display{background:linear-gradient(135deg,var(--primary),var(--accent));color:white;padding:22px;border-radius:16px;text-align:center;margin-bottom:22px}
+.reflect-card{background:white;border-radius:16px;padding:22px;border:2px solid var(--border);margin-bottom:14px}
+.reflect-card textarea{width:100%;min-height:70px;padding:12px;border:1px solid var(--border);border-radius:8px;font-family:inherit;resize:vertical;margin-top:8px;font-size:14px}
+.reflect-card textarea:focus{outline:none;border-color:var(--primary)}
+.tag{display:inline-block;padding:4px 12px;background:var(--bg-alt);border-radius:999px;
+  font-size:11px;font-weight:700;color:var(--primary);letter-spacing:.5px;text-transform:uppercase}
+.step-box{display:flex;gap:14px;align-items:flex-start;padding:14px;background:var(--bg);
+  border-radius:12px;margin-bottom:10px;border-left:4px solid var(--accent)}
+.step-num{width:30px;height:30px;background:var(--primary);color:white;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;font-weight:700;flex-shrink:0;font-size:13px}
+.step-box.final{border-left-color:var(--correct);background:rgba(16,185,129,.08)}
+.step-box.final .step-num{background:var(--correct)}
+.example-box{background:linear-gradient(135deg,rgba(42,157,143,.08),rgba(244,162,97,.08));
+  border:2px solid var(--secondary);border-radius:14px;padding:20px;margin:16px 0}
+.example-box .label{font-size:11px;font-weight:700;color:var(--secondary);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px}
+.info-pill{display:inline-flex;align-items:center;gap:6px;padding:6px 12px;background:var(--bg-alt);
+  border-radius:999px;font-size:13px;font-weight:600;color:var(--dark)}
+.info-pill.positive{background:rgba(16,185,129,.15);color:#047857}
+.info-pill.negative{background:rgba(239,68,68,.15);color:#B91C1C}
+.info-pill.zero{background:rgba(244,162,97,.2);color:#92400E}
+.eq-display{font-family:'JetBrains Mono',monospace;background:white;border:2px dashed var(--accent);
+  padding:10px 14px;border-radius:10px;display:inline-block;font-size:15px;font-weight:600;color:var(--dark)}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin:16px 0}
+.summary-item{background:white;border-radius:12px;padding:16px;border-top:4px solid var(--primary);text-align:center}
+.summary-item:nth-child(2){border-top-color:var(--secondary)}
+.summary-item:nth-child(3){border-top-color:var(--accent)}
+.summary-item:nth-child(4){border-top-color:var(--highlight)}
+.summary-item:nth-child(5){border-top-color:var(--primary)}
+.summary-item h4{margin:0 0 6px;font-size:15px}
+.summary-item p{margin:0;font-size:12px;color:var(--muted);line-height:1.5}
+.summary-item .formula{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--primary);font-size:14px;margin-top:6px;display:block}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+@media (max-width:880px){.two-col{grid-template-columns:1fr}}
+@media (max-width:768px){.slides-wrapper{padding:70px 12px 90px}.card{padding:18px}.tabs{flex-direction:row;overflow-x:auto}.tab{min-width:100px;font-size:12px}}
+.particle{position:absolute;border-radius:50%;pointer-events:none;opacity:.6}
+.scroll-hint{font-size:12px;color:var(--muted);text-align:center;margin-top:8px;font-style:italic}
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:20px 0}
+.quiz-intro{background:linear-gradient(135deg,rgba(231,111,81,.1),rgba(244,162,97,.1));
+  border-radius:16px;padding:20px;margin-bottom:20px;text-align:center;border:2px dashed var(--primary)}
+.final-answer-box{background:linear-gradient(135deg,rgba(16,185,129,.12),rgba(42,157,143,.08));
+  border:2px solid var(--correct);border-radius:12px;padding:14px 18px;margin-top:10px;text-align:center}
+.final-answer-box .label{font-size:11px;font-weight:700;color:var(--correct);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px}
+.final-answer-box .eq{font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--dark)}
+</style>
+</head>
+<body class="lang-en">
+
+<header class="top-bar">
+  <div class="brand">
+    <div class="logo-icon"><i class="fa-solid fa-square-root-variable"></i></div>
+    <div>
+      <div>Linear Equations</div>
+      <div style="font-size:11px;font-weight:500;color:var(--muted);font-family:'Plus Jakarta Sans',sans-serif">
+        <span data-lang="en">Grade 8 · Cambridge</span><span data-lang="id">Kelas 8 · Cambridge</span>
+      </div>
+    </div>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center">
+    <span class="stat-pill" id="studentBadge" style="display:none"><i class="fa-solid fa-user-graduate"></i><span id="studentNameBadge"></span></span>
+    <button class="lang-toggle" id="langToggle">
+      <i class="fa-solid fa-language"></i>
+      <span data-lang="en">Bahasa Indonesia</span><span data-lang="id">English</span>
+    </button>
+  </div>
+</header>
+
+<main class="slides-wrapper">
+
+<!-- ============ SLIDE 1: COVER ============ -->
+<section class="slide active" data-slide="1">
+  <div class="cover-hero">
+    <div class="grid-bg"></div>
+    <div class="deco-shape" style="width:280px;height:280px;background:var(--primary);top:-60px;left:-60px"></div>
+    <div class="deco-shape" style="width:240px;height:240px;background:var(--secondary);bottom:-40px;right:-40px"></div>
+    
+    <div style="position:relative;z-index:2">
+      <div class="tag" style="margin-bottom:14px">
+        <span data-lang="en">Interactive Mathematics</span><span data-lang="id">Matematika Interaktif</span>
+      </div>
+      <h1 class="cover-title">
+        <span data-lang="en">Linear Equations</span><span data-lang="id">Persamaan Linear</span>
+      </h1>
+      <p style="font-size:18px;color:var(--muted);max-width:600px;margin:0 auto 28px;line-height:1.6">
+        <span data-lang="en">Explore the world of straight lines, slopes, and equations through interactive graphs and practice problems.</span>
+        <span data-lang="id">Jelajahi dunia garis lurus, gradien, dan persamaan melalui grafik interaktif dan soal latihan.</span>
+      </p>
+      
+      <div style="max-width:460px;margin:0 auto 24px">
+        <label style="display:block;text-align:left;font-weight:600;margin-bottom:8px;font-size:14px">
+          <i class="fa-solid fa-user" style="color:var(--primary);margin-right:6px"></i>
+          <span data-lang="en">Student Name</span><span data-lang="id">Nama Siswa</span>
+        </label>
+        <input type="text" id="studentName" class="input-field" placeholder="Enter your name..." />
+      </div>
+      
+      <button class="btn" id="startBtn" style="font-size:16px;padding:14px 32px">
+        <span data-lang="en">Start Learning</span><span data-lang="id">Mulai Belajar</span>
+        <i class="fa-solid fa-arrow-right"></i>
+      </button>
+      
+      <div style="margin-top:40px;display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+        <div class="stat-pill"><i class="fa-solid fa-book-open"></i><span data-lang="en">6 Topics</span><span data-lang="id">6 Topik</span></div>
+        <div class="stat-pill"><i class="fa-solid fa-pen-to-square"></i>50+ <span data-lang="en">Practice Questions</span><span data-lang="id">Soal Latihan</span></div>
+        <div class="stat-pill"><i class="fa-solid fa-chart-line"></i><span data-lang="en">Interactive Graphs</span><span data-lang="id">Grafik Interaktif</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: LEARNING OBJECTIVES ============ -->
+<section class="slide" data-slide="2">
+  <div class="card">
+    <div class="tag" style="margin-bottom:10px">
+      <span data-lang="en">Lesson Overview</span><span data-lang="id">Ikhtisar Pelajaran</span>
+    </div>
+    <h2 style="font-size:38px;margin:0 0 8px">
+      <span data-lang="en">Learning Objectives</span><span data-lang="id">Tujuan Pembelajaran</span>
+    </h2>
+    <p style="color:var(--muted);margin:0 0 24px;font-size:15px">
+      <span data-lang="en">By the end of this lesson, you will be able to:</span>
+      <span data-lang="id">Di akhir pelajaran ini, kamu akan mampu:</span>
+    </p>
+    
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="obj-card">
+        <div class="obj-icon"><i class="fa-solid fa-check"></i></div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:16px"><span data-lang="en">Understand Linear Equations</span><span data-lang="id">Memahami Persamaan Linear</span></h4>
+          <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.5">
+            <span data-lang="en">Recognize the form of linear equations and their graphs on the coordinate plane.</span>
+            <span data-lang="id">Mengenali bentuk persamaan linear dan grafiknya pada bidang koordinat.</span>
+          </p>
+        </div>
+      </div>
+      
+      <div class="obj-card">
+        <div class="obj-icon"><i class="fa-solid fa-arrow-trend-up"></i></div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:16px"><span data-lang="en">Calculate Slope (Gradient)</span><span data-lang="id">Menghitung Gradien</span></h4>
+          <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.5">
+            <span data-lang="en">Find the slope of a line using rise/run and the two-point formula.</span>
+            <span data-lang="id">Menentukan gradien garis menggunakan rise/run dan rumus dua titik.</span>
+          </p>
+        </div>
+      </div>
+      
+      <div class="obj-card">
+        <div class="obj-icon"><i class="fa-solid fa-equals"></i></div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:16px"><span data-lang="en">Master Three Equation Forms</span><span data-lang="id">Menguasai Tiga Bentuk Persamaan</span></h4>
+          <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.5">
+            <span data-lang="en">Use slope-intercept, point-slope, and standard forms of linear equations.</span>
+            <span data-lang="id">Menggunakan bentuk slope-intercept, point-slope, dan bentuk standar persamaan linear.</span>
+          </p>
+        </div>
+      </div>
+      
+      <div class="obj-card">
+        <div class="obj-icon"><i class="fa-solid fa-arrows-up-down-left-right"></i></div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:16px"><span data-lang="en">Parallel & Perpendicular Lines</span><span data-lang="id">Garis Sejajar & Tegak Lurus</span></h4>
+          <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.5">
+            <span data-lang="en">Identify and write equations of parallel and perpendicular lines.</span>
+            <span data-lang="id">Mengidentifikasi dan menulis persamaan garis sejajar dan tegak lurus.</span>
+          </p>
+        </div>
+      </div>
+      
+      <div class="obj-card">
+        <div class="obj-icon"><i class="fa-solid fa-brain"></i></div>
+        <div>
+          <h4 style="margin:0 0 4px;font-size:16px"><span data-lang="en">Apply & Reflect</span><span data-lang="id">Menerapkan & Refleksi</span></h4>
+          <p style="margin:0;color:var(--muted);font-size:13px;line-height:1.5">
+            <span data-lang="en">Solve real problems and reflect on your learning journey.</span>
+            <span data-lang="id">Menyelesaikan masalah nyata dan merefleksikan perjalanan belajar.</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3: WHAT IS LINEAR EQUATION ============ -->
+<section class="slide" data-slide="3">
+  <div class="card">
+    <div class="tag" style="margin-bottom:10px">
+      <span data-lang="en">Topic 1 · Foundation</span><span data-lang="id">Topik 1 · Dasar</span>
+    </div>
+    <h2 style="font-size:34px;margin:0 0 8px">
+      <span data-lang="en">What is a Linear Equation?</span><span data-lang="id">Apa itu Persamaan Linear?</span>
+    </h2>
+    <p style="color:var(--muted);margin:0 0 20px;font-size:15px;line-height:1.6">
+      <span data-lang="en">A <strong>linear equation</strong> is an equation whose graph forms a straight line. The variables appear only to the first power (no squares, cubes, square roots, etc.).</span>
+      <span data-lang="id"><strong>Persamaan linear</strong> adalah persamaan yang grafiknya berbentuk garis lurus. Variabel hanya memiliki pangkat satu (tidak ada kuadrat, pangkat tiga, akar, dll).</span>
+    </p>
+    
+    <div class="math-block">
+      <span class="accent">y = mx + b</span> &nbsp;&nbsp; <span data-lang="en">or</span><span data-lang="id">atau</span> &nbsp;&nbsp; <span class="accent">Ax + By = C</span>
+    </div>
+    
+    <div class="two-col">
+      <div>
+        <h3 style="font-size:20px;margin:0 0 12px">
+          <i class="fa-solid fa-hand-pointer" style="color:var(--primary);margin-right:6px"></i>
+          <span data-lang="en">Interactive Graph</span><span data-lang="id">Grafik Interaktif</span>
+        </h3>
+        <p style="font-size:13px;color:var(--muted);margin:0 0 10px">
+          <span data-lang="en">Drag the two points to see how the line and equation change.</span>
+          <span data-lang="id">Seret kedua titik untuk melihat garis dan persamaannya berubah.</span>
+        </p>
+        <div class="canvas-container">
+          <canvas id="introCanvas" style="width:100%;height:340px"></canvas>
+        </div>
+        <div class="slope-display" id="introEq">y = 1.00x + 1.00</div>
+        <p class="scroll-hint">
+          <span data-lang="en">Notice: the line is always straight — that's what makes it linear!</span>
+          <span data-lang="id">Perhatikan: garis selalu lurus — itulah yang membuatnya linear!</span>
+        </p>
+      </div>
+      
+      <div>
+        <h3 style="font-size:20px;margin:0 0 12px">
+          <i class="fa-solid fa-clipboard-question" style="color:var(--secondary);margin-right:6px"></i>
+          <span data-lang="en">Practice: Linear or Not?</span><span data-lang="id">Latihan: Linear atau Bukan?</span>
+        </h3>
+        <p style="font-size:13px;color:var(--muted);margin:0 0 12px">
+          <span data-lang="en">Click each equation to classify it as <strong style="color:var(--correct)">Linear</strong> or <strong style="color:var(--wrong)">Non-linear</strong>.</span>
+          <span data-lang="id">Klik setiap persamaan untuk mengklasifikasikan sebagai <strong style="color:var(--correct)">Linear</strong> atau <strong style="color:var(--wrong)">Non-linear</strong>.</span>
+        </p>
+        <div style="display:flex;gap:8px;margin-bottom:12px">
+          <button class="btn btn-sm btn-secondary" id="linearMode">
+            <i class="fa-solid fa-check"></i> <span data-lang="en">Mark Linear</span><span data-lang="id">Tandai Linear</span>
+          </button>
+          <button class="btn btn-sm" style="background:var(--wrong)" id="nonlinearMode">
+            <i class="fa-solid fa-xmark"></i> <span data-lang="en">Mark Non-linear</span><span data-lang="id">Tandai Non-linear</span>
+          </button>
+          <button class="btn btn-sm btn-ghost" id="checkLinear">
+            <i class="fa-solid fa-circle-check"></i> <span data-lang="en">Reveal</span><span data-lang="id">Lihat</span>
+          </button>
+        </div>
+        <div id="eqGrid" style="display:grid;grid-template-columns:1fr 1fr;gap:10px"></div>
+        <div id="linearScore" class="slope-display" style="margin-top:12px;font-size:15px">
+          <span data-lang="en">Score: 0 / 8</span><span data-lang="id">Skor: 0 / 8</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4: SLOPE (with tabs) ============ -->
+<section class="slide" data-slide="4">
+  <div class="card">
+    <div class="tag" style="margin-bottom:10px">
+      <span data-lang="en">Topic 2 · Deep Dive</span><span data-lang="id">Topik 2 · Pembahasan</span>
+    </div>
+    <h2 style="font-size:34px;margin:0 0 6px">
+      <span data-lang="en">Slope & Equation Forms</span><span data-lang="id">Gradien & Bentuk Persamaan</span>
+    </h2>
+    <p style="color:var(--muted);margin:0 0 18px;font-size:14px">
+      <span data-lang="en">Explore five aspects of linear equations. Click the tabs below to navigate.</span>
+      <span data-lang="id">Jelajahi lima aspek persamaan linear. Klik tab di bawah untuk berpindah.</span>
+    </p>
+    
+    <div class="tabs" id="slopeTabs">
+      <div class="tab active" data-tab="4-1">4.1 <span data-lang="en">Slope Intro</span><span data-lang="id">Pengenalan Gradien</span></div>
+      <div class="tab" data-tab="4-2">4.2 <span data-lang="en">Slope-Intercept</span><span data-lang="id">Slope-Intercept</span></div>
+      <div class="tab" data-tab="4-3">4.3 <span data-lang="en">Point-Slope</span><span data-lang="id">Point-Slope</span></div>
+      <div class="tab" data-tab="4-4">4.4 <span data-lang="en">Standard Form</span><span data-lang="id">Bentuk Standar</span></div>
+      <div class="tab" data-tab="4-5">4.5 <span data-lang="en">Parallel & Perp.</span><span data-lang="id">Sejajar & Tegak Lurus</span></div>
+    </div>
+
+    <!-- TAB 4.1: Slope Intro -->
+    <div class="tab-content active" data-content="4-1">
+      <h3 style="font-size:24px;margin:0 0 10px">
+        <span data-lang="en">What is Slope?</span><span data-lang="id">Apa itu Gradien?</span>
+      </h3>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">
+        <span data-lang="en">The <strong>slope</strong> of a straight line is a number that indicates <strong>how steep the line is</strong>. It tells us how much <em>y</em> changes when <em>x</em> increases by 1.</span>
+        <span data-lang="id"><strong>Gradien</strong> dari sebuah garis lurus adalah angka yang menunjukkan <strong>seberapa curam garis tersebut</strong>. Gradien memberitahu perubahan <em>y</em> ketika <em>x</em> bertambah 1.</span>
+      </p>
+      
+      <div class="math-block">
+        <span data-lang="en">slope =</span><span data-lang="id">gradien =</span> 
+        <span class="accent">rise / run</span> = 
+        <span class="accent">(y₂ − y₁) / (x₂ − x₁)</span>
+      </div>
+
+      <div class="two-col" style="margin-top:16px">
+        <div>
+          <h4 style="font-size:17px;margin:0 0 8px">
+            <i class="fa-solid fa-arrows-up-down" style="color:var(--secondary);margin-right:6px"></i>
+            <span data-lang="en">Rise over Run</span><span data-lang="id">Rise over Run</span>
+          </h4>
+          <p style="font-size:13px;color:var(--muted);margin:0 0 10px">
+            <span data-lang="en">Drag the points to change the line. Watch how rise (vertical) and run (horizontal) determine the slope.</span>
+            <span data-lang="id">Seret titik untuk mengubah garis. Amati bagaimana rise (vertikal) dan run (horizontal) menentukan gradien.</span>
+          </p>
+          <div class="canvas-container">
+            <canvas id="slopeIntroCanvas" style="width:100%;height:320px"></canvas>
+          </div>
+          <div class="slope-display" id="slopeIntroDisplay">
+            m = <span class="pos">2</span> &nbsp;(<span data-lang="en">positive — line goes up to the right</span><span data-lang="id">positif — garis naik ke kanan</span>)
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+            <button class="btn btn-sm btn-ghost" onclick="setSlopeExample('pos')">
+              <span data-lang="en">Positive Slope</span><span data-lang="id">Gradien Positif</span>
+            </button>
+            <button class="btn btn-sm btn-ghost" onclick="setSlopeExample('neg')">
+              <span data-lang="en">Negative Slope</span><span data-lang="id">Gradien Negatif</span>
+            </button>
+            <button class="btn btn-sm btn-ghost" onclick="setSlopeExample('zero')">
+              <span data-lang="en">Zero Slope</span><span data-lang="id">Gradien Nol</span>
+            </button>
+          </div>
+        </div>
+        
+        <div>
+          <h4 style="font-size:17px;margin:0 0 8px">
+            <i class="fa-solid fa-pencil" style="color:var(--accent);margin-right:6px"></i>
+            <span data-lang="en">Tutor Drawing Pad</span><span data-lang="id">Papan Gambar Tutor</span>
+          </h4>
+          <p style="font-size:13px;color:var(--muted);margin:0 0 10px">
+            <span data-lang="en">Draw your own lines to practice finding slope. Use the clear button to reset.</span>
+            <span data-lang="id">Gambar garismu sendiri untuk berlatih menemukan gradien. Gunakan tombol clear untuk mengulang.</span>
+          </p>
+          <div class="canvas-container">
+            <canvas id="drawCanvas" style="width:100%;height:320px;cursor:crosshair"></canvas>
+          </div>
+          <div style="display:flex;gap:8px;margin-top:10px">
+            <button class="btn btn-sm" onclick="clearDrawCanvas()">
+              <i class="fa-solid fa-eraser"></i> <span data-lang="en">Clear</span><span data-lang="id">Hapus</span>
+            </button>
+            <span class="info-pill" style="display:flex;align-items:center">
+              <i class="fa-solid fa-circle-info"></i>
+              <span data-lang="en">Click & drag to draw</span><span data-lang="id">Klik & seret untuk menggambar</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="example-box" style="margin-top:18px">
+        <div class="label"><span data-lang="en">Worked Example</span><span data-lang="id">Contoh Penyelesaian</span></div>
+        <p style="margin:0 0 10px;font-size:14px">
+          <span data-lang="en">Find the slope of the line passing through (1, 2) and (3, 6).</span>
+          <span data-lang="id">Tentukan gradien garis melalui (1, 2) dan (3, 6).</span>
+        </p>
+        <div class="step-box">
+          <div class="step-num">1</div>
+          <div style="font-size:14px">
+            <span data-lang="en">Identify points: (x₁, y₁) = (1, 2) and (x₂, y₂) = (3, 6).</span>
+            <span data-lang="id">Identifikasi titik: (x₁, y₁) = (1, 2) dan (x₂, y₂) = (3, 6).</span>
+          </div>
+        </div>
+        <div class="step-box">
+          <div class="step-num">2</div>
+          <div style="font-size:14px">
+            <span data-lang="en">Apply formula: m = (y₂ − y₁) / (x₂ − x₁) = (6 − 2) / (3 − 1)</span>
+            <span data-lang="id">Terapkan rumus: m = (y₂ − y₁) / (x₂ − x₁) = (6 − 2) / (3 − 1)</span>
+          </div>
+        </div>
+        <div class="step-box final">
+          <div class="step-num">3</div>
+          <div style="font-size:14px;font-weight:600;color:var(--correct)">
+            m = 4 / 2 = 2 ✓
+          </div>
+        </div>
+      </div>
+      
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+        <div class="info-pill positive"><i class="fa-solid fa-arrow-up-right"></i> <span data-lang="en">Positive slope: line tilts up to the right</span><span data-lang="id">Gradien positif: garis miring ke kanan atas</span></div>
+        <div class="info-pill negative"><i class="fa-solid fa-arrow-down-right"></i> <span data-lang="en">Negative slope: line tilts down to the right</span><span data-lang="id">Gradien negatif: garis miring ke kanan bawah</span></div>
+        <div class="info-pill zero"><i class="fa-solid fa-arrow-right"></i> <span data-lang="en">Zero slope: horizontal line</span><span data-lang="id">Gradien nol: garis horizontal</span></div>
+      </div>
+    </div>
+
+    <!-- TAB 4.2: Slope-Intercept Form -->
+    <div class="tab-content" data-content="4-2">
+      <h3 style="font-size:24px;margin:0 0 10px">
+        <span data-lang="en">Slope-Intercept Form</span><span data-lang="id">Bentuk Slope-Intercept</span>
+      </h3>
+      <div class="math-block"><span class="accent">y = mx + b</span></div>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">
+        <span data-lang="en">Where <strong>m</strong> is the slope (gradient) and <strong>b</strong> is the y-intercept (where the line crosses the y-axis). Use the sliders below to see how m and b affect the line.</span>
+        <span data-lang="id">Di mana <strong>m</strong> adalah gradien dan <strong>b</strong> adalah perpotongan dengan sumbu-y. Gunakan slider di bawah untuk melihat bagaimana m dan b mempengaruhi garis.</span>
+      </p>
+      
+      <div class="two-col">
+        <div>
+          <div class="canvas-container">
+            <canvas id="slopeInterceptCanvas" style="width:100%;height:320px"></canvas>
+          </div>
+          <div class="slope-display" id="siEqDisplay">y = 1x + 0</div>
+          <div style="margin-top:14px">
+            <div class="slider-row">
+              <label>m =</label>
+              <input type="range" id="mSlider" min="-4" max="4" step="0.5" value="1">
+              <span class="slider-val" id="mVal">1.0</span>
+            </div>
+            <div class="slider-row">
+              <label>b =</label>
+              <input type="range" id="bSlider" min="-5" max="5" step="1" value="0">
+              <span class="slider-val" id="bVal">0</span>
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          <div class="example-box">
+            <div class="label"><span data-lang="en">Worked Example</span><span data-lang="id">Contoh Penyelesaian</span></div>
+            <p style="margin:0 0 8px;font-size:14px;font-weight:600">
+              <span data-lang="en">Write the equation of a line with a y-intercept of −6 that passes through the point (2, 4).</span>
+              <span data-lang="id">Tulis persamaan garis dengan perpotongan-y −6 yang melalui titik (2, 4).</span>
+            </p>
+            <div class="step-box">
+              <div class="step-num">1</div>
+              <div style="font-size:13px">
+                <span data-lang="en">Start with y = mx + b. We know b = −6.</span>
+                <span data-lang="id">Mulai dengan y = mx + b. Kita tahu b = −6.</span><br>
+                <span class="math">y = mx + (−6)</span>
+              </div>
+            </div>
+            <div class="step-box">
+              <div class="step-num">2</div>
+              <div style="font-size:13px">
+                <span data-lang="en">Substitute the point (x, y) = (2, 4).</span>
+                <span data-lang="id">Substitusi titik (x, y) = (2, 4).</span><br>
+                <span class="math">4 = m(2) + (−6)</span>
+              </div>
+            </div>
+            <div class="step-box">
+              <div class="step-num">3</div>
+              <div style="font-size:13px">
+                <span data-lang="en">Solve for m: 4 = 2m − 6 → 10 = 2m → m = 5</span>
+                <span data-lang="id">Selesaikan untuk m: 4 = 2m − 6 → 10 = 2m → m = 5</span>
+              </div>
+            </div>
+            <div class="step-box final">
+              <div class="step-num">4</div>
+              <div style="font-size:13px;font-weight:700;color:var(--correct)">
+                <span data-lang="en">Final equation:</span><span data-lang="id">Persamaan akhir:</span> <span class="math">y = 5x − 6</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="font-size:18px;margin:20px 0 10px">
+        <i class="fa-solid fa-list-check" style="color:var(--primary);margin-right:6px"></i>
+        <span data-lang="en">Practice Set A: Find the Slope</span><span data-lang="id">Latihan A: Tentukan Gradien</span>
+      </h4>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 12px">
+        <span data-lang="en">Identify the slope (m) from each equation in slope-intercept form.</span>
+        <span data-lang="id">Tentukan gradien (m) dari setiap persamaan dalam bentuk slope-intercept.</span>
+      </p>
+      <div id="q-slopeFromEq"></div>
+      
+      <h4 style="font-size:18px;margin:24px 0 10px">
+        <i class="fa-solid fa-list-check" style="color:var(--secondary);margin-right:6px"></i>
+        <span data-lang="en">Practice Set B: Find the Equation</span><span data-lang="id">Latihan B: Tentukan Persamaan</span>
+      </h4>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 12px">
+        <span data-lang="en">Find the equation of the line given the y-intercept and a point.</span>
+        <span data-lang="id">Tentukan persamaan garis dari perpotongan-y dan sebuah titik.</span>
+      </p>
+      <div id="q-findEq"></div>
+    </div>
+
+    <!-- TAB 4.3: Point-Slope Form -->
+    <div class="tab-content" data-content="4-3">
+      <h3 style="font-size:24px;margin:0 0 10px">
+        <span data-lang="en">Point-Slope Form</span><span data-lang="id">Bentuk Point-Slope</span>
+      </h3>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 10px">
+        <span data-lang="en"><strong>Point-slope form</strong> is one way to write the equation of a line. It is especially useful when you know one point and the slope, or when you know two points. We use it as a stepping stone, then simplify to get <strong>y = mx + b</strong>.</span>
+        <span data-lang="id"><strong>Bentuk point-slope</strong> adalah salah satu cara menulis persamaan garis. Sangat berguna saat kamu tahu satu titik dan gradien, atau dua titik. Kita gunakan sebagai langkah perantara, lalu sederhanakan menjadi <strong>y = mx + b</strong>.</span>
+      </p>
+      <div class="math-block"><span class="accent">y − y₁ = m(x − x₁)</span></div>
+      <p style="font-size:14px;color:var(--muted);margin:0 0 14px">
+        <span data-lang="en">Where (x₁, y₁) is a point on the line and m is the slope. After substituting, we expand and simplify to reach the final form <strong>y = mx + b</strong>.</span>
+        <span data-lang="id">Di mana (x₁, y₁) adalah titik pada garis dan m adalah gradien. Setelah substitusi, kita ekspansi dan sederhanakan untuk mencapai bentuk akhir <strong>y = mx + b</strong>.</span>
+      </p>
+
+      <div class="example-box">
+        <div class="label"><span data-lang="en">Worked Example</span><span data-lang="id">Contoh Penyelesaian</span></div>
+        <p style="margin:0 0 10px;font-size:14px;font-weight:600">
+          <span data-lang="en">The points (3, −8) and (−7, −9) fall on a particular line. What is its equation in the form y = mx + b?</span>
+          <span data-lang="id">Titik (3, −8) dan (−7, −9) terletak pada suatu garis. Berapa persamaannya dalam bentuk y = mx + b?</span>
+        </p>
+        <div class="step-box">
+          <div class="step-num">1</div>
+          <div style="font-size:13px">
+            <span data-lang="en">Find the slope first using m = (y₂ − y₁) / (x₂ − x₁).</span>
+            <span data-lang="id">Cari gradien lebih dulu dengan m = (y₂ − y₁) / (x₂ − x₁).</span>
+          </div>
+        </div>
+        <div class="step-box">
+          <div class="step-num">2</div>
+          <div style="font-size:13px">
+            <span data-lang="en">Substitute (x₁, y₁) = (3, −8) and (x₂, y₂) = (−7, −9):</span>
+            <span data-lang="id">Substitusi (x₁, y₁) = (3, −8) dan (x₂, y₂) = (−7, −9):</span><br>
+            <span class="math">m = (−9 − (−8)) / (−7 − 3) = (−1) / (−10) = 1/10</span>
+          </div>
+        </div>
+        <div class="step-box">
+          <div class="step-num">3</div>
+          <div style="font-size:13px">
+            <span data-lang="en">Write in point-slope form using (3, −8):</span>
+            <span data-lang="id">Tulis dalam bentuk point-slope menggunakan (3, −8):</span><br>
+            <span class="math">y − (−8) = (1/10)(x − 3) → y + 8 = (1/10)(x − 3)</span>
+          </div>
+        </div>
+        <div class="step-box">
+          <div class="step-num">4</div>
+          <div style="font-size:13px">
+            <span data-lang="en">Expand the right side:</span>
+            <span data-lang="id">Ekspansi ruas kanan:</span><br>
+            <span class="math">y + 8 = (1/10)x − 3/10</span>
+          </div>
+        </div>
+        <div class="step-box">
+          <div class="step-num">5</div>
+          <div style="font-size:13px">
+            <span data-lang="en">Subtract 8 from both sides (8 = 80/10):</span>
+            <span data-lang="id">Kurangi 8 dari kedua sisi (8 = 80/10):</span><br>
+            <span class="math">y = (1/10)x − 3/10 − 80/10</span>
+          </div>
+        </div>
+        <div class="step-box final">
+          <div class="step-num">6</div>
+          <div style="font-size:13px;font-weight:700;color:var(--correct)">
+            <span data-lang="en">Final answer:</span><span data-lang="id">Jawaban akhir:</span>
+          </div>
+        </div>
+        <div class="final-answer-box">
+          <div class="label"><span data-lang="en">Final Equation</span><span data-lang="id">Persamaan Akhir</span></div>
+          <div class="eq">y = (1/10)x − 83/10</div>
+        </div>
+      </div>
+
+      <h4 style="font-size:18px;margin:24px 0 10px">
+        <i class="fa-solid fa-list-check" style="color:var(--accent);margin-right:6px"></i>
+        <span data-lang="en">Practice: Find the Equation (y = mx + b)</span><span data-lang="id">Latihan: Tentukan Persamaan (y = mx + b)</span>
+      </h4>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 12px">
+        <span data-lang="en">Use the point-slope form y − y₁ = m(x − x₁) as a stepping stone, then simplify each equation to the form <strong>y = mx + b</strong>.</span>
+        <span data-lang="id">Gunakan bentuk point-slope y − y₁ = m(x − x₁) sebagai langkah perantara, lalu sederhanakan setiap persamaan ke bentuk <strong>y = mx + b</strong>.</span>
+      </p>
+      <div id="q-pointSlope"></div>
+    </div>
+
+    <!-- TAB 4.4: Standard Form -->
+    <div class="tab-content" data-content="4-4">
+      <h3 style="font-size:24px;margin:0 0 10px">
+        <span data-lang="en">Standard Form of Linear Equations</span><span data-lang="id">Bentuk Standar Persamaan Linear</span>
+      </h3>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 10px">
+        <span data-lang="en">Linear equations form straight lines when graphed. <strong>Standard form</strong> is one way to write the equation of a line.</span>
+        <span data-lang="id">Persamaan linear membentuk garis lurus saat digambar. <strong>Bentuk standar</strong> adalah salah satu cara menulis persamaan garis.</span>
+      </p>
+      <div class="math-block"><span class="accent">Ax + By = C</span></div>
+      <p style="font-size:14px;color:var(--muted);margin:0 0 14px">
+        <span data-lang="en">Where A, B, and C are integers, and <strong>A and B cannot both be zero</strong>. Usually A is written as a positive integer.</span>
+        <span data-lang="id">Di mana A, B, dan C adalah bilangan bulat, dan <strong>A dan B tidak boleh keduanya nol</strong>. Biasanya A ditulis sebagai bilangan bulat positif.</span>
+      </p>
+
+      <div class="example-box">
+        <div class="label"><span data-lang="en">Worked Example</span><span data-lang="id">Contoh Penyelesaian</span></div>
+        <p style="margin:0 0 8px;font-size:14px;font-weight:600">
+          <span data-lang="en">Convert y = 3x − 4 to standard form.</span>
+          <span data-lang="id">Ubah y = 3x − 4 ke bentuk standar.</span>
+        </p>
+        <div class="step-box">
+          <div class="step-num">1</div>
+          <div style="font-size:13px">
+            <span data-lang="en">Move x term to the left side (subtract 3x from both sides):</span>
+            <span data-lang="id">Pindahkan suku x ke ruas kiri (kurangi 3x dari kedua sisi):</span><br>
+            <span class="math">−3x + y = −4</span>
+          </div>
+        </div>
+        <div class="step-box">
+          <div class="step-num">2</div>
+          <div style="font-size:13px">
+            <span data-lang="en">Multiply by −1 so A is positive:</span>
+            <span data-lang="id">Kalikan dengan −1 agar A positif:</span><br>
+            <span class="math">3x − y = 4</span>
+          </div>
+        </div>
+        <div class="step-box final">
+          <div class="step-num">3</div>
+          <div style="font-size:13px;font-weight:700;color:var(--correct)">
+            <span data-lang="en">Final answer:</span><span data-lang="id">Jawaban akhir:</span> <span class="math">3x − y = 4</span>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="font-size:18px;margin:24px 0 10px">
+        <i class="fa-solid fa-list-check" style="color:var(--primary);margin-right:6px"></i>
+        <span data-lang="en">Practice: Convert to Standard Form</span><span data-lang="id">Latihan: Ubah ke Bentuk Standar</span>
+      </h4>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 12px">
+        <span data-lang="en">Convert each equation to standard form (Ax + By = C).</span>
+        <span data-lang="id">Ubah setiap persamaan ke bentuk standar (Ax + By = C).</span>
+      </p>
+      <div id="q-standardForm"></div>
+    </div>
+
+    <!-- TAB 4.5: Parallel & Perpendicular -->
+    <div class="tab-content" data-content="4-5">
+      <h3 style="font-size:24px;margin:0 0 10px">
+        <span data-lang="en">Parallel and Perpendicular Lines</span><span data-lang="id">Garis Sejajar dan Tegak Lurus</span>
+      </h3>
+      
+      <div class="two-col">
+        <div>
+          <div style="background:rgba(42,157,143,.08);border-left:4px solid var(--secondary);padding:14px;border-radius:10px;margin-bottom:14px">
+            <h4 style="margin:0 0 6px;font-size:16px;color:var(--secondary)">
+              <i class="fa-solid fa-equals"></i> <span data-lang="en">Parallel Lines</span><span data-lang="id">Garis Sejajar</span>
+            </h4>
+            <p style="margin:0;font-size:13px;line-height:1.6">
+              <span data-lang="en">Lines that are always the same distance apart and <strong>never intersect</strong>. Parallel lines have the <strong>same slope</strong>: m₁ = m₂.</span>
+              <span data-lang="id">Garis yang selalu berjarak sama dan <strong>tidak pernah berpotongan</strong>. Garis sejajar memiliki <strong>gradien sama</strong>: m₁ = m₂.</span>
+            </p>
+          </div>
+          <div class="canvas-container">
+            <canvas id="parallelCanvas" style="width:100%;height:220px"></canvas>
+          </div>
+          <p class="scroll-hint">
+            <span data-lang="en">Both lines have slope = 1 — they never meet!</span>
+            <span data-lang="id">Kedua garis memiliki gradien = 1 — mereka tidak pernah berpotongan!</span>
+          </p>
+        </div>
+        
+        <div>
+          <div style="background:rgba(231,111,81,.08);border-left:4px solid var(--primary);padding:14px;border-radius:10px;margin-bottom:14px">
+            <h4 style="margin:0 0 6px;font-size:16px;color:var(--primary)">
+              <i class="fa-solid fa-arrows-up-down"></i> <span data-lang="en">Perpendicular Lines</span><span data-lang="id">Garis Tegak Lurus</span>
+            </h4>
+            <p style="margin:0;font-size:13px;line-height:1.6">
+              <span data-lang="en">Lines that intersect at a <strong>right angle (90°)</strong>. Their slopes are <strong>negative reciprocals</strong>: m₁ × m₂ = −1, so m₂ = −1/m₁.</span>
+              <span data-lang="id">Garis yang berpotongan dengan <strong>sudut siku-siku (90°)</strong>. Gradiennya <strong>berkebalikan negatif</strong>: m₁ × m₂ = −1, sehingga m₂ = −1/m₁.</span>
+            </p>
+          </div>
+          <div class="canvas-container">
+            <canvas id="perpCanvas" style="width:100%;height:220px"></canvas>
+          </div>
+          <p class="scroll-hint">
+            <span data-lang="en">Slopes 2 and −½ multiply to give −1.</span>
+            <span data-lang="id">Gradien 2 dan −½ jika dikali menghasilkan −1.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="example-box" style="margin-top:18px">
+        <div class="label"><span data-lang="en">Worked Example</span><span data-lang="id">Contoh Penyelesaian</span></div>
+        <p style="margin:0 0 10px;font-size:14px;font-weight:600">
+          <span data-lang="en">Find the equation of the line parallel to y = 2x + 5 that passes through (1, 4).</span>
+          <span data-lang="id">Tentukan persamaan garis sejajar dengan y = 2x + 5 melalui (1, 4).</span>
+        </p>
+        <div class="step-box">
+          <div class="step-num">1</div>
+          <div style="font-size:13px">
+            <span data-lang="en">Parallel lines have the same slope, so m = 2.</span>
+            <span data-lang="id">Garis sejajar memiliki gradien sama, jadi m = 2.</span>
+          </div>
+        </div>
+        <div class="step-box">
+          <div class="step-num">2</div>
+          <div style="font-size:13px">
+            <span data-lang="en">Use point-slope form: y − 4 = 2(x − 1).</span>
+            <span data-lang="id">Gunakan bentuk point-slope: y − 4 = 2(x − 1).</span>
+          </div>
+        </div>
+        <div class="step-box final">
+          <div class="step-num">3</div>
+          <div style="font-size:13px;font-weight:700;color:var(--correct)">
+            <span data-lang="en">Simplify:</span><span data-lang="id">Sederhanakan:</span> <span class="math">y = 2x + 2</span>
+          </div>
+        </div>
+      </div>
+
+      <h4 style="font-size:18px;margin:24px 0 10px">
+        <i class="fa-solid fa-list-check" style="color:var(--secondary);margin-right:6px"></i>
+        <span data-lang="en">Practice: Parallel & Perpendicular Lines</span><span data-lang="id">Latihan: Garis Sejajar & Tegak Lurus</span>
+      </h4>
+      <p style="font-size:13px;color:var(--muted);margin:0 0 12px">
+        <span data-lang="en">Determine the equation of each described line.</span>
+        <span data-lang="id">Tentukan persamaan setiap garis yang dijelaskan.</span>
+      </p>
+      <div id="q-parallel"></div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ============ SLIDE 5: QUIZ ============ -->
+<section class="slide" data-slide="5">
+  <div class="card">
+    <div class="tag" style="margin-bottom:10px">
+      <span data-lang="en">Final Assessment</span><span data-lang="id">Asesmen Akhir</span>
+    </div>
+    <h2 style="font-size:34px;margin:0 0 6px">
+      <span data-lang="en">Quiz Time!</span><span data-lang="id">Saatnya Kuis!</span>
+    </h2>
+    <p style="color:var(--muted);margin:0 0 18px;font-size:15px">
+      <span data-lang="en">Test your understanding of all the topics we've covered. Good luck!</span>
+      <span data-lang="id">Uji pemahamanmu tentang semua topik yang telah dipelajari. Semoga sukses!</span>
+    </p>
+
+    <div class="quiz-intro">
+      <i class="fa-solid fa-clipboard-check" style="font-size:32px;color:var(--primary);margin-bottom:8px"></i>
+      <h3 style="margin:0 0 6px;font-size:22px">
+        <span data-lang="en">Mixed Practice Quiz</span><span data-lang="id">Kuis Latihan Campuran</span>
+      </h3>
+      <p style="margin:0;font-size:14px;color:var(--muted)">
+        <span data-lang="en">10 questions covering slope, equation forms, and parallel/perpendicular lines.</span>
+        <span data-lang="id">10 soal mencakup gradien, bentuk persamaan, dan garis sejajar/tegak lurus.</span>
+      </p>
+    </div>
+
+    <div id="q-quiz"></div>
+    
+    <div class="score-display" id="quizScore" style="display:none">
+      <div style="font-size:14px;opacity:.9;margin-bottom:4px">
+        <span data-lang="en">Your Score</span><span data-lang="id">Skor Kamu</span>
+      </div>
+      <div style="font-size:36px;font-weight:800" id="quizScoreVal">0 / 10</div>
+      <div style="font-size:14px;margin-top:4px" id="quizScoreMsg"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6: CONCLUSION ============ -->
+<section class="slide" data-slide="6">
+  <div class="card">
+    <div class="tag" style="margin-bottom:10px">
+      <span data-lang="en">Wrap Up</span><span data-lang="id">Penutup</span>
+    </div>
+    <h2 style="font-size:34px;margin:0 0 6px">
+      <span data-lang="en">Conclusion & Reflection</span><span data-lang="id">Kesimpulan & Refleksi</span>
+    </h2>
+    <p style="color:var(--muted);margin:0 0 20px;font-size:15px">
+      <span data-lang="en">Let's summarize what we've learned and reflect on your journey.</span>
+      <span data-lang="id">Mari rangkum apa yang telah kita pelajari dan refleksikan perjalananmu.</span>
+    </p>
+
+    <h3 style="font-size:20px;margin:0 0 12px">
+      <i class="fa-solid fa-lightbulb" style="color:var(--accent);margin-right:6px"></i>
+      <span data-lang="en">Key Takeaways</span><span data-lang="id">Poin Penting</span>
+    </h3>
+    <div class="summary-grid">
+      <div class="summary-item">
+        <h4><span data-lang="en">Linear Equation</span><span data-lang="id">Persamaan Linear</span></h4>
+        <p><span data-lang="en">Forms a straight line; variables have power 1.</span><span data-lang="id">Membentuk garis lurus; variabel berpangkat 1.</span></p>
+        <span class="formula">y = mx + b</span>
+      </div>
+      <div class="summary-item">
+        <h4><span data-lang="en">Slope Formula</span><span data-lang="id">Rumus Gradien</span></h4>
+        <p><span data-lang="en">Rise over run, or change in y over change in x.</span><span data-lang="id">Rise over run, atau perubahan y per perubahan x.</span></p>
+        <span class="formula">m = (y₂−y₁)/(x₂−x₁)</span>
+      </div>
+      <div class="summary-item">
+        <h4><span data-lang="en">Point-Slope Form</span><span data-lang="id">Bentuk Point-Slope</span></h4>
+        <p><span data-lang="en">Use when you know a point and the slope, then simplify to y = mx + b.</span><span data-lang="id">Gunakan saat tahu titik dan gradien, lalu sederhanakan ke y = mx + b.</span></p>
+        <span class="formula">y − y₁ = m(x − x₁)</span>
+      </div>
+      <div class="summary-item">
+        <h4><span data-lang="en">Standard Form</span><span data-lang="id">Bentuk Standar</span></h4>
+        <p><span data-lang="en">A, B, C are integers; A should be positive.</span><span data-lang="id">A, B, C bilangan bulat; A harus positif.</span></p>
+        <span class="formula">Ax + By = C</span>
+      </div>
+      <div class="summary-item">
+        <h4><span data-lang="en">Parallel & Perp.</span><span data-lang="id">Sejajar & Tegak Lurus</span></h4>
+        <p><span data-lang="en">Parallel: same slope. Perpendicular: negative reciprocals.</span><span data-lang="id">Sejajar: gradien sama. Tegak lurus: berkebalikan negatif.</span></p>
+        <span class="formula">m₁·m₂ = −1</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <h3 style="font-size:20px;margin:0 0 12px">
+      <i class="fa-solid fa-comment-dots" style="color:var(--secondary);margin-right:6px"></i>
+      <span data-lang="en">Reflection</span><span data-lang="id">Refleksi</span>
+    </h3>
+    <div class="reflect-card">
+      <label style="font-weight:600;font-size:14px">
+        <span data-lang="en">1. Which topic did you find most interesting? Why?</span>
+        <span data-lang="id">1. Topik mana yang paling menarik bagimu? Mengapa?</span>
+      </label>
+      <textarea placeholder="Type your reflection here..."></textarea>
+    </div>
+    <div class="reflect-card">
+      <label style="font-weight:600;font-size:14px">
+        <span data-lang="en">2. Which part was the most challenging? How did you overcome it?</span>
+        <span data-lang="id">2. Bagian mana yang paling menantang? Bagaimana kamu mengatasinya?</span>
+      </label>
+      <textarea placeholder="Type your reflection here..."></textarea>
+    </div>
+    <div class="reflect-card">
+      <label style="font-weight:600;font-size:14px">
+        <span data-lang="en">3. How will you use linear equations in real life?</span>
+        <span data-lang="id">3. Bagaimana kamu akan menggunakan persamaan linear dalam kehidupan sehari-hari?</span>
+      </label>
+      <textarea placeholder="Type your reflection here..."></textarea>
+    </div>
+
+    <div style="text-align:center;margin-top:30px;padding:30px;background:linear-gradient(135deg,rgba(231,111,81,.1),rgba(42,157,143,.1));border-radius:20px;border:2px dashed var(--primary)">
+      <div style="font-size:48px;margin-bottom:10px">
+        <i class="fa-solid fa-graduation-cap" style="color:var(--primary)"></i>
+      </div>
+      <h3 style="font-size:28px;margin:0 0 8px">
+        <span data-lang="en">Thank You for Today!</span><span data-lang="id">Terima Kasih Hari Ini!</span>
+      </h3>
+      <p style="font-size:15px;color:var(--muted);margin:0;max-width:500px;margin:0 auto;line-height:1.6">
+        <span data-lang="en" id="thankYouMsg">Great job exploring linear equations. Keep practicing and you'll master this topic in no time!</span>
+        <span data-lang="id" id="thankYouMsgId">Kerja bagus menjelajahi persamaan linear. Terus berlatih dan kamu akan menguasai topik ini segera!</span>
+      </p>
+      <div style="margin-top:16px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+        <span class="stat-pill"><i class="fa-solid fa-star" style="color:var(--highlight)"></i><span data-lang="en">Keep up the great work!</span><span data-lang="id">Terus kerja keras!</span></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<nav class="bottom-bar">
+  <button class="nav-btn" id="prevBtn" disabled>
+    <i class="fa-solid fa-arrow-left"></i>
+    <span data-lang="en">Previous</span><span data-lang="id">Sebelumnya</span>
+  </button>
+  <div class="progress-dots" id="progressDots"></div>
+  <button class="nav-btn" id="nextBtn">
+    <span data-lang="en">Next</span><span data-lang="id">Berikutnya</span>
+    <i class="fa-solid fa-arrow-right"></i>
+  </button>
+</nav>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============= LANGUAGE TOGGLE =============
+let currentLang = 'en';
+document.getElementById('langToggle').addEventListener('click', () => {
+  currentLang = currentLang === 'en' ? 'id' : 'en';
+  document.documentElement.className = 'lang-' + currentLang;
+  document.documentElement.lang = currentLang;
+  setTimeout(() => {
+    renderQuestions('q-slopeFromEq', QUESTIONS.slopeFromEq);
+    renderQuestions('q-findEq', QUESTIONS.findEq);
+    renderQuestions('q-pointSlope', QUESTIONS.pointSlope);
+    renderQuestions('q-standardForm', QUESTIONS.standardForm);
+    renderQuestions('q-parallel', QUESTIONS.parallel);
+    renderQuestions('q-quiz', QUESTIONS.quiz);
+  }, 50);
+  showToast(currentLang === 'id' ? 'Bahasa: Indonesia' : 'Language: English');
+});
+
+// ============= TOAST =============
+function showToast(msg, duration=2000) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), duration);
+}
+
+// ============= SLIDE NAVIGATION =============
+const slides = document.querySelectorAll('.slide');
+const dotsContainer = document.getElementById('progressDots');
+const prevBtn = document.getElementById('prevBtn');
+const nextBtn = document.getElementById('nextBtn');
+let currentSlide = 0;
+
+slides.forEach((_, i) => {
+  const dot = document.createElement('div');
+  dot.className = 'progress-dot' + (i === 0 ? ' active' : '');
+  dot.addEventListener('click', () => goToSlide(i));
+  dotsContainer.appendChild(dot);
+});
+
+function goToSlide(idx) {
+  if (idx < 0 || idx >= slides.length) return;
+  slides[currentSlide].classList.remove('active');
+  currentSlide = idx;
+  slides[currentSlide].classList.add('active');
+  document.querySelectorAll('.progress-dot').forEach((d, i) => {
+    d.classList.toggle('active', i === currentSlide);
+  });
+  prevBtn.disabled = currentSlide === 0;
+  nextBtn.disabled = currentSlide === slides.length - 1;
+  window.scrollTo({top: 0, behavior: 'smooth'});
+  setTimeout(() => window.dispatchEvent(new Event('resize')), 100);
+}
+
+prevBtn.addEventListener('click', () => goToSlide(currentSlide - 1));
+nextBtn.addEventListener('click', () => goToSlide(currentSlide + 1));
+
+// ============= STUDENT NAME =============
+document.getElementById('startBtn').addEventListener('click', () => {
+  const name = document.getElementById('studentName').value.trim();
+  if (!name) {
+    showToast(currentLang === 'id' ? 'Silakan masukkan nama kamu!' : 'Please enter your name!');
+    document.getElementById('studentName').focus();
+    return;
+  }
+  document.getElementById('studentBadge').style.display = 'inline-flex';
+  document.getElementById('studentNameBadge').textContent = name;
+  goToSlide(1);
+});
+
+document.getElementById('studentName').addEventListener('keypress', e => {
+  if (e.key === 'Enter') document.getElementById('startBtn').click();
+});
+
+// ============= CARTESIAN PLANE CLASS =============
+class Plane {
+  constructor(canvasId, opts = {}) {
+    this.canvas = document.getElementById(canvasId);
+    if (!this.canvas) return;
+    this.ctx = this.canvas.getContext('2d');
+    this.unit = opts.unit || 28;
+    this.opts = opts;
+    this.points = opts.points ? opts.points.map(p => [...p]) : [];
+    this.draggingIdx = -1;
+    this.dpr = window.devicePixelRatio || 1;
+    this.onChange = opts.onChange || null;
+    
+    this.resize();
+    if (opts.interactive) this.attachDragEvents();
+    this.render();
+  }
+  
+  resize() {
+    const rect = this.canvas.getBoundingClientRect();
+    this.canvas.width = Math.max(1, rect.width * this.dpr);
+    this.canvas.height = Math.max(1, rect.height * this.dpr);
+    this.ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
+    this.w = rect.width;
+    this.h = rect.height;
+    this.cx = this.w / 2;
+    this.cy = this.h / 2;
+    this.render();
+  }
+  
+  toCanvas(x, y) {
+    return [this.cx + x * this.unit, this.cy - y * this.unit];
+  }
+  
+  toMath(cx, cy) {
+    return [Math.round((cx - this.cx) / this.unit), Math.round((this.cy - cy) / this.unit)];
+  }
+  
+  attachDragEvents() {
+    const getPos = (e) => {
+      const rect = this.canvas.getBoundingClientRect();
+      const t = e.touches ? e.touches[0] : e;
+      return [t.clientX - rect.left, t.clientY - rect.top];
+    };
+    
+    const start = (e) => {
+      const [mx, my] = getPos(e);
+      for (let i = 0; i < this.points.length; i++) {
+        const [px, py] = this.toCanvas(this.points[i][0], this.points[i][1]);
+        if (Math.hypot(mx - px, my - py) < 18) {
+          this.draggingIdx = i;
+          e.preventDefault();
+          break;
+        }
+      }
+    };
+    
+    const move = (e) => {
+      if (this.draggingIdx === -1) return;
+      e.preventDefault();
+      const [mx, my] = getPos(e);
+      const [x, y] = this.toMath(mx, my);
+      this.points[this.draggingIdx] = [x, y];
+      this.render();
+      if (this.onChange) this.onChange();
+    };
+    
+    const end = () => { this.draggingIdx = -1; };
+    
+    this.canvas.addEventListener('mousedown', start);
+    this.canvas.addEventListener('mousemove', move);
+    this.canvas.addEventListener('mouseup', end);
+    this.canvas.addEventListener('mouseleave', end);
+    this.canvas.addEventListener('touchstart', start, {passive:false});
+    this.canvas.addEventListener('touchmove', move, {passive:false});
+    this.canvas.addEventListener('touchend', end);
+  }
+  
+  drawGrid() {
+    const ctx = this.ctx;
+    const xUnits = Math.ceil(this.w / 2 / this.unit) + 1;
+    const yUnits = Math.ceil(this.h / 2 / this.unit) + 1;
+    
+    ctx.strokeStyle = 'rgba(244, 221, 181, 0.6)';
+    ctx.lineWidth = 1;
+    for (let i = -xUnits; i <= xUnits; i++) {
+      const x = this.cx + i * this.unit;
+      if (x < 0 || x > this.w) continue;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, this.h);
+      ctx.stroke();
+    }
+    for (let i = -yUnits; i <= yUnits; i++) {
+      const y = this.cy + i * this.unit;
+      if (y < 0 || y > this.h) continue;
+      ctx.beginPath();
+      ctx.moveTo(0, y);
+      ctx.lineTo(this.w, y);
+      ctx.stroke();
+    }
+    
+    ctx.strokeStyle = '#264653';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(0, this.cy);
+    ctx.lineTo(this.w, this.cy);
+    ctx.moveTo(this.cx, 0);
+    ctx.lineTo(this.cx, this.h);
+    ctx.stroke();
+    
+    ctx.fillStyle = '#264653';
+    ctx.beginPath();
+    ctx.moveTo(this.w - 2, this.cy);
+    ctx.lineTo(this.w - 12, this.cy - 6);
+    ctx.lineTo(this.w - 12, this.cy + 6);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.moveTo(this.cx, 2);
+    ctx.lineTo(this.cx - 6, 12);
+    ctx.lineTo(this.cx + 6, 12);
+    ctx.fill();
+    
+    ctx.fillStyle = '#6B7280';
+    ctx.font = '11px "Plus Jakarta Sans"';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'top';
+    for (let i = -xUnits; i <= xUnits; i++) {
+      if (i === 0) continue;
+      const x = this.cx + i * this.unit;
+      if (x > 12 && x < this.w - 12) ctx.fillText(i, x, this.cy + 4);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'middle';
+    for (let i = -yUnits; i <= yUnits; i++) {
+      if (i === 0) continue;
+      const y = this.cy - i * this.unit;
+      if (y > 12 && y < this.h - 12) ctx.fillText(i, this.cx - 5, y);
+    }
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('0', this.cx - 5, this.cy + 4);
+    
+    ctx.fillStyle = '#264653';
+    ctx.font = 'bold 14px "Bricolage Grotesque"';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+    ctx.fillText('x', this.w - 8, this.cy + 6);
+    ctx.textAlign = 'left';
+    ctx.fillText('y', this.cx + 6, 6);
+  }
+  
+  drawLine(color, width) {
+    if (this.points.length < 2) return;
+    const ctx = this.ctx;
+    const [x1, y1] = this.points[0];
+    const [x2, y2] = this.points[1];
+    
+    if (x1 === x2) {
+      const [cx] = this.toCanvas(x1, 0);
+      ctx.strokeStyle = color || '#E76F51';
+      ctx.lineWidth = width || 3;
+      ctx.beginPath();
+      ctx.moveTo(cx, 0);
+      ctx.lineTo(cx, this.h);
+      ctx.stroke();
+    } else {
+      const m = (y2 - y1) / (x2 - x1);
+      const b = y1 - m * x1;
+      const xLeft = -this.cx / this.unit;
+      const xRight = (this.w - this.cx) / this.unit;
+      const [c1x, c1y] = this.toCanvas(xLeft, m * xLeft + b);
+      const [c2x, c2y] = this.toCanvas(xRight, m * xRight + b);
+      ctx.strokeStyle = color || '#E76F51';
+      ctx.lineWidth = width || 3;
+      ctx.beginPath();
+      ctx.moveTo(c1x, c1y);
+      ctx.lineTo(c2x, c2y);
+      ctx.stroke();
+      return m;
+    }
+  }
+  
+  drawRiseRun() {
+    if (this.points.length < 2) return;
+    const ctx = this.ctx;
+    const [x1, y1] = this.points[0];
+    const [x2, y2] = this.points[1];
+    const run = x2 - x1;
+    const rise = y2 - y1;
+    
+    if (run === 0) return;
+    
+    const [r1x, r1y] = this.toCanvas(x1, y1);
+    const [r2x, r2y] = this.toCanvas(x2, y1);
+    const [r3x, r3y] = this.toCanvas(x2, y2);
+    
+    ctx.strokeStyle = '#2A9D8F';
+    ctx.lineWidth = 3;
+    ctx.setLineDash([7, 4]);
+    ctx.beginPath();
+    ctx.moveTo(r1x, r1y);
+    ctx.lineTo(r2x, r2y);
+    ctx.stroke();
+    
+    ctx.strokeStyle = '#F4A261';
+    ctx.beginPath();
+    ctx.moveTo(r2x, r2y);
+    ctx.lineTo(r3x, r3y);
+    ctx.stroke();
+    ctx.setLineDash([]);
+    
+    ctx.font = 'bold 12px "Plus Jakarta Sans"';
+    const runLabel = `run = ${run}`;
+    const riseLabel = `rise = ${rise}`;
+    
+    const runX = (r1x + r2x) / 2;
+    const runY = r1y + (rise > 0 ? 22 : -16);
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    const runW = ctx.measureText(runLabel).width + 12;
+    ctx.fillRect(runX - runW/2, runY - 9, runW, 16);
+    ctx.fillStyle = '#2A9D8F';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(runLabel, runX, runY);
+    
+    const riseX = r2x + (run > 0 ? 50 : -50);
+    const riseY = (r2y + r3y) / 2;
+    ctx.fillStyle = 'rgba(255,255,255,0.95)';
+    const riseW = ctx.measureText(riseLabel).width + 12;
+    ctx.fillRect(riseX - riseW/2, riseY - 8, riseW, 16);
+    ctx.fillStyle = '#F4A261';
+    ctx.textAlign = 'center';
+    ctx.fillText(riseLabel, riseX, riseY);
+  }
+  
+  drawPoints() {
+    const ctx = this.ctx;
+    this.points.forEach(([x, y], i) => {
+      const [px, py] = this.toCanvas(x, y);
+      ctx.fillStyle = i === 0 ? '#E76F51' : '#2A9D8F';
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.arc(px, py, 9, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.stroke();
+      
+      ctx.fillStyle = '#264653';
+      ctx.font = 'bold 11px "JetBrains Mono"';
+      ctx.textAlign = 'left';
+      ctx.textBaseline = 'bottom';
+      const lbl = String.fromCharCode(65 + i);
+      ctx.fillText(`${lbl}(${x}, ${y})`, px + 13, py - 11);
+    });
+  }
+  
+  render() {
+    if (!this.w) return;
+    this.ctx.clearRect(0, 0, this.w, this.h);
+    this.drawGrid();
+    if (this.opts.showRiseRun) this.drawRiseRun();
+    if (this.opts.drawLine !== false) this.drawLine();
+    if (this.opts.showPoints !== false) this.drawPoints();
+  }
+  
+  setPoints(pts) {
+    this.points = pts.map(p => [...p]);
+    this.render();
+    if (this.onChange) this.onChange();
+  }
+}
+
+// ============= INTRO CANVAS (Slide 3) =============
+let introPlane;
+function initIntroCanvas() {
+  if (introPlane) return;
+  introPlane = new Plane('introCanvas', {
+    unit: 26,
+    points: [[-3, -1], [3, 4]],
+    interactive: true,
+    onChange: updateIntroEq
+  });
+  updateIntroEq();
+}
+function updateIntroEq() {
+  if (!introPlane) return;
+  const [x1, y1] = introPlane.points[0];
+  const [x2, y2] = introPlane.points[1];
+  if (x1 === x2) {
+    document.getElementById('introEq').innerHTML = `x = ${x1} <span style="color:#FCA5A5">(vertical line — undefined slope)</span>`;
+    return;
+  }
+  const m = (y2 - y1) / (x2 - x1);
+  const b = y1 - m * x1;
+  const mStr = m === Math.round(m) ? m.toFixed(0) : m.toFixed(2);
+  const bStr = b === Math.round(b) ? b.toFixed(0) : b.toFixed(2);
+  const sign = b >= 0 ? '+' : '−';
+  const colorClass = m > 0 ? 'pos' : (m < 0 ? 'neg' : '');
+  document.getElementById('introEq').innerHTML = `y = <span class="${colorClass}">${mStr}</span>x ${sign} ${Math.abs(b).toFixed(2)}`;
+}
+
+// ============= LINEAR IDENTIFICATION (Slide 3) =============
+const eqData = [
+  { eq: "y = 2x + 3", linear: true },
+  { eq: "y = x² − 4", linear: false },
+  { eq: "2x + 3y = 7", linear: true },
+  { eq: "y = √x + 1", linear: false },
+  { eq: "y = 5 − x", linear: true },
+  { eq: "y = 1/x", linear: false },
+  { eq: "3x − y = 8", linear: true },
+  { eq: "y = x³ + 2", linear: false }
+];
+let classifyMode = 'linear';
+const eqGrid = document.getElementById('eqGrid');
+const eqState = {};
+
+eqData.forEach((item, i) => {
+  const div = document.createElement('div');
+  div.className = 'eq-card';
+  div.textContent = item.eq;
+  div.dataset.idx = i;
+  div.addEventListener('click', () => {
+    if (eqState[i]) return;
+    if (classifyMode === 'linear') {
+      div.classList.add('selected-linear');
+      eqState[i] = 'linear';
+    } else {
+      div.classList.add('selected-nonlinear');
+      eqState[i] = 'nonlinear';
+    }
+    updateLinearScore();
+  });
+  eqGrid.appendChild(div);
+});
+
+document.getElementById('linearMode').addEventListener('click', () => classifyMode = 'linear');
+document.getElementById('nonlinearMode').addEventListener('click', () => classifyMode = 'nonlinear');
+document.getElementById('checkLinear').addEventListener('click', () => {
+  document.querySelectorAll('.eq-card').forEach((card, i) => {
+    if (eqData[i].linear) card.classList.add('reveal-linear');
+    else card.classList.add('reveal-nonlinear');
+  });
+  setTimeout(updateLinearScore, 100);
+});
+
+function updateLinearScore() {
+  let correct = 0;
+  let answered = 0;
+  eqData.forEach((item, i) => {
+    if (eqState[i]) {
+      answered++;
+      if ((eqState[i] === 'linear') === item.linear) correct++;
+    }
+  });
+  const total = eqData.length;
+  const showRevealed = document.querySelectorAll('.eq-card.reveal-linear, .eq-card.reveal-nonlinear').length;
+  let text;
+  if (showRevealed === total) {
+    text = (currentLang === 'id' ? 'Hasil: ' : 'Result: ') + correct + ' / ' + total;
+  } else {
+    text = (currentLang === 'id' ? 'Skor: ' : 'Score: ') + correct + ' / ' + total + ' (' + answered + ' dijawab)';
+  }
+  document.getElementById('linearScore').textContent = text;
+}
+
+// ============= SLOPE INTRO CANVAS (Tab 4.1) =============
+let slopeIntroPlane;
+function initSlopeIntro() {
+  if (slopeIntroPlane) return;
+  slopeIntroPlane = new Plane('slopeIntroCanvas', {
+    unit: 28,
+    points: [[-2, -1], [2, 3]],
+    interactive: true,
+    showRiseRun: true,
+    onChange: updateSlopeIntroDisplay
+  });
+  updateSlopeIntroDisplay();
+}
+function updateSlopeIntroDisplay() {
+  if (!slopeIntroPlane) return;
+  const [x1, y1] = slopeIntroPlane.points[0];
+  const [x2, y2] = slopeIntroPlane.points[1];
+  const disp = document.getElementById('slopeIntroDisplay');
+  if (x1 === x2) {
+    disp.innerHTML = `m = <span class="neg">undefined</span> (${currentLang==='id'?'garis vertikal':'vertical line'})`;
+    return;
+  }
+  const run = x2 - x1;
+  const rise = y2 - y1;
+  const m = rise / run;
+  const mStr = Number.isInteger(m) ? m.toString() : m.toFixed(2);
+  let type;
+  if (m > 0) type = currentLang === 'id' ? 'positif — garis naik ke kanan' : 'positive — line goes up to the right';
+  else if (m < 0) type = currentLang === 'id' ? 'negatif — garis turun ke kanan' : 'negative — line goes down to the right';
+  else type = currentLang === 'id' ? 'nol — garis horizontal' : 'zero — horizontal line';
+  const cls = m > 0 ? 'pos' : (m < 0 ? 'neg' : '');
+  disp.innerHTML = `m = rise/run = ${rise}/${run} = <span class="${cls}">${mStr}</span> <br><span style="font-size:13px;opacity:.85">(${type})</span>`;
+}
+function setSlopeExample(type) {
+  if (!slopeIntroPlane) return;
+  if (type === 'pos') slopeIntroPlane.setPoints([[-2, -1], [2, 3]]);
+  else if (type === 'neg') slopeIntroPlane.setPoints([[-2, 3], [2, -1]]);
+  else if (type === 'zero') slopeIntroPlane.setPoints([[-3, 2], [3, 2]]);
+  updateSlopeIntroDisplay();
+}
+
+// ============= DRAWING CANVAS (Tab 4.1) =============
+let drawCtx, drawCanvas, isDrawing = false, lastPt = null;
+function initDrawCanvas() {
+  drawCanvas = document.getElementById('drawCanvas');
+  if (!drawCanvas || drawCanvas._init) return;
+  drawCanvas._init = true;
+  drawCtx = drawCanvas.getContext('2d');
+  resizeDrawCanvas();
+  
+  const getPos = (e) => {
+    const rect = drawCanvas.getBoundingClientRect();
+    const t = e.touches ? e.touches[0] : e;
+    return [t.clientX - rect.left, t.clientY - rect.top];
+  };
+  
+  const start = (e) => { e.preventDefault(); isDrawing = true; lastPt = getPos(e); };
+  const move = (e) => {
+    if (!isDrawing) return;
+    e.preventDefault();
+    const [x, y] = getPos(e);
+    drawCtx.strokeStyle = '#E76F51';
+    drawCtx.lineWidth = 3;
+    drawCtx.lineCap = 'round';
+    drawCtx.beginPath();
+    drawCtx.moveTo(lastPt[0], lastPt[1]);
+    drawCtx.lineTo(x, y);
+    drawCtx.stroke();
+    lastPt = [x, y];
+  };
+  const end = () => { isDrawing = false; };
+  
+  drawCanvas.addEventListener('mousedown', start);
+  drawCanvas.addEventListener('mousemove', move);
+  drawCanvas.addEventListener('mouseup', end);
+  drawCanvas.addEventListener('mouseleave', end);
+  drawCanvas.addEventListener('touchstart', start, {passive:false});
+  drawCanvas.addEventListener('touchmove', move, {passive:false});
+  drawCanvas.addEventListener('touchend', end);
+}
+function resizeDrawCanvas() {
+  if (!drawCanvas) return;
+  const rect = drawCanvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  drawCanvas.width = rect.width * dpr;
+  drawCanvas.height = rect.height * dpr;
+  drawCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  drawDrawCanvasGrid(rect.width, rect.height);
+}
+function drawDrawCanvasGrid(w, h) {
+  drawCtx.clearRect(0, 0, w, h);
+  const unit = 28;
+  const cx = w / 2, cy = h / 2;
+  
+  drawCtx.strokeStyle = 'rgba(244, 221, 181, 0.6)';
+  drawCtx.lineWidth = 1;
+  for (let x = cx % unit; x < w; x += unit) {
+    drawCtx.beginPath();
+    drawCtx.moveTo(x, 0); drawCtx.lineTo(x, h); drawCtx.stroke();
+  }
+  for (let y = cy % unit; y < h; y += unit) {
+    drawCtx.beginPath();
+    drawCtx.moveTo(0, y); drawCtx.lineTo(w, y); drawCtx.stroke();
+  }
+  
+  drawCtx.strokeStyle = '#264653';
+  drawCtx.lineWidth = 2;
+  drawCtx.beginPath();
+  drawCtx.moveTo(0, cy); drawCtx.lineTo(w, cy);
+  drawCtx.moveTo(cx, 0); drawCtx.lineTo(cx, h);
+  drawCtx.stroke();
+  
+  drawCtx.fillStyle = '#264653';
+  drawCtx.beginPath();
+  drawCtx.moveTo(w-2, cy); drawCtx.lineTo(w-12, cy-6); drawCtx.lineTo(w-12, cy+6); drawCtx.fill();
+  drawCtx.beginPath();
+  drawCtx.moveTo(cx, 2); drawCtx.lineTo(cx-6, 12); drawCtx.lineTo(cx+6, 12); drawCtx.fill();
+}
+function clearDrawCanvas() {
+  if (!drawCanvas) return;
+  const rect = drawCanvas.getBoundingClientRect();
+  drawDrawCanvasGrid(rect.width, rect.height);
+}
+
+// ============= SLOPE-INTERCEPT CANVAS (Tab 4.2) =============
+let siPlane;
+function initSI() {
+  if (siPlane) return;
+  siPlane = new Plane('slopeInterceptCanvas', {
+    unit: 28,
+    drawLine: false,
+    showPoints: false
+  });
+  drawSILine();
+  
+  document.getElementById('mSlider').addEventListener('input', () => {
+    document.getElementById('mVal').textContent = parseFloat(document.getElementById('mSlider').value).toFixed(1);
+    drawSILine();
+  });
+  document.getElementById('bSlider').addEventListener('input', () => {
+    document.getElementById('bVal').textContent = document.getElementById('bSlider').value;
+    drawSILine();
+  });
+}
+function drawSILine() {
+  if (!siPlane) return;
+  const m = parseFloat(document.getElementById('mSlider').value);
+  const b = parseInt(document.getElementById('bSlider').value);
+  
+  siPlane.ctx.clearRect(0, 0, siPlane.w, siPlane.h);
+  siPlane.drawGrid();
+  
+  const ctx = siPlane.ctx;
+  const xLeft = -siPlane.cx / siPlane.unit;
+  const xRight = (siPlane.w - siPlane.cx) / siPlane.unit;
+  const [c1x, c1y] = siPlane.toCanvas(xLeft, m * xLeft + b);
+  const [c2x, c2y] = siPlane.toCanvas(xRight, m * xRight + b);
+  ctx.strokeStyle = '#E76F51';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(c1x, c1y);
+  ctx.lineTo(c2x, c2y);
+  ctx.stroke();
+  
+  const [bx, by] = siPlane.toCanvas(0, b);
+  ctx.fillStyle = '#2A9D8F';
+  ctx.strokeStyle = 'white';
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.arc(bx, by, 8, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = '#264653';
+  ctx.font = 'bold 11px "JetBrains Mono"';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'bottom';
+  ctx.fillText(`b(0, ${b})`, bx + 12, by - 10);
+  
+  const mStr = m.toFixed(1);
+  const bStr = b.toString();
+  const sign = b >= 0 ? '+' : '−';
+  document.getElementById('siEqDisplay').innerHTML = `y = <span class="pos">${mStr}</span>x ${sign} ${Math.abs(b)}`;
+}
+
+// ============= PARALLEL & PERPENDICULAR CANVASES (Tab 4.5) =============
+function drawStaticLine(canvasId, m, b, color, label) {
+  const canvas = document.getElementById(canvasId);
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.getBoundingClientRect();
+  canvas.width = rect.width * dpr;
+  canvas.height = rect.height * dpr;
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const w = rect.width, h = rect.height;
+  const unit = 26;
+  const cx = w / 2, cy = h / 2;
+  
+  ctx.strokeStyle = 'rgba(244, 221, 181, 0.6)';
+  ctx.lineWidth = 1;
+  const xU = Math.ceil(w / 2 / unit) + 1;
+  const yU = Math.ceil(h / 2 / unit) + 1;
+  for (let i = -xU; i <= xU; i++) {
+    const x = cx + i * unit;
+    if (x < 0 || x > w) continue;
+    ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+  }
+  for (let i = -yU; i <= yU; i++) {
+    const y = cy + i * unit;
+    if (y < 0 || y > h) continue;
+    ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+  }
+  
+  ctx.strokeStyle = '#264653';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.moveTo(0, cy); ctx.lineTo(w, cy);
+  ctx.moveTo(cx, 0); ctx.lineTo(cx, h);
+  ctx.stroke();
+  
+  const xLeft = -cx / unit;
+  const xRight = (w - cx) / unit;
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 3;
+  ctx.beginPath();
+  ctx.moveTo(0, cy - (m * xLeft + b) * unit);
+  ctx.lineTo(w, cy - (m * xRight + b) * unit);
+  ctx.stroke();
+  
+  ctx.fillStyle = color;
+  ctx.font = 'bold 13px "JetBrains Mono"';
+  ctx.textAlign = 'left';
+  ctx.textBaseline = 'top';
+  const sign = b >= 0 ? '+' : '−';
+  ctx.fillText(`${label}: y = ${m}x ${sign} ${Math.abs(b)}`, 10, 10);
+}
+
+function drawParallel() {
+  drawStaticLine('parallelCanvas', 1, 0, '#E76F51', 'L1');
+  const canvas = document.getElementById('parallelCanvas');
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect();
+  const w = rect.width, h = rect.height;
+  const unit = 26, cx = w/2, cy = h/2;
+  ctx.strokeStyle = '#2A9D8F';
+  ctx.lineWidth = 3;
+  const xLeft = -cx/unit, xRight = (w-cx)/unit;
+  ctx.beginPath();
+  ctx.moveTo(0, cy - (1 * xLeft + 3) * unit);
+  ctx.lineTo(w, cy - (1 * xRight + 3) * unit);
+  ctx.stroke();
+  ctx.fillStyle = '#2A9D8F';
+  ctx.font = 'bold 13px "JetBrains Mono"';
+  ctx.fillText('L2: y = x + 3', 10, 30);
+  ctx.fillStyle = '#264653';
+  ctx.font = 'italic 12px "Plus Jakarta Sans"';
+  ctx.fillText('Both slopes = 1 → Parallel!', 10, 52);
+}
+
+function drawPerpendicular() {
+  drawStaticLine('perpCanvas', 2, 0, '#E76F51', 'L1');
+  const canvas = document.getElementById('perpCanvas');
+  const ctx = canvas.getContext('2d');
+  const rect = canvas.getBoundingClientRect();
+  const w = rect.width, h = rect.height;
+  const unit = 26, cx = w/2, cy = h/2;
+  ctx.strokeStyle = '#2A9D8F';
+  ctx.lineWidth = 3;
+  const xLeft = -cx/unit, xRight = (w-cx)/unit;
+  ctx.beginPath();
+  ctx.moveTo(0, cy - (-0.5 * xLeft + 0) * unit);
+  ctx.lineTo(w, cy - (-0.5 * xRight + 0) * unit);
+  ctx.stroke();
+  ctx.fillStyle = '#2A9D8F';
+  ctx.font = 'bold 13px "JetBrains Mono"';
+  ctx.fillText('L2: y = -½x', 10, 30);
+  ctx.fillStyle = '#264653';
+  ctx.font = 'italic 12px "Plus Jakarta Sans"';
+  ctx.fillText('2 × (-½) = -1 → Perpendicular!', 10, 52);
+}
+
+// ============= QUESTIONS DATA =============
+const QUESTIONS = {
+  slopeFromEq: [
+    { q_en: "y = 3x + 5", q_id: "y = 3x + 5", options: ["3", "5", "-3", "-5"], answer: 0,
+      expl_en: "In y = mx + b, m (the coefficient of x) is the slope. Here m = 3.",
+      expl_id: "Pada y = mx + b, m (koefisien x) adalah gradien. Di sini m = 3." },
+    { q_en: "y = -2x + 7", q_id: "y = -2x + 7", options: ["7", "2", "-2", "-7"], answer: 2,
+      expl_en: "The coefficient of x is -2, so m = -2.",
+      expl_id: "Koefisien x adalah -2, jadi m = -2." },
+    { q_en: "y = ½x − 4", q_id: "y = ½x − 4", options: ["½", "-4", "4", "-½"], answer: 0,
+      expl_en: "The coefficient of x is ½, so m = ½.",
+      expl_id: "Koefisien x adalah ½, jadi m = ½." },
+    { q_en: "y = -x + 8", q_id: "y = -x + 8", options: ["8", "1", "-1", "0"], answer: 2,
+      expl_en: "y = -1·x + 8, so the slope m = -1.",
+      expl_id: "y = -1·x + 8, jadi gradien m = -1." },
+    { q_en: "y = 4x - 3", q_id: "y = 4x - 3", options: ["-3", "4", "3", "-4"], answer: 1,
+      expl_en: "The coefficient of x is 4, so m = 4.",
+      expl_id: "Koefisien x adalah 4, jadi m = 4." },
+    { q_en: "y = -5x + 1", q_id: "y = -5x + 1", options: ["1", "5", "-5", "-1"], answer: 2,
+      expl_en: "The coefficient of x is -5, so m = -5.",
+      expl_id: "Koefisien x adalah -5, jadi m = -5." },
+    { q_en: "y = (2/3)x + 6", q_id: "y = (2/3)x + 6", options: ["6", "2/3", "3/2", "-2/3"], answer: 1,
+      expl_en: "The coefficient of x is 2/3, so m = 2/3.",
+      expl_id: "Koefisien x adalah 2/3, jadi m = 2/3." },
+    { q_en: "y = 7x", q_id: "y = 7x", options: ["0", "7", "1", "undefined"], answer: 1,
+      expl_en: "y = 7x + 0, so the slope is 7 (and y-intercept is 0).",
+      expl_id: "y = 7x + 0, jadi gradiennya 7 (dan perpotongan-y adalah 0)." },
+    { q_en: "y = -3x - 2", q_id: "y = -3x - 2", options: ["-2", "2", "3", "-3"], answer: 3,
+      expl_en: "The coefficient of x is -3, so m = -3.",
+      expl_id: "Koefisien x adalah -3, jadi m = -3." },
+    { q_en: "y = (3/4)x - 5", q_id: "y = (3/4)x - 5", options: ["-5", "3/4", "4/3", "-3/4"], answer: 1,
+      expl_en: "The coefficient of x is 3/4, so m = 3/4.",
+      expl_id: "Koefisien x adalah 3/4, jadi m = 3/4." }
+  ],
+  
+  findEq: [
+    { q_en: "y-intercept = -6, passes through (2, 4)", q_id: "perpotongan-y = -6, melalui (2, 4)",
+      options: ["y = 5x - 6", "y = -5x - 6", "y = 2x - 6", "y = 5x + 6"], answer: 0,
+      expl_en: "b = -6. Substitute (2,4): 4 = 2m - 6 → 2m = 10 → m = 5. So y = 5x - 6.",
+      expl_id: "b = -6. Substitusi (2,4): 4 = 2m - 6 → 2m = 10 → m = 5. Jadi y = 5x - 6." },
+    { q_en: "y-intercept = 2, passes through (1, 5)", q_id: "perpotongan-y = 2, melalui (1, 5)",
+      options: ["y = 3x + 2", "y = 2x + 3", "y = 5x + 2", "y = 3x - 2"], answer: 0,
+      expl_en: "b = 2. Sub (1,5): 5 = m + 2 → m = 3. So y = 3x + 2.",
+      expl_id: "b = 2. Sub (1,5): 5 = m + 2 → m = 3. Jadi y = 3x + 2." },
+    { q_en: "y-intercept = 0, passes through (3, 6)", q_id: "perpotongan-y = 0, melalui (3, 6)",
+      options: ["y = 2x", "y = 3x", "y = x", "y = 6x"], answer: 0,
+      expl_en: "b = 0. Sub (3,6): 6 = 3m → m = 2. So y = 2x.",
+      expl_id: "b = 0. Sub (3,6): 6 = 3m → m = 2. Jadi y = 2x." },
+    { q_en: "y-intercept = -3, passes through (4, 5)", q_id: "perpotongan-y = -3, melalui (4, 5)",
+      options: ["y = 2x - 3", "y = -2x - 3", "y = x - 3", "y = 2x + 3"], answer: 0,
+      expl_en: "b = -3. Sub (4,5): 5 = 4m - 3 → 4m = 8 → m = 2. So y = 2x - 3.",
+      expl_id: "b = -3. Sub (4,5): 5 = 4m - 3 → 4m = 8 → m = 2. Jadi y = 2x - 3." },
+    { q_en: "y-intercept = 4, passes through (-1, 1)", q_id: "perpotongan-y = 4, melalui (-1, 1)",
+      options: ["y = 3x + 4", "y = -3x + 4", "y = 3x - 4", "y = -3x - 4"], answer: 0,
+      expl_en: "b = 4. Sub (-1,1): 1 = -m + 4 → m = 3. So y = 3x + 4. Check: 3(-1)+4 = 1 ✓.",
+      expl_id: "b = 4. Sub (-1,1): 1 = -m + 4 → m = 3. Jadi y = 3x + 4. Periksa: 3(-1)+4 = 1 ✓." },
+    { q_en: "y-intercept = -1, passes through (2, 3)", q_id: "perpotongan-y = -1, melalui (2, 3)",
+      options: ["y = 2x - 1", "y = -2x - 1", "y = x - 1", "y = 2x + 1"], answer: 0,
+      expl_en: "b = -1. Sub (2,3): 3 = 2m - 1 → 2m = 4 → m = 2. So y = 2x - 1.",
+      expl_id: "b = -1. Sub (2,3): 3 = 2m - 1 → 2m = 4 → m = 2. Jadi y = 2x - 1." },
+    { q_en: "y-intercept = 5, passes through (3, -1)", q_id: "perpotongan-y = 5, melalui (3, -1)",
+      options: ["y = -2x + 5", "y = 2x + 5", "y = -2x - 5", "y = 2x - 5"], answer: 0,
+      expl_en: "b = 5. Sub (3,-1): -1 = 3m + 5 → 3m = -6 → m = -2. So y = -2x + 5.",
+      expl_id: "b = 5. Sub (3,-1): -1 = 3m + 5 → 3m = -6 → m = -2. Jadi y = -2x + 5." },
+    { q_en: "y-intercept = 0, passes through (-2, 6)", q_id: "perpotongan-y = 0, melalui (-2, 6)",
+      options: ["y = -3x", "y = 3x", "y = -2x", "y = 6x"], answer: 0,
+      expl_en: "b = 0. Sub (-2,6): 6 = -2m → m = -3. So y = -3x.",
+      expl_id: "b = 0. Sub (-2,6): 6 = -2m → m = -3. Jadi y = -3x." },
+    { q_en: "y-intercept = -4, passes through (3, -1)", q_id: "perpotongan-y = -4, melalui (3, -1)",
+      options: ["y = x - 4", "y = -x - 4", "y = x + 4", "y = 3x - 4"], answer: 0,
+      expl_en: "b = -4. Sub (3,-1): -1 = 3m - 4 → 3m = 3 → m = 1. So y = x - 4.",
+      expl_id: "b = -4. Sub (3,-1): -1 = 3m - 4 → 3m = 3 → m = 1. Jadi y = x - 4." },
+    { q_en: "y-intercept = 3, passes through (2, 7)", q_id: "perpotongan-y = 3, melalui (2, 7)",
+      options: ["y = 2x + 3", "y = -2x + 3", "y = 2x - 3", "y = 3x + 2"], answer: 0,
+      expl_en: "b = 3. Sub (2,7): 7 = 2m + 3 → 2m = 4 → m = 2. So y = 2x + 3.",
+      expl_id: "b = 3. Sub (2,7): 7 = 2m + 3 → 2m = 4 → m = 2. Jadi y = 2x + 3." }
+  ],
+
+  pointSlope: [
+    { q_en: "Points (1, 2) and (3, 6). Find the equation in the form y = mx + b.",
+      q_id: "Titik (1, 2) dan (3, 6). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = 2x", "y = 2x + 2", "y = 2x - 2", "y = 4x - 2"], answer: 0,
+      expl_en: "m = (6-2)/(3-1) = 2. Point-slope: y - 2 = 2(x - 1). Expand: y = 2x - 2 + 2. Final: y = 2x.",
+      expl_id: "m = (6-2)/(3-1) = 2. Point-slope: y - 2 = 2(x - 1). Ekspansi: y = 2x - 2 + 2. Akhir: y = 2x." },
+    { q_en: "Points (2, 5) and (4, 1). Find the equation in the form y = mx + b.",
+      q_id: "Titik (2, 5) dan (4, 1). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = -2x + 9", "y = -2x + 5", "y = -2x - 9", "y = 2x + 9"], answer: 0,
+      expl_en: "m = (1-5)/(4-2) = -2. Point-slope: y - 5 = -2(x - 2). Expand: y = -2x + 4 + 5. Final: y = -2x + 9.",
+      expl_id: "m = (1-5)/(4-2) = -2. Point-slope: y - 5 = -2(x - 2). Ekspansi: y = -2x + 4 + 5. Akhir: y = -2x + 9." },
+    { q_en: "Points (-1, 3) and (2, 9). Find the equation in the form y = mx + b.",
+      q_id: "Titik (-1, 3) dan (2, 9). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = 2x + 5", "y = 2x + 3", "y = 2x + 1", "y = 2x - 5"], answer: 0,
+      expl_en: "m = (9-3)/(2-(-1)) = 2. Point-slope: y - 3 = 2(x + 1). Expand: y = 2x + 2 + 3. Final: y = 2x + 5.",
+      expl_id: "m = (9-3)/(2-(-1)) = 2. Point-slope: y - 3 = 2(x + 1). Ekspansi: y = 2x + 2 + 3. Akhir: y = 2x + 5." },
+    { q_en: "Points (0, 4) and (3, -2). Find the equation in the form y = mx + b.",
+      q_id: "Titik (0, 4) dan (3, -2). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = -2x + 4", "y = -2x - 4", "y = -2x + 2", "y = 2x + 4"], answer: 0,
+      expl_en: "m = (-2-4)/(3-0) = -2. Point-slope: y - 4 = -2(x - 0). Expand: y = -2x + 4. Final: y = -2x + 4.",
+      expl_id: "m = (-2-4)/(3-0) = -2. Point-slope: y - 4 = -2(x - 0). Ekspansi: y = -2x + 4. Akhir: y = -2x + 4." },
+    { q_en: "Points (4, 7) and (6, 11). Find the equation in the form y = mx + b.",
+      q_id: "Titik (4, 7) dan (6, 11). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = 2x - 1", "y = 2x + 7", "y = 2x - 7", "y = 2x + 1"], answer: 0,
+      expl_en: "m = (11-7)/(6-4) = 2. Point-slope: y - 7 = 2(x - 4). Expand: y = 2x - 8 + 7. Final: y = 2x - 1.",
+      expl_id: "m = (11-7)/(6-4) = 2. Point-slope: y - 7 = 2(x - 4). Ekspansi: y = 2x - 8 + 7. Akhir: y = 2x - 1." },
+    { q_en: "Points (-2, -3) and (1, 6). Find the equation in the form y = mx + b.",
+      q_id: "Titik (-2, -3) dan (1, 6). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = 3x + 3", "y = 3x - 3", "y = 3x + 6", "y = 3x + 9"], answer: 0,
+      expl_en: "m = (6-(-3))/(1-(-2)) = 3. Point-slope: y + 3 = 3(x + 2). Expand: y = 3x + 6 - 3. Final: y = 3x + 3.",
+      expl_id: "m = (6-(-3))/(1-(-2)) = 3. Point-slope: y + 3 = 3(x + 2). Ekspansi: y = 3x + 6 - 3. Akhir: y = 3x + 3." },
+    { q_en: "Points (5, 2) and (8, 2). Find the equation in the form y = mx + b.",
+      q_id: "Titik (5, 2) dan (8, 2). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = 2", "y = 0", "y = 2x", "y = x + 2"], answer: 0,
+      expl_en: "m = (2-2)/(8-5) = 0. Point-slope: y - 2 = 0(x - 5). Expand: y = 2. This is a horizontal line. Final: y = 2.",
+      expl_id: "m = (2-2)/(8-5) = 0. Point-slope: y - 2 = 0(x - 5). Ekspansi: y = 2. Ini garis horizontal. Akhir: y = 2." },
+    { q_en: "Points (1, 1) and (3, 7). Find the equation in the form y = mx + b.",
+      q_id: "Titik (1, 1) dan (3, 7). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = 3x - 2", "y = 3x + 1", "y = 3x - 1", "y = 3x + 2"], answer: 0,
+      expl_en: "m = (7-1)/(3-1) = 3. Point-slope: y - 1 = 3(x - 1). Expand: y = 3x - 3 + 1. Final: y = 3x - 2.",
+      expl_id: "m = (7-1)/(3-1) = 3. Point-slope: y - 1 = 3(x - 1). Ekspansi: y = 3x - 3 + 1. Akhir: y = 3x - 2." },
+    { q_en: "Points (-3, 4) and (1, -4). Find the equation in the form y = mx + b.",
+      q_id: "Titik (-3, 4) dan (1, -4). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = -2x - 2", "y = -2x + 4", "y = -2x - 6", "y = -2x + 2"], answer: 0,
+      expl_en: "m = (-4-4)/(1-(-3)) = -2. Point-slope: y - 4 = -2(x + 3). Expand: y = -2x - 6 + 4. Final: y = -2x - 2.",
+      expl_id: "m = (-4-4)/(1-(-3)) = -2. Point-slope: y - 4 = -2(x + 3). Ekspansi: y = -2x - 6 + 4. Akhir: y = -2x - 2." },
+    { q_en: "Points (3, -8) and (-7, -9). Find the equation in the form y = mx + b.",
+      q_id: "Titik (3, -8) dan (-7, -9). Tentukan persamaan dalam bentuk y = mx + b.",
+      options: ["y = (1/10)x - 83/10", "y = (1/10)x - 8", "y = (1/10)x - 3/10", "y = (1/10)x + 83/10"], answer: 0,
+      expl_en: "m = (-9-(-8))/(-7-3) = 1/10. Point-slope: y + 8 = (1/10)(x - 3). Expand: y = (1/10)x - 3/10 - 8 = (1/10)x - 83/10. Final: y = (1/10)x - 83/10.",
+      expl_id: "m = (-9-(-8))/(-7-3) = 1/10. Point-slope: y + 8 = (1/10)(x - 3). Ekspansi: y = (1/10)x - 3/10 - 8 = (1/10)x - 83/10. Akhir: y = (1/10)x - 83/10." }
+  ],
+
+  standardForm: [
+    { q_en: "y = 2x + 3", q_id: "y = 2x + 3", options: ["2x - y = -3", "2x + y = 3", "-2x + y = 3", "2x - y = 3"], answer: 0,
+      expl_en: "Subtract 2x from both sides: -2x + y = 3. Multiply by -1: 2x - y = -3.",
+      expl_id: "Kurangi 2x dari kedua sisi: -2x + y = 3. Kalikan -1: 2x - y = -3." },
+    { q_en: "y = -3x + 5", q_id: "y = -3x + 5", options: ["3x + y = 5", "-3x + y = 5", "3x - y = 5", "3x + y = -5"], answer: 0,
+      expl_en: "Add 3x to both sides: 3x + y = 5.",
+      expl_id: "Tambahkan 3x ke kedua sisi: 3x + y = 5." },
+    { q_en: "y = ½x - 4", q_id: "y = ½x - 4", options: ["x - 2y = 8", "x + 2y = -8", "x - 2y = -8", "2x - y = -8"], answer: 0,
+      expl_en: "Multiply everything by 2: 2y = x - 8. Rearrange: x - 2y = 8.",
+      expl_id: "Kalikan semua dengan 2: 2y = x - 8. Atur ulang: x - 2y = 8." },
+    { q_en: "y - 4 = 2(x - 1)", q_id: "y - 4 = 2(x - 1)", options: ["2x - y = -2", "2x + y = 2", "2x - y = 2", "-2x + y = -2"], answer: 0,
+      expl_en: "Expand: y - 4 = 2x - 2 → y = 2x + 2 → -2x + y = 2 → 2x - y = -2.",
+      expl_id: "Ekspansi: y - 4 = 2x - 2 → y = 2x + 2 → -2x + y = 2 → 2x - y = -2." },
+    { q_en: "y + 2 = -3(x + 1)", q_id: "y + 2 = -3(x + 1)", options: ["3x + y = -5", "-3x + y = -5", "3x - y = 5", "3x + y = 5"], answer: 0,
+      expl_en: "Expand: y + 2 = -3x - 3 → y = -3x - 5 → 3x + y = -5.",
+      expl_id: "Ekspansi: y + 2 = -3x - 3 → y = -3x - 5 → 3x + y = -5." },
+    { q_en: "y = 5x", q_id: "y = 5x", options: ["5x - y = 0", "5x + y = 0", "-5x + y = 0", "5x - y = 5"], answer: 0,
+      expl_en: "Subtract 5x: -5x + y = 0. Multiply by -1: 5x - y = 0.",
+      expl_id: "Kurangi 5x: -5x + y = 0. Kalikan -1: 5x - y = 0." },
+    { q_en: "y = -x + 7", q_id: "y = -x + 7", options: ["x + y = 7", "x - y = 7", "-x + y = 7", "x + y = -7"], answer: 0,
+      expl_en: "Add x: x + y = 7.",
+      expl_id: "Tambahkan x: x + y = 7." },
+    { q_en: "y - 3 = ½(x - 4)", q_id: "y - 3 = ½(x - 4)", options: ["x - 2y = -2", "x + 2y = 2", "x - 2y = 2", "2x - y = -2"], answer: 0,
+      expl_en: "Multiply by 2: 2y - 6 = x - 4 → 2y = x + 2 → x - 2y = -2.",
+      expl_id: "Kalikan dengan 2: 2y - 6 = x - 4 → 2y = x + 2 → x - 2y = -2." },
+    { q_en: "y = (2/3)x + 1", q_id: "y = (2/3)x + 1", options: ["2x - 3y = -3", "2x + 3y = 3", "2x - 3y = 3", "-2x + 3y = 3"], answer: 0,
+      expl_en: "Multiply by 3: 3y = 2x + 3 → -2x + 3y = 3 → 2x - 3y = -3.",
+      expl_id: "Kalikan dengan 3: 3y = 2x + 3 → -2x + 3y = 3 → 2x - 3y = -3." },
+    { q_en: "y + 5 = -2(x - 3)", q_id: "y + 5 = -2(x - 3)", options: ["2x + y = 1", "2x - y = 1", "-2x + y = 1", "2x + y = -1"], answer: 0,
+      expl_en: "Expand: y + 5 = -2x + 6 → y = -2x + 1 → 2x + y = 1.",
+      expl_id: "Ekspansi: y + 5 = -2x + 6 → y = -2x + 1 → 2x + y = 1." }
+  ],
+
+  parallel: [
+    { q_en: "Find the equation parallel to y = 2x + 3 through (1, 4).", q_id: "Tentukan persamaan sejajar y = 2x + 3 melalui (1, 4).",
+      options: ["y = 2x + 2", "y = 2x + 4", "y = -½x + 4", "y = 2x - 2"], answer: 0,
+      expl_en: "Parallel → same slope m = 2. Using (1,4): 4 = 2(1) + b → b = 2. So y = 2x + 2.",
+      expl_id: "Sejajar → gradien sama m = 2. Pakai (1,4): 4 = 2(1) + b → b = 2. Jadi y = 2x + 2." },
+    { q_en: "Find the equation perpendicular to y = 2x + 3 through (1, 4).", q_id: "Tentukan persamaan tegak lurus y = 2x + 3 melalui (1, 4).",
+      options: ["y = -½x + 4.5", "y = ½x + 4", "y = -2x + 6", "y = -½x + 3.5"], answer: 0,
+      expl_en: "Perpendicular → m = -1/2. Using (1,4): 4 = -½(1) + b → b = 4.5. So y = -½x + 4.5.",
+      expl_id: "Tegak lurus → m = -1/2. Pakai (1,4): 4 = -½(1) + b → b = 4.5. Jadi y = -½x + 4.5." },
+    { q_en: "Find the equation parallel to y = -3x + 5 through (2, 1).", q_id: "Tentukan persamaan sejajar y = -3x + 5 melalui (2, 1).",
+      options: ["y = -3x + 7", "y = -3x + 1", "y = ⅓x + 7", "y = 3x + 7"], answer: 0,
+      expl_en: "Parallel → m = -3. Using (2,1): 1 = -3(2) + b → b = 7. So y = -3x + 7.",
+      expl_id: "Sejajar → m = -3. Pakai (2,1): 1 = -3(2) + b → b = 7. Jadi y = -3x + 7." },
+    { q_en: "Find the equation perpendicular to y = -3x + 5 through (2, 1).", q_id: "Tentukan persamaan tegak lurus y = -3x + 5 melalui (2, 1).",
+      options: ["y = ⅓x + ⅓", "y = -⅓x + 1", "y = 3x - 5", "y = ⅓x + 1"], answer: 0,
+      expl_en: "Perpendicular → m = 1/3. Using (2,1): 1 = ⅓(2) + b → b = 1/3. So y = ⅓x + ⅓.",
+      expl_id: "Tegak lurus → m = 1/3. Pakai (2,1): 1 = ⅓(2) + b → b = 1/3. Jadi y = ⅓x + ⅓." },
+    { q_en: "Find the equation parallel to y = ½x - 4 through (4, 2).", q_id: "Tentukan persamaan sejajar y = ½x - 4 melalui (4, 2).",
+      options: ["y = ½x", "y = ½x + 2", "y = -2x + 10", "y = ½x - 2"], answer: 0,
+      expl_en: "Parallel → m = ½. Using (4,2): 2 = ½(4) + b → b = 0. So y = ½x.",
+      expl_id: "Sejajar → m = ½. Pakai (4,2): 2 = ½(4) + b → b = 0. Jadi y = ½x." },
+    { q_en: "Find the equation perpendicular to y = ½x - 4 through (4, 2).", q_id: "Tentukan persamaan tegak lurus y = ½x - 4 melalui (4, 2).",
+      options: ["y = -2x + 10", "y = -2x + 2", "y = 2x - 6", "y = -2x - 6"], answer: 0,
+      expl_en: "Perpendicular → m = -2. Using (4,2): 2 = -2(4) + b → b = 10. So y = -2x + 10.",
+      expl_id: "Tegak lurus → m = -2. Pakai (4,2): 2 = -2(4) + b → b = 10. Jadi y = -2x + 10." },
+    { q_en: "Find the equation parallel to 2x + y = 5 through (1, 3).", q_id: "Tentukan persamaan sejajar 2x + y = 5 melalui (1, 3).",
+      options: ["y = -2x + 5", "y = -2x + 3", "y = 2x + 5", "y = ½x + 3"], answer: 0,
+      expl_en: "2x + y = 5 → y = -2x + 5, so m = -2. Using (1,3): 3 = -2(1) + b → b = 5. So y = -2x + 5.",
+      expl_id: "2x + y = 5 → y = -2x + 5, jadi m = -2. Pakai (1,3): 3 = -2(1) + b → b = 5. Jadi y = -2x + 5." },
+    { q_en: "Find the equation perpendicular to 2x + y = 5 through (1, 3).", q_id: "Tentukan persamaan tegak lurus 2x + y = 5 melalui (1, 3).",
+      options: ["y = ½x + 2.5", "y = -½x + 3", "y = ½x + 3", "y = 2x + 1"], answer: 0,
+      expl_en: "Original slope = -2. Perpendicular m = ½. Using (1,3): 3 = ½(1) + b → b = 2.5. So y = ½x + 2.5.",
+      expl_id: "Gradien asli = -2. Tegak lurus m = ½. Pakai (1,3): 3 = ½(1) + b → b = 2.5. Jadi y = ½x + 2.5." },
+    { q_en: "Find the equation parallel to y = 4x - 1 through (0, 0).", q_id: "Tentukan persamaan sejajar y = 4x - 1 melalui (0, 0).",
+      options: ["y = 4x", "y = 4x - 1", "y = -¼x", "y = 4x + 1"], answer: 0,
+      expl_en: "Parallel → m = 4. Through (0,0) means b = 0. So y = 4x.",
+      expl_id: "Sejajar → m = 4. Melalui (0,0) berarti b = 0. Jadi y = 4x." },
+    { q_en: "Find the equation perpendicular to y = 4x - 1 through (0, 2).", q_id: "Tentukan persamaan tegak lurus y = 4x - 1 melalui (0, 2).",
+      options: ["y = -¼x + 2", "y = ¼x + 2", "y = -4x + 2", "y = -¼x"], answer: 0,
+      expl_en: "Perpendicular → m = -¼. Through (0,2) means b = 2. So y = -¼x + 2.",
+      expl_id: "Tegak lurus → m = -¼. Melalui (0,2) berarti b = 2. Jadi y = -¼x + 2." }
+  ],
+
+  quiz: [
+    { q_en: "What is the slope of y = 3x - 5?", q_id: "Berapa gradien dari y = 3x - 5?",
+      options: ["3", "-5", "5", "-3"], answer: 0,
+      expl_en: "In y = mx + b, m = 3.", expl_id: "Pada y = mx + b, m = 3." },
+    { q_en: "What is the y-intercept of y = -2x + 7?", q_id: "Berapa perpotongan-y dari y = -2x + 7?",
+      options: ["7", "-2", "2", "-7"], answer: 0,
+      expl_en: "In y = mx + b, b = 7.", expl_id: "Pada y = mx + b, b = 7." },
+    { q_en: "Which is the slope-intercept form?", q_id: "Manakah bentuk slope-intercept?",
+      options: ["y = mx + b", "Ax + By = C", "y - y₁ = m(x - x₁)", "y = Ax² + Bx + C"], answer: 0,
+      expl_en: "y = mx + b is the slope-intercept form.", expl_id: "y = mx + b adalah bentuk slope-intercept." },
+    { q_en: "Convert y = 4x - 2 to standard form.", q_id: "Ubah y = 4x - 2 ke bentuk standar.",
+      options: ["4x - y = 2", "4x + y = 2", "-4x + y = -2", "4x - y = -2"], answer: 0,
+      expl_en: "y = 4x - 2 → -4x + y = -2 → 4x - y = 2.", expl_id: "y = 4x - 2 → -4x + y = -2 → 4x - y = 2." },
+    { q_en: "What is the slope of a line parallel to y = 2x + 1?", q_id: "Berapa gradien garis sejajar dengan y = 2x + 1?",
+      options: ["2", "-2", "½", "-½"], answer: 0,
+      expl_en: "Parallel lines have the same slope: 2.", expl_id: "Garis sejajar memiliki gradien sama: 2." },
+    { q_en: "What is the slope of a line perpendicular to y = 2x + 1?", q_id: "Berapa gradien garis tegak lurus dengan y = 2x + 1?",
+      options: ["-½", "½", "-2", "2"], answer: 0,
+      expl_en: "Perpendicular slope = -1/2 (negative reciprocal of 2).", expl_id: "Gradien tegak lurus = -1/2 (kebalikan negatif dari 2)." },
+    { q_en: "Find the slope of the line through (1, 2) and (3, 6).", q_id: "Tentukan gradien garis melalui (1, 2) dan (3, 6).",
+      options: ["2", "4", "½", "-2"], answer: 0,
+      expl_en: "m = (6-2)/(3-1) = 4/2 = 2.", expl_id: "m = (6-2)/(3-1) = 4/2 = 2." },
+    { q_en: "Write the equation with y-intercept = -3 through (2, 5).", q_id: "Tulis persamaan dengan perpotongan-y = -3 melalui (2, 5).",
+      options: ["y = 4x - 3", "y = -4x - 3", "y = 4x + 3", "y = 2x - 3"], answer: 0,
+      expl_en: "b = -3, sub (2,5): 5 = 2m - 3 → m = 4. So y = 4x - 3.",
+      expl_id: "b = -3, sub (2,5): 5 = 2m - 3 → m = 4. Jadi y = 4x - 3." },
+    { q_en: "Using point-slope form through (1, 3) with m = 2, what is the final equation y = mx + b?", q_id: "Dengan bentuk point-slope melalui (1, 3) dengan m = 2, berapa persamaan akhir y = mx + b?",
+      options: ["y = 2x + 1", "y = 2x - 1", "y = 2x + 3", "y = 2x - 3"], answer: 0,
+      expl_en: "Point-slope: y - 3 = 2(x - 1). Expand: y = 2x - 2 + 3. Final: y = 2x + 1.",
+      expl_id: "Point-slope: y - 3 = 2(x - 1). Ekspansi: y = 2x - 2 + 3. Akhir: y = 2x + 1." },
+    { q_en: "Is y = x² + 1 a linear equation?", q_id: "Apakah y = x² + 1 persamaan linear?",
+      options: ["No, because x is squared", "Yes, because it has y and x", "Yes, because it equals 1", "No, because it has no slope"], answer: 0,
+      expl_en: "Linear equations have variables to the first power only. x² makes it non-linear (quadratic).",
+      expl_id: "Persamaan linear hanya memiliki variabel pangkat satu. x² membuatnya non-linear (kuadrat)." }
+  ]
+};
+
+// ============= SHUFFLE OPTIONS FUNCTION =============
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+  return array;
+}
+
+function shuffleQuestionOptions(q) {
+  const correctAnswerText = q.options[q.answer];
+  q.options = shuffleArray([...q.options]);
+  q.answer = q.options.indexOf(correctAnswerText);
+}
+
+// Shuffle all questions on load
+Object.keys(QUESTIONS).forEach(category => {
+  QUESTIONS[category].forEach(q => shuffleQuestionOptions(q));
+});
+
+// ============= RENDER QUESTIONS =============
+function renderQuestions(containerId, questions) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.dataset.idx = i;
+    
+    const qText = currentLang === 'id' ? q.q_id : q.q_en;
+    const explText = currentLang === 'id' ? q.expl_id : q.expl_en;
+    
+    card.innerHTML = `
+      <div class="question-text">
+        <span class="q-num">${i+1}</span>
+        <span class="q-text">${qText}</span>
+      </div>
+      <div class="options">
+        ${q.options.map((opt, j) => `
+          <label class="option" data-idx="${j}">
+            <span>${String.fromCharCode(65+j)}) ${opt}</span>
+          </label>
+        `).join('')}
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap">
+        <button class="btn btn-sm check-btn">
+          <i class="fa-solid fa-circle-check"></i>
+          <span data-lang="en">Check Answer</span><span data-lang="id">Cek Jawaban</span>
+        </button>
+        <button class="btn btn-sm btn-ghost expl-btn">
+          <i class="fa-solid fa-lightbulb"></i>
+          <span data-lang="en">Explanation</span><span data-lang="id">Pembahasan</span>
+        </button>
+      </div>
+      <div class="feedback"></div>
+      <div class="explanation">${explText}</div>
+    `;
+    
+    let selected = -1;
+    const options = card.querySelectorAll('.option');
+    options.forEach(opt => {
+      opt.addEventListener('click', () => {
+        options.forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        selected = parseInt(opt.dataset.idx);
+      });
+    });
+    
+    const checkBtn = card.querySelector('.check-btn');
+    const explBtn = card.querySelector('.expl-btn');
+    const feedback = card.querySelector('.feedback');
+    const explanation = card.querySelector('.explanation');
+    
+    checkBtn.addEventListener('click', () => {
+      if (selected === -1) {
+        showToast(currentLang === 'id' ? 'Pilih jawaban dulu!' : 'Please select an answer first!');
+        return;
+      }
+      options.forEach((opt, j) => {
+        opt.classList.remove('correct-answer', 'wrong-answer');
+        if (j === q.answer) opt.classList.add('correct-answer');
+        else if (j === selected) opt.classList.add('wrong-answer');
+      });
+      if (selected === q.answer) {
+        card.classList.remove('wrong');
+        card.classList.add('correct');
+        feedback.className = 'feedback show correct';
+        feedback.innerHTML = '<i class="fa-solid fa-check-circle"></i> ' + (currentLang === 'id' ? 'Benar! Kerja bagus.' : 'Correct! Well done.');
+      } else {
+        card.classList.remove('correct');
+        card.classList.add('wrong');
+        feedback.className = 'feedback show wrong';
+        feedback.innerHTML = '<i class="fa-solid fa-times-circle"></i> ' + (currentLang === 'id' ? 'Belum tepat. Lihat pembahasan.' : 'Not quite. See explanation.');
+      }
+      if (containerId === 'q-quiz') updateQuizScore();
+    });
+    
+    explBtn.addEventListener('click', () => {
+      explanation.classList.toggle('show');
+    });
+    
+    container.appendChild(card);
+  });
+}
+
+function updateQuizScore() {
+  const cards = document.querySelectorAll('#q-quiz .question-card');
+  let correct = 0;
+  cards.forEach(c => { if (c.classList.contains('correct')) correct++; });
+  const scoreDisp = document.getElementById('quizScore');
+  scoreDisp.style.display = 'block';
+  document.getElementById('quizScoreVal').textContent = correct + ' / ' + cards.length;
+  const pct = correct / cards.length;
+  let msg;
+  if (pct === 1) msg = currentLang === 'id' ? 'Sempurna! Kamu menguasai semua materi!' : 'Perfect! You mastered all topics!';
+  else if (pct >= 0.8) msg = currentLang === 'id' ? 'Kerja bagus! Hampir sempurna!' : 'Great job! Almost perfect!';
+  else if (pct >= 0.6) msg = currentLang === 'id' ? 'Bagus! Terus berlatih.' : 'Good! Keep practicing.';
+  else msg = currentLang === 'id' ? 'Tinjau kembali materinya ya.' : 'Review the material again.';
+  document.getElementById('quizScoreMsg').textContent = msg;
+}
+
+// ============= TABS =============
+document.querySelectorAll('#slopeTabs .tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('#slopeTabs .tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    tab.classList.add('active');
+    document.querySelector(`[data-content="${tab.dataset.tab}"]`).classList.add('active');
+    setTimeout(() => {
+      if (tab.dataset.tab === '4-1') { initSlopeIntro(); initDrawCanvas(); }
+      if (tab.dataset.tab === '4-2') initSI();
+      if (tab.dataset.tab === '4-5') { drawParallel(); drawPerpendicular(); }
+      window.dispatchEvent(new Event('resize'));
+    }, 50);
+  });
+});
+
+// ============= INITIALIZATION =============
+function initializeAll() {
+  renderQuestions('q-slopeFromEq', QUESTIONS.slopeFromEq);
+  renderQuestions('q-findEq', QUESTIONS.findEq);
+  renderQuestions('q-pointSlope', QUESTIONS.pointSlope);
+  renderQuestions('q-standardForm', QUESTIONS.standardForm);
+  renderQuestions('q-parallel', QUESTIONS.parallel);
+  renderQuestions('q-quiz', QUESTIONS.quiz);
+  
+  initIntroCanvas();
+  initSlopeIntro();
+  initDrawCanvas();
+  initSI();
+  drawParallel();
+  drawPerpendicular();
+}
+
+window.addEventListener('resize', () => {
+  if (introPlane) introPlane.resize();
+  if (slopeIntroPlane) slopeIntroPlane.resize();
+  if (drawCanvas) resizeDrawCanvas();
+  if (siPlane) { siPlane.resize(); drawSILine(); }
+  drawParallel();
+  drawPerpendicular();
+});
+
+window.addEventListener('load', initializeAll);
+setTimeout(initializeAll, 300);
+
+document.addEventListener('keydown', (e) => {
+  if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+  if (e.key === 'ArrowRight') nextBtn.click();
+  if (e.key === 'ArrowLeft') prevBtn.click();
+});
+
+</script>
+</body>
+</html>

@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPLTV·LAB — Matematika Kelas X (Kurikulum Merdeka)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,600..900;1,9..144,600..900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#FAF6ED; --card:#FFFFFF; --ink:#232838; --sub:#5C6373;
+  --line:#E6DEC9; --teal:#0E7C7B; --coral:#E4572E; --violet:#6D5BD0;
+  --amber:#DE9B12; --green:#3E9B4F; --red:#C6423C; --gold:#E8B33B;
+  --shadow:0 10px 30px rgba(35,40,56,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{font-family:'Plus Jakarta Sans',system-ui,sans-serif;background:var(--paper);color:var(--ink);overflow:hidden}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.35;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:38px 38px}
+/* ===== Chrome ===== */
+#topbar{position:fixed;top:0;left:0;right:0;height:54px;display:flex;align-items:center;gap:14px;padding:0 18px;z-index:50;
+  background:rgba(250,246,237,.88);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.brand{font-family:Fraunces,serif;font-weight:900;font-size:1.05rem;letter-spacing:.01em;white-space:nowrap}
+.brand b{color:var(--coral)}
+#sec-label{font-size:.78rem;font-weight:700;color:var(--sub);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#jump{margin-left:auto;max-width:220px;padding:7px 10px;border:1.5px solid var(--line);border-radius:10px;background:#fff;font-family:inherit;font-weight:600;font-size:.8rem;color:var(--ink)}
+#deck{position:fixed;top:54px;bottom:62px;left:0;right:0}
+#navbar{position:fixed;bottom:0;left:0;right:0;height:62px;display:flex;align-items:center;gap:14px;padding:0 18px;z-index:50;
+  background:rgba(250,246,237,.92);backdrop-filter:blur(8px);border-top:1px solid var(--line)}
+.navbtn{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);background:#fff;color:var(--ink);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.15s}
+.navbtn:hover{border-color:var(--ink);transform:translateY(-1px)}
+.navbtn:disabled{opacity:.35;cursor:not-allowed;transform:none}
+#progress{flex:1;height:6px;background:#EAE3CF;border-radius:99px;overflow:hidden}
+#progress i{display:block;height:100%;width:0;background:var(--coral);transition:width .3s}
+#pagenum{font-weight:800;font-size:.85rem;font-variant-numeric:tabular-nums;min-width:64px;text-align:center}
+/* ===== Slides ===== */
+.slide{position:absolute;inset:0;display:none}
+.slide.active{display:block}
+.wrap{height:100%;width:min(1200px,95vw);margin:0 auto;overflow-y:auto;padding:26px 8px 34px;position:relative;z-index:1;scrollbar-width:thin}
+.slide.active .wrap{animation:rise .5s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.rev{opacity:0}
+.slide.active .rev{animation:rise .55s ease forwards}
+/* ===== Typography ===== */
+.kicker{font-size:.72rem;font-weight:800;letter-spacing:.22em;color:var(--teal);text-transform:uppercase;display:flex;align-items:center;gap:10px}
+.kicker::before{content:"";width:26px;height:2px;background:var(--teal)}
+h1{font-family:Fraunces,serif;font-weight:900;font-size:clamp(2.4rem,5.5vw,4.2rem);line-height:1.06;margin:14px 0 10px;letter-spacing:-.01em}
+h2.title{font-family:Fraunces,serif;font-weight:900;font-size:clamp(1.55rem,3vw,2.35rem);line-height:1.12;margin:10px 0 8px;letter-spacing:-.01em}
+h3{font-family:Fraunces,serif;font-weight:700;font-size:1.12rem;margin-bottom:6px}
+.lede{color:var(--sub);max-width:78ch;line-height:1.65;font-size:.98rem}
+.mark{background:linear-gradient(transparent 60%,rgba(228,87,46,.30) 60%,rgba(228,87,46,.30) 92%,transparent 92%)}
+.sub{margin:20px 0 8px;font-family:Fraunces,serif;font-size:1.2rem}
+.note{margin-top:16px;font-weight:700;font-size:.9rem;color:#7A5A0B;background:#FFF4D6;border:1px dashed #E3C56B;padding:10px 16px;border-radius:12px;display:inline-block}
+/* ===== Components ===== */
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:18px 20px}
+.cols2{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.cols3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}
+.row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:999px;border:1px solid var(--line);background:#fff;font-size:.78rem;font-weight:700;white-space:nowrap}
+.chip.big{font-size:.95rem;padding:10px 18px}
+.tag{background:var(--ink);color:#FFF6E6;border-color:var(--ink)}
+.btn{display:inline-flex;align-items:center;gap:8px;border:none;cursor:pointer;font-family:inherit;font-weight:800;padding:12px 20px;border-radius:14px;transition:.15s;font-size:.95rem}
+.btn.primary{background:var(--ink);color:#FFF6E6;box-shadow:0 6px 16px rgba(35,40,56,.22)}
+.btn.good{background:var(--teal);color:#fff}
+.btn.warn{background:var(--red);color:#fff}
+.btn.ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.btn.small{padding:8px 14px;font-size:.84rem;border-radius:11px}
+.btn.big{padding:16px 28px;font-size:1.05rem;border-radius:16px}
+.btn:hover:not(:disabled){transform:translateY(-1px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.hidden{display:none!important}
+.eqbox{font-family:Georgia,'Times New Roman',serif;background:#FFFDF6;border:1px dashed #D8CDB4;border-radius:12px;padding:12px 16px;font-size:1.04rem;line-height:1.85}
+.eqbox.sm{font-size:.98rem;padding:10px 14px;line-height:1.9}
+.eqbox .tagno{display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--ink);color:#FFF6E6;font-size:.68rem;align-items:center;justify-content:center;font-family:'Plus Jakarta Sans';font-weight:800;margin-right:6px;vertical-align:middle}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--acc,var(--ink));flex:none;display:inline-block}
+.st0{--acc:var(--teal)} .st1{--acc:var(--coral)} .st2{--acc:var(--violet)} .st3{--acc:var(--amber)}
+/* MCQ */
+.mcq .q{font-weight:600;line-height:1.55}
+.opt{display:block;width:100%;text-align:left;padding:10px 14px;border:1.5px solid var(--line);border-radius:12px;background:#fff;cursor:pointer;margin-top:8px;font-weight:600;font-family:inherit;font-size:.92rem;transition:.15s;line-height:1.45}
+.opt:hover{border-color:var(--teal)}
+.opt.right{border-color:var(--green);background:#EAF6EC;color:#1F6B32}
+.opt.wrong{border-color:var(--red);background:#FBEAEA;color:#8F2F2B;animation:shake .3s}
+.opt.sel{border-color:var(--ink);background:#FFF7E6}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+.why{margin-top:10px;font-size:.88rem;color:#1F6B32;background:#EAF6EC;border-radius:10px;padding:10px 14px;line-height:1.5}
+/* Steps */
+.steps ol{list-style:none;counter-reset:s;margin-top:10px;display:grid;gap:8px}
+.steps li{counter-increment:s;position:relative;padding:10px 14px 10px 46px;background:#FFFDF6;border:1px solid var(--line);border-radius:12px;font-size:.93rem;line-height:1.6;animation:rise .35s ease both}
+.steps li::before{content:counter(s);position:absolute;left:12px;top:12px;width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-weight:800;font-size:.75rem;display:flex;align-items:center;justify-content:center}
+.steps li.off{display:none}
+.srow{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap}
+/* Tiles (klasifikasi) */
+.tilebox{margin-top:14px}
+.tiles{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.tile{font-family:Georgia,serif;font-size:1.05rem;padding:16px 12px;border:1.5px solid var(--line);border-radius:14px;background:#fff;cursor:pointer;font-weight:600;text-align:center;transition:.15s}
+.tile:hover{border-color:var(--teal);transform:translateY(-2px)}
+.tile.right{border-color:var(--green);background:#EAF6EC;color:#1F6B32}
+.tile.wrong{border-color:var(--red);background:#FBEAEA;color:#8F2F2B}
+.tilefb{margin-top:10px;font-size:.9rem;font-weight:700;color:var(--sub);background:#FFF4D6;border-radius:10px;padding:10px 14px}
+/* ===== Cover ===== */
+.g{position:absolute;font-family:Fraunces,serif;font-style:italic;font-weight:900;color:var(--ink);opacity:.055;user-select:none;pointer-events:none;z-index:0;animation:floaty 9s ease-in-out infinite}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(var(--r,0deg))}50%{transform:translateY(-16px) rotate(var(--r,0deg))}}
+.cover{display:flex;flex-direction:column;justify-content:center}
+.names{display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:640px;margin-top:22px}
+.namef{display:flex;align-items:center;gap:10px;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px 16px;box-shadow:var(--shadow)}
+.namef input{border:none;outline:none;font-family:inherit;font-weight:700;font-size:1rem;width:100%;background:transparent;color:var(--ink)}
+.namef input::placeholder{color:#B4AD9B;font-weight:500}
+/* ===== Timer & Latihan ===== */
+.rhead{display:flex;gap:20px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.timer{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow);text-align:center;min-width:230px}
+.clock{font-family:Fraunces,serif;font-size:2.5rem;font-weight:900;letter-spacing:.02em;font-variant-numeric:tabular-nums}
+.clock.low{color:var(--red);animation:pulse 1s infinite}
+@keyframes pulse{50%{transform:scale(1.07)}}
+.tbar{height:8px;background:#EFE9D8;border-radius:99px;overflow:hidden;margin:8px 0 12px}
+.tfill{display:block;height:100%;width:100%;background:var(--teal);transition:width .2s linear}
+.tbtns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.hintchip{margin:14px 0 2px;font-size:.86rem;font-weight:700;color:#7A5A0B;background:#FFF4D6;border:1px dashed #E3C56B;padding:9px 15px;border-radius:12px;display:inline-block}
+.quadgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:12px}
+.scard{background:#fff;border:1px solid var(--line);border-top:5px solid var(--acc);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
+.scard header{display:flex;align-items:center;gap:10px}
+.who b{display:block;font-size:.95rem}
+.who .nm-slot{font-size:.78rem;color:var(--sub);font-weight:600}
+.stat{margin-left:auto;font-size:.7rem;font-weight:800;padding:4px 11px;border-radius:999px;background:#F1EDE2;color:var(--sub);white-space:nowrap}
+.stat.work{background:#E4F0EF;color:#0E7C7B}
+.stat.lock{background:#FFF3D6;color:#8A6A10}
+.stat.no{background:#FBEAEA;color:#8F2F2B}
+.qt{font-size:.93rem;line-height:1.55;font-weight:600}
+.ansrow{display:flex;gap:8px;flex-wrap:wrap}
+.ansrow label{font-size:.72rem;font-weight:800;color:var(--sub);display:flex;flex-direction:column;gap:4px;text-transform:uppercase;letter-spacing:.04em}
+.ansrow input{width:88px;padding:9px 11px;border:1.5px solid var(--line);border-radius:10px;font-weight:800;font-family:inherit;font-size:.95rem}
+.ansrow input:focus{outline:2px dashed var(--teal);border-color:var(--teal)}
+.ansrow input:disabled{background:#F3EFE5;color:#9A9484}
+.brow{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.verdict{margin-left:auto;font-weight:800;font-size:.9rem}
+.verdict.good{color:#1F6B32}.verdict.bad{color:#8F2F2B}
+.pemb{background:#F0F7F5;border:1px solid #CFE3DD;border-radius:12px;padding:11px 15px;font-size:.9rem}
+.pemb .steps{margin-top:8px}
+.rfoot{display:flex;justify-content:space-between;margin-top:16px;gap:10px;flex-wrap:wrap}
+/* ===== Hasil ===== */
+.rtable{width:100%;border-collapse:collapse;background:#fff;border-radius:16px;overflow:hidden;box-shadow:var(--shadow);margin-top:14px}
+.rtable th{background:var(--ink);color:#FFF6E6;padding:13px 14px;font-size:.75rem;letter-spacing:.08em;text-align:left;text-transform:uppercase}
+.rtable td{padding:13px 14px;border-top:1px solid var(--line);font-weight:700}
+.rtable td.time{font-variant-numeric:tabular-nums}
+.mut{color:#B4AD9B}
+.no{color:var(--red);font-size:.82rem;font-weight:800}
+.good{color:#1F6B32}.bad{color:#8F2F2B}
+/* ===== Game ===== */
+.glayout{display:grid;grid-template-columns:290px 1fr;gap:16px;align-items:start;margin-top:14px}
+.gside{display:grid;gap:12px}
+#stusel{display:grid;gap:8px}
+.stu{display:flex;align-items:center;gap:9px;padding:11px 13px;border-radius:12px;border:1.5px solid var(--line);background:#fff;font-weight:800;cursor:pointer;font-family:inherit;font-size:.92rem;transition:.15s}
+.stu.on{border-color:var(--acc);background:#F3FAF9;box-shadow:0 0 0 3px rgba(14,124,123,.14)}
+#numgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}
+.numb{aspect-ratio:1;border-radius:12px;font-weight:800;border:none;cursor:pointer;color:#fff;font-size:1rem;position:relative;transition:transform .12s;font-family:inherit}
+.numb:hover{transform:translateY(-2px)}
+.numb.d1{background:var(--green)}.numb.d2{background:var(--amber)}.numb.d3{background:var(--red)}
+.numb.picked{background:#D8D2C2;color:#8B8574;text-decoration:line-through;cursor:not-allowed;transform:none}
+.numb .pt{position:absolute;top:-7px;right:-7px;background:var(--ink);color:#fff;font-size:.58rem;padding:2px 6px;border-radius:999px}
+.legend{display:flex;gap:8px;flex-wrap:wrap}
+.schip{display:inline-flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 16px;font-weight:700;box-shadow:var(--shadow);font-size:.9rem}
+.schip b{font-size:1.1rem;margin-left:2px}
+.gquad{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gpanel{background:#fff;border:1px solid var(--line);border-top:5px solid var(--acc);border-radius:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;max-height:560px}
+.gpanel > header{display:flex;align-items:center;gap:9px;padding:11px 14px;border-bottom:1px solid var(--line);font-weight:800;font-size:.9rem}
+.gpanel .gbody{padding:12px 14px;overflow-y:auto;display:flex;flex-direction:column;gap:9px;scrollbar-width:thin}
+.idle{color:var(--sub);font-size:.88rem;line-height:1.6}
+.qmeta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.qno{font-size:.75rem;font-weight:800;color:var(--sub)}
+.dchip{border:none}
+.dchip.d1{background:#E7F4E9;color:#20662F}.dchip.d2{background:#FDF3D7;color:#7A5A0B}.dchip.d3{background:#FBE7E6;color:#8F2F2B}
+.banner{padding:9px 13px;border-radius:10px;font-weight:800;font-size:.9rem}
+.banner.ok{background:#EAF6EC;color:#1F6B32}.banner.no{background:#FBEAEA;color:#8F2F2B}
+.nexttip{font-size:.8rem;color:var(--sub);font-weight:700}
+/* ===== Podium ===== */
+.podium{display:grid;gap:14px;margin-top:16px}
+.wincard{background:var(--ink);color:#FFF6E6;border-radius:22px;padding:30px 34px;display:flex;align-items:center;gap:22px;box-shadow:0 18px 40px rgba(35,40,56,.28)}
+.wincard .wname{font-family:Fraunces,serif;font-weight:900;font-size:clamp(1.6rem,3.4vw,2.6rem);line-height:1.1}
+.wincard .wscore{font-family:Fraunces,serif;font-weight:900;font-size:2.6rem;color:var(--gold);margin-left:auto}
+.wlabel{font-size:.72rem;letter-spacing:.28em;font-weight:800;color:var(--gold);text-transform:uppercase}
+.rest{list-style:none;display:grid;gap:8px}
+.rest li{display:flex;align-items:center;gap:12px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px 18px;font-weight:800;box-shadow:var(--shadow)}
+.rest .rank{font-family:Fraunces,serif;font-size:1.05rem;color:var(--sub);width:44px}
+.rest .rs{margin-left:auto;font-family:Fraunces,serif;font-size:1.2rem}
+/* ===== Refleksi / Thanks ===== */
+.sumlist{list-style:none;display:grid;gap:10px;margin-top:8px}
+.sumlist li{position:relative;padding:10px 14px 10px 40px;background:#FFFDF6;border:1px solid var(--line);border-radius:12px;font-size:.93rem;line-height:1.55}
+.sumlist li::before{content:"✓";position:absolute;left:13px;top:11px;color:var(--teal);font-weight:900}
+.refl{margin:10px 0 0 20px;display:grid;gap:9px;font-size:.94rem;line-height:1.55}
+.kata{display:flex;flex-direction:column;gap:6px;font-size:.8rem;font-weight:800;color:var(--sub);margin-top:14px;text-transform:uppercase;letter-spacing:.05em}
+.kata input{padding:11px 14px;border:1.5px solid var(--line);border-radius:12px;font-family:inherit;font-weight:700;font-size:1rem}
+.kata input:focus{outline:2px dashed var(--teal)}
+.thanks{text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center}
+.thanks .kicker{justify-content:center}
+.thanks .kicker::before{display:none}
+.thx{font-style:italic}
+.sign{margin-top:18px;font-weight:800;color:var(--sub)}
+.credit{margin-top:26px;font-size:.75rem;color:#B4AD9B;font-weight:700;letter-spacing:.08em;text-transform:uppercase}
+/* Toast & confetti */
+#toast{position:fixed;left:50%;bottom:80px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#FFF6E8;padding:11px 20px;border-radius:999px;font-weight:700;font-size:.88rem;opacity:0;transition:.25s;z-index:99;pointer-events:none;max-width:86vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%)}
+.cf{position:fixed;width:9px;height:9px;border-radius:2px;z-index:120;pointer-events:none;animation:cfly .85s cubic-bezier(.2,.6,.3,1) forwards}
+@keyframes cfly{from{opacity:1;transform:translate(0,0) rotate(0)}to{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(560deg)}}
+@media (max-width:980px){
+  .quadgrid,.cols2,.cols3,.gquad,.tiles,.names{grid-template-columns:1fr}
+  .glayout{grid-template-columns:1fr}
+  .rhead{flex-direction:column}
+  .timer{align-self:stretch}
+  #jump{max-width:150px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header id="topbar">
+  <span class="brand">SPLTV<b>·</b>LAB</span>
+  <span id="sec-label">Cover</span>
+  <select id="jump" aria-label="Lompat ke slide"></select>
+</header>
+
+<main id="deck">
+
+<!-- 1 · COVER -->
+<section class="slide" id="s-cover" data-label="Cover">
+  <span class="g" style="left:3%;top:12%;font-size:12rem;--r:-8deg">x</span>
+  <span class="g" style="right:5%;top:8%;font-size:10rem;--r:10deg">y</span>
+  <span class="g" style="left:10%;bottom:6%;font-size:11rem;--r:6deg">z</span>
+  <span class="g" style="right:12%;bottom:10%;font-size:8rem;--r:-12deg">{ }</span>
+  <span class="g" style="left:46%;top:3%;font-size:6rem;--r:4deg">=</span>
+  <div class="wrap cover">
+    <div class="kicker rev">Matematika · Fase E · Kelas X SMA · Kurikulum Merdeka</div>
+    <h1 class="rev">Sistem Persamaan<br><span class="mark">Linear Tiga Variabel</span></h1>
+    <p class="lede rev">Review PLSV &amp; SPLDV → teori &amp; jurus cepat → pemodelan soal cerita → latihan ber-timer 4 siswa → game turnamen poin. Satu kelas, satu petualangan.</p>
+    <div class="names rev">
+      <div class="namef st0"><span class="dot"></span><input id="nm0" maxlength="20" placeholder="Nama Siswa 1"></div>
+      <div class="namef st1"><span class="dot"></span><input id="nm1" maxlength="20" placeholder="Nama Siswa 2"></div>
+      <div class="namef st2"><span class="dot"></span><input id="nm2" maxlength="20" placeholder="Nama Siswa 3"></div>
+      <div class="namef st3"><span class="dot"></span><input id="nm3" maxlength="20" placeholder="Nama Siswa 4"></div>
+    </div>
+    <div class="row rev">
+      <button class="btn primary big" id="btn-start">Masuk Kelas
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <span class="chip">Tutor: isi nama 4 siswa, lalu mulai</span>
+    </div>
+  </div>
+</section>
+
+<!-- 2 · REVIEW -->
+<section class="slide" id="s-review" data-label="Review PLSV &amp; SPLDV">
+  <div class="wrap">
+    <div class="kicker">Step 0 · Review Prasyarat</div>
+    <h2 class="title">Kilas Balik: <span class="mark">PLSV &amp; SPLDV</span></h2>
+    <p class="lede">Sebelum naik ke tiga variabel, pastikan dua fondasi ini sudah kokoh.</p>
+    <div class="cols2">
+      <div class="card rev">
+        <span class="chip tag">PLSV</span>
+        <h3 style="margin-top:10px">Persamaan Linear Satu Variabel</h3>
+        <div class="eqbox">5x − 8 = 27 &nbsp;→&nbsp; x = 7</div>
+        <p style="margin-top:10px;font-size:.92rem;color:var(--sub);line-height:1.6">Satu variabel, pangkat tertinggi 1. Bentuk umum <b>ax + b = 0</b> (a ≠ 0). Penyelesaian: satu nilai.</p>
+      </div>
+      <div class="card rev">
+        <span class="chip tag">SPLDV</span>
+        <h3 style="margin-top:10px">Persamaan Linear Dua Variabel</h3>
+        <div class="eqbox">2x + y = 52.000 ; x + 3y = 66.000<br>→ (x, y) = (18.000, 16.000)</div>
+        <p style="margin-top:10px;font-size:.92rem;color:var(--sub);line-height:1.6">Dua variabel, dua persamaan. Solusi berupa <b>pasangan (x, y)</b>. Metode: grafik, substitusi, eliminasi.</p>
+      </div>
+    </div>
+    <h3 class="sub">Cek Kilat — Menentukan Variabel</h3>
+    <div class="cols2">
+      <div class="card mcq rev" data-k="1">
+        <p class="q">Sebuah bilangan dikalikan 5, lalu dikurangi 8, hasilnya 27. Modelnya <b>5x − 8 = 27</b>. Variabelnya adalah…</p>
+        <button class="opt">Angka 5 — koefisien persamaan</button>
+        <button class="opt">x — wakil bilangan yang belum diketahui</button>
+        <button class="opt">27 — hasil akhir persamaan</button>
+        <button class="opt">Tanda "− 8" — konstanta pengurang</button>
+        <p class="why hidden">Benar! Variabel adalah "wakil" dari yang dicari. Di sini hanya bilangan itu yang belum diketahui, jadi dilambangkan x.</p>
+      </div>
+      <div class="card mcq rev" data-k="2">
+        <p class="q">Ibu membayar Rp52.000 untuk 2 kg mangga dan 1 kg jeruk. Penugasan variabel paling tepat untuk membuat model matematika adalah…</p>
+        <button class="opt">x = 52.000 dan y = mangga</button>
+        <button class="opt">x = banyak mangga, y = harga total</button>
+        <button class="opt">x = harga 1 kg mangga, y = harga 1 kg jeruk</button>
+        <button class="opt">Tidak perlu variabel, langsung hitung</button>
+        <p class="why hidden">Tepat! Yang ditanya adalah harga satuan → variabel mewakili harga per kg. Dari situ lahir model 2x + y = 52.000.</p>
+      </div>
+    </div>
+    <div class="note rev">Menentukan variabel dengan tepat = setengah dari menaklukkan soal cerita.</div>
+  </div>
+</section>
+
+<!-- 3 · PENGUATAN SPLDV -->
+<section class="slide" id="s-drill" data-label="Penguatan SPLDV">
+  <div class="wrap">
+    <div class="kicker">Step 1 · Penguatan SPLDV</div>
+    <h2 class="title">Latihan Soal Cerita <span class="mark">SPLDV</span></h2>
+    <p class="lede"><span class="chip">Sumber: Latihan Soal Cerita SPLDV (lampiran modul)</span> &nbsp;Klik tombol untuk membuka pembahasan langkah demi langkah.</p>
+    <div class="cols3">
+      <div class="card rev">
+        <span class="chip tag">Soal 1 · Harga</span>
+        <p class="qt" style="margin-top:10px">Di sebuah toko buah, Ibu membeli 2 kg mangga dan 1 kg jeruk seharga Rp52.000,00. Di toko yang sama, Ayah membeli 1 kg mangga dan 3 kg jeruk seharga Rp66.000,00. Tentukan harga 1 kg mangga dan 1 kg jeruk!</p>
+        <button class="btn small ghost ptoggle" data-t="pb1" style="margin-top:12px">Tampilkan Pembahasan Step-by-Step</button>
+        <div class="steps hidden" id="pb1">
+          <ol>
+            <li>Misal x = harga 1 kg mangga dan y = harga 1 kg jeruk.</li>
+            <li class="off">Model: 2x + y = 52.000 …(1) dan x + 3y = 66.000 …(2).</li>
+            <li class="off">Eliminasi y: (1) × 3 → 6x + 3y = 156.000 …(3).</li>
+            <li class="off">(3) − (2) → 5x = 90.000 → x = 18.000.</li>
+            <li class="off">Substitusi ke (1): 36.000 + y = 52.000 → y = 16.000.</li>
+            <li class="off">Kesimpulan: mangga Rp18.000/kg, jeruk Rp16.000/kg. Cek (2): 18.000 + 3(16.000) = 66.000 ✓</li>
+          </ol>
+          <div class="srow">
+            <button class="btn small primary nextstep">Langkah Berikutnya</button>
+            <button class="btn small ghost allstep">Tampilkan Semua</button>
+          </div>
+        </div>
+      </div>
+      <div class="card rev">
+        <span class="chip tag">Soal 4 · Parkir</span>
+        <p class="qt" style="margin-top:10px">Sebuah tempat parkir menampung 45 kendaraan yang terdiri dari mobil dan sepeda motor. Jumlah roda seluruh kendaraan adalah 128 buah. Jika tarif parkir mobil Rp5.000,00 dan sepeda motor Rp2.000,00, berapakah total uang parkir yang diperoleh?</p>
+        <button class="btn small ghost ptoggle" data-t="pb4" style="margin-top:12px">Tampilkan Pembahasan Step-by-Step</button>
+        <div class="steps hidden" id="pb4">
+          <ol>
+            <li>Misal m = banyak mobil dan s = banyak sepeda motor.</li>
+            <li class="off">Model: m + s = 45 …(1) dan 4m + 2s = 128 …(2).</li>
+            <li class="off">Sederhanakan (2) ÷ 2 → 2m + s = 64 …(3).</li>
+            <li class="off">(3) − (1) → m = 19, lalu s = 45 − 19 = 26.</li>
+            <li class="off">Total uang = 19(5.000) + 26(2.000) = 95.000 + 52.000.</li>
+            <li class="off">Total uang parkir = Rp147.000,00.</li>
+          </ol>
+          <div class="srow">
+            <button class="btn small primary nextstep">Langkah Berikutnya</button>
+            <button class="btn small ghost allstep">Tampilkan Semua</button>
+          </div>
+        </div>
+      </div>
+      <div class="card rev">
+        <span class="chip tag">Soal 5 · Umur</span>
+        <p class="qt" style="margin-top:10px">Umur seorang ibu saat ini 3 kali umur anaknya. Enam tahun yang akan datang, jumlah umur keduanya adalah 60 tahun. Berapakah umur ibu dan anak tersebut saat ini?</p>
+        <button class="btn small ghost ptoggle" data-t="pb5" style="margin-top:12px">Tampilkan Pembahasan Step-by-Step</button>
+        <div class="steps hidden" id="pb5">
+          <ol>
+            <li>Misal i = umur ibu dan a = umur anak (sekarang).</li>
+            <li class="off">Model: i = 3a …(1); enam tahun lagi: (i + 6) + (a + 6) = 60 …(2).</li>
+            <li class="off">Sederhanakan (2): i + a = 48 …(3).</li>
+            <li class="off">Substitusi (1) ke (3): 3a + a = 48 → a = 12.</li>
+            <li class="off">i = 36. Jadi ibu 36 tahun, anak 12 tahun.</li>
+            <li class="off">Cek: (36 + 6) + (12 + 6) = 60 ✓</li>
+          </ol>
+          <div class="srow">
+            <button class="btn small primary nextstep">Langkah Berikutnya</button>
+            <button class="btn small ghost allstep">Tampilkan Semua</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="note rev">Pola yang sama akan kita bawa ke tiga variabel: variabel → model → strategi → selesaikan → cek.</div>
+  </div>
+</section>
+
+<!-- 4 · BRIDGE -->
+<section class="slide" id="s-bridge" data-label="Jembatan ke SPLTV">
+  <div class="wrap">
+    <div class="kicker">Step 2 · Menghubungkan Materi</div>
+    <h2 class="title">Dari Dua Variabel ke <span class="mark">Tiga Variabel</span></h2>
+    <p class="lede">Dunia nyata sering memberi kita <b>lebih dari dua ketentuan</b>. Maka naiklah kita satu dimensi.</p>
+    <div class="cols2" style="grid-template-columns:1fr 70px 1fr;align-items:center">
+      <div class="card rev">
+        <span class="chip">KEMARIN · SPLDV</span>
+        <div class="eqbox" style="margin-top:10px">2x + y = 52.000<br>x + 3y = 66.000</div>
+        <p style="margin-top:10px;font-size:.9rem;color:var(--sub);line-height:1.6">2 struk belanja, 2 jenis buah (mangga, jeruk) → 2 persamaan, 2 variabel. Solusi: titik pada garis.</p>
+      </div>
+      <div style="text-align:center;font-family:Fraunces,serif;font-weight:900;font-size:2rem;color:var(--coral)" class="rev">→</div>
+      <div class="card rev" style="border-top:5px solid var(--teal)">
+        <span class="chip tag">HARI INI · SPLTV</span>
+        <div class="eqbox" style="margin-top:10px">M + J + A = 60.000<br>2M + J + 2A = 105.000<br>M + 2J + A = 75.000</div>
+        <p style="margin-top:10px;font-size:.9rem;color:var(--sub);line-height:1.6">3 struk belanja, 3 jenis buah (mangga, jeruk, apel) → 3 persamaan, 3 variabel. Solusi: titik di ruang 3D.</p>
+      </div>
+    </div>
+    <div class="row rev">
+      <button class="btn ghost ptoggle" data-t="bridge-more">Apa saja yang berubah?</button>
+    </div>
+    <div class="card hidden" id="bridge-more" style="margin-top:12px">
+      <ul class="sumlist">
+        <li>Variabel bertambah satu: sekarang kita mencari <b>x, y, dan z</b> sekaligus.</li>
+        <li>Persamaan juga bertambah satu: <b>butuh 3 ketentuan</b> untuk menemukan 3 nilai (jumlah persamaan = jumlah variabel yang dicari).</li>
+        <li>Secara geometri: bukan lagi irisan dua garis, melainkan <b>irisan tiga bidang</b> di ruang tiga dimensi.</li>
+        <li>Aturan mainnya tetap sama — eliminasi &amp; substitusi. Sistemnya saja sedikit lebih panjang.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · TUJUAN -->
+<section class="slide" id="s-goal" data-label="Tujuan Pembelajaran">
+  <div class="wrap">
+    <div class="kicker">Tujuan Pembelajaran · Capaian Fase E</div>
+    <h2 class="title">Hari Ini Kita <span class="mark">Mampu…</span></h2>
+    <div class="cols2" style="margin-top:16px">
+      <div class="card rev"><h3><span class="chip">1 · Memahami</span></h3><p style="margin-top:8px;font-size:.94rem;line-height:1.6">Menjelaskan pengertian, ciri, dan notasi SPLTV beserta himpunan penyelesaiannya (x, y, z).</p></div>
+      <div class="card rev"><h3><span class="chip">2 · Mengaplikasi</span></h3><p style="margin-top:8px;font-size:.94rem;line-height:1.6">Menentukan himpunan penyelesaian SPLTV dengan metode <b>eliminasi, substitusi, atau campuran</b>.</p></div>
+      <div class="card rev"><h3><span class="chip">3 · Menganalisis</span></h3><p style="margin-top:8px;font-size:.94rem;line-height:1.6">Memilih metode <b>tercepat</b> dengan membaca pola koefisien — termasuk jurus "jumlahkan semua".</p></div>
+      <div class="card rev"><h3><span class="chip">4 · Mencipta</span></h3><p style="margin-top:8px;font-size:.94rem;line-height:1.6">Mengubah masalah kontekstual (harga, umur, keuangan) menjadi model SPLTV hingga tuntas diselesaikan.</p></div>
+    </div>
+    <div class="row rev"><span class="chip">5 · Karakter: bekerja sama &amp; berkompetisi sportif dalam latihan ber-timer dan game poin</span></div>
+  </div>
+</section>
+
+<!-- 6 · DEFINISI -->
+<section class="slide" id="s-def" data-label="Definisi SPLTV">
+  <div class="wrap">
+    <div class="kicker">Materi 1 · Definisi</div>
+    <h2 class="title">Apa Itu <span class="mark">SPLTV?</span></h2>
+    <div class="card rev" style="border-left:6px solid var(--teal)">
+      <p style="font-size:1.05rem;line-height:1.7"><b>Sistem Persamaan Linear Tiga Variabel (SPLTV)</b> adalah kumpulan <b>tiga persamaan linear</b> yang masing-masing memuat <b>tiga variabel</b> (misal x, y, z) dengan pangkat tertinggi 1, yang dipandang sebagai satu kesatuan dan diselesaikan bersama-sama.</p>
+    </div>
+    <div class="cols2">
+      <div class="card rev">
+        <h3>Syarat "Linear"</h3>
+        <ul class="sumlist">
+          <li>Semua variabel berpangkat <b>satu</b> (tidak ada x², y³, …).</li>
+          <li>Tidak ada <b>perkalian antar-variabel</b> (seperti xy atau yz).</li>
+          <li>Variabel tidak berada di <b>penyebut</b> (tidak ada 1/x).</li>
+          <li>Variabel tidak di dalam akar atau fungsi lain.</li>
+        </ul>
+      </div>
+      <div class="card rev">
+        <h3>Himpunan Penyelesaian</h3>
+        <div class="eqbox">HP = {(x₀, y₀, z₀)}</div>
+        <p style="margin-top:10px;font-size:.92rem;color:var(--sub);line-height:1.6">Solusi berupa <b>tripel terurut</b> — satu titik yang memenuhi <b>ketiga</b> persamaan sekaligus. Secara geometri: irisan tiga bidang di ruang 3 dimensi.</p>
+      </div>
+    </div>
+    <h3 class="sub">Kuis Kilat: SPLTV atau Bukan? (klik kartunya)</h3>
+    <div class="tilebox rev">
+      <div class="tiles">
+        <button class="tile" data-ok="1" data-why="Tepat! Semua variabel berpangkat satu, tidak ada perkalian antar-variabel → termasuk SPLTV.">2x − y + 3z = 12</button>
+        <button class="tile" data-ok="0" data-why="Bukan — ada pangkat dua (x²), jadi tidak linear.">x² + y + z = 5</button>
+        <button class="tile" data-ok="0" data-why="Bukan — variabel x berada di penyebut, tidak linear.">1/x + y + z = 4</button>
+        <button class="tile" data-ok="0" data-why="Bukan — ada perkalian antar-variabel (yz), tidak linear.">4x − 2yz = 8</button>
+      </div>
+      <div class="tilefb hidden"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · NOTASI -->
+<section class="slide" id="s-notasi" data-label="Notasi &amp; Jenis Solusi">
+  <div class="wrap">
+    <div class="kicker">Materi 2 · Notasi</div>
+    <h2 class="title">Bentuk Umum &amp; <span class="mark">Jenis Solusi</span></h2>
+    <div class="cols2">
+      <div class="card rev">
+        <h3>Bentuk Umum</h3>
+        <div class="eqbox">
+          a₁x + b₁y + c₁z = d₁<br>
+          a₂x + b₂y + c₂z = d₂<br>
+          a₃x + b₃y + c₃z = d₃
+        </div>
+        <p style="margin-top:10px;font-size:.92rem;color:var(--sub);line-height:1.6">a, b, c = <b>koefisien</b>; x, y, z = <b>variabel</b>; d = <b>konstanta</b>. Penyelesaian ditulis HP = {(x₀, y₀, z₀)}.</p>
+      </div>
+      <div class="card rev">
+        <h3>Tiga Kemungkinan Solusi</h3>
+        <div style="display:grid;gap:10px;margin-top:8px">
+          <div style="display:flex;gap:12px;align-items:center"><svg width="86" height="60" viewBox="0 0 140 100" style="flex:none"><polygon points="10,58 62,34 130,50 78,74" fill="#0E7C7B" opacity=".28" stroke="#0E7C7B"/><polygon points="10,40 66,64 130,32 74,10" fill="#E4572E" opacity=".28" stroke="#E4572E"/><polygon points="46,6 60,10 96,94 82,90" fill="#6D5BD0" opacity=".25" stroke="#6D5BD0"/><circle cx="66" cy="46" r="5" fill="#232838"/></svg><span style="font-size:.88rem;line-height:1.5"><b>Tunggal</b> — tiga bidang beririsan di satu titik (determinan ≠ 0).</span></div>
+          <div style="display:flex;gap:12px;align-items:center"><svg width="86" height="60" viewBox="0 0 140 100" style="flex:none"><polygon points="10,58 62,34 130,50 78,74" fill="#0E7C7B" opacity=".28" stroke="#0E7C7B"/><polygon points="10,36 66,60 130,28 74,6" fill="#E4572E" opacity=".28" stroke="#E4572E"/><line x1="24" y1="52" x2="112" y2="40" stroke="#232838" stroke-width="4" stroke-linecap="round"/></svg><span style="font-size:.88rem;line-height:1.5"><b>Tak hingga</b> — irisan berupa garis/bidang (det = 0, konsisten).</span></div>
+          <div style="display:flex;gap:12px;align-items:center"><svg width="86" height="60" viewBox="0 0 140 100" style="flex:none"><polygon points="14,20 66,6 130,18 78,32" fill="#0E7C7B" opacity=".28" stroke="#0E7C7B"/><polygon points="14,50 66,36 130,48 78,62" fill="#E4572E" opacity=".28" stroke="#E4572E"/><polygon points="14,80 66,66 130,78 78,92" fill="#6D5BD0" opacity=".28" stroke="#6D5BD0"/></svg><span style="font-size:.88rem;line-height:1.5"><b>Tidak ada solusi</b> — tidak ada titik persekutuan (det = 0, inkonsisten).</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="note rev">Fokus hari ini: SPLTV dengan <b>penyelesaian tunggal</b> — tiga bidang bertemu di satu titik.</div>
+  </div>
+</section>
+
+<!-- 8 · ELIMINASI -->
+<section class="slide" id="s-elim" data-label="Metode Eliminasi">
+  <div class="wrap">
+    <div class="kicker">Materi 3 · Metode Penyelesaian</div>
+    <h2 class="title">Metode <span class="mark">Eliminasi</span></h2>
+    <p class="lede">Ide: <b>menghapus satu variabel</b> dengan menjumlah/mengurangkan dua persamaan yang koefisiennya sama atau berlawanan. Contoh:</p>
+    <div class="cols2" style="align-items:start">
+      <div class="card rev">
+        <div class="eqbox">
+          <span class="tagno">1</span> x + y + z = 6<br>
+          <span class="tagno">2</span> x − y + z = 2<br>
+          <span class="tagno">3</span> 2x + y − z = 1
+        </div>
+        <p style="margin-top:12px;font-size:.92rem;color:var(--sub);line-height:1.65"><b>Baca koefisiennya dulu!</b> +y dan −y (pada (1) &amp; (2)) siap dihapus dengan pengurangan. Lalu −z dan +z (pada (1) &amp; (3)) juga siap dihapus dengan penjumlahan.</p>
+      </div>
+      <div class="card steps rev">
+        <h3>Langkah Pengerjaan</h3>
+        <ol>
+          <li class="off">Eliminasi y — koefisiennya +1 dan −1: <b>(1) − (2)</b> → 2y = 4 → <b>y = 2</b>.</li>
+          <li class="off">Eliminasi z: <b>(1) + (3)</b> → 3x + 2y = 7 → 3x + 4 = 7 → <b>x = 1</b>.</li>
+          <li class="off">Substitusi ke (1): 1 + 2 + z = 6 → <b>z = 3</b>.</li>
+          <li class="off">HP = {(1, 2, 3)}. Verifikasi ke (3): 2(1) + 2 − 3 = 1 ✓</li>
+        </ol>
+        <div class="srow">
+          <button class="btn small primary nextstep">Langkah Berikutnya</button>
+          <button class="btn small ghost allstep">Tampilkan Semua</button>
+        </div>
+      </div>
+    </div>
+    <div class="note rev">Kapan eliminasi jadi pilihan utama? Saat ada koefisien yang <b>sama</b> (kurangkan) atau <b>berlawanan</b> (jumlahkan) antar persamaan.</div>
+  </div>
+</section>
+
+<!-- 9 · SUBSTITUSI -->
+<section class="slide" id="s-sub" data-label="Metode Substitusi">
+  <div class="wrap">
+    <div class="kicker">Materi 4 · Metode Penyelesaian</div>
+    <h2 class="title">Metode <span class="mark">Substitusi</span></h2>
+    <p class="lede">Ide: <b>menyatakan satu variabel</b> dari persamaan yang paling sederhana, lalu "menyelundupkannya" ke persamaan lain. Contoh:</p>
+    <div class="cols2" style="align-items:start">
+      <div class="card rev">
+        <div class="eqbox">
+          <span class="tagno">1</span> x + y − z = 2<br>
+          <span class="tagno">2</span> 2x − y + z = 7<br>
+          <span class="tagno">3</span> x + 2y + z = 10
+        </div>
+        <p style="margin-top:12px;font-size:.92rem;color:var(--sub);line-height:1.65"><b>Deteksi sasaran:</b> pada (1), z berkoefisien −1 sendirian → paling mudah diisolir: z = x + y − 2. Itu pintu masuk substitusi.</p>
+      </div>
+      <div class="card steps rev">
+        <h3>Langkah Pengerjaan</h3>
+        <ol>
+          <li class="off">Dari (1), isolir z: <b>z = x + y − 2</b>.</li>
+          <li class="off">Substitusi ke (2): 2x − y + (x + y − 2) = 7 → 3x = 9 → <b>x = 3</b> (y saling menghapus!).</li>
+          <li class="off">Substitusi ke (3): 3 + 2y + (3 + y − 2) = 10 → 3y = 6 → <b>y = 2</b>.</li>
+          <li class="off">z = 3 + 2 − 2 = 3 → HP = {(3, 2, 3)}. Verifikasi (2): 6 − 2 + 3 = 7 ✓</li>
+        </ol>
+        <div class="srow">
+          <button class="btn small primary nextstep">Langkah Berikutnya</button>
+          <button class="btn small ghost allstep">Tampilkan Semua</button>
+        </div>
+      </div>
+    </div>
+    <div class="note rev">Kapan substitusi jadi pilihan utama? Saat ada variabel ber<b>koefisien 1 atau −1</b> yang mudah diisolir dari salah satu persamaan.</div>
+  </div>
+</section>
+
+<!-- 10 · CAMPURAN + TRICK -->
+<section class="slide" id="s-mix" data-label="Campuran &amp; Jurus Kilat">
+  <div class="wrap">
+    <div class="kicker">Materi 5 · Metode Campuran + Strategi</div>
+    <h2 class="title">Metode Campuran &amp; <span class="mark">Jurus Pilih Metode Tercepat</span></h2>
+    <div class="cols2" style="align-items:start">
+      <div class="card steps rev">
+        <h3>Contoh Campuran: eliminasi dulu, substitusi kemudian</h3>
+        <div class="eqbox" style="margin-bottom:8px">
+          <span class="tagno">1</span> 2x + y − z = 2 &nbsp;&nbsp;<span class="tagno">2</span> x − y + 2z = 7 &nbsp;&nbsp;<span class="tagno">3</span> 3x + 2y + z = 11
+        </div>
+        <ol>
+          <li class="off">Eliminasi y: <b>(1) + (2)</b> → 3x + z = 9 …(4).</li>
+          <li class="off">Dari (4): z = 9 − 3x. Substitusi ke (2): x − y + 2(9 − 3x) = 7 → y = 11 − 5x.</li>
+          <li class="off">Substitusi keduanya ke (3): 3x + 2(11 − 5x) + (9 − 3x) = 11 → −10x + 31 = 11 → <b>x = 2</b>.</li>
+          <li class="off">y = 1, z = 3 → HP = {(2, 1, 3)}. Verifikasi (1): 4 + 1 − 3 = 2 ✓</li>
+        </ol>
+        <div class="srow">
+          <button class="btn small primary nextstep">Langkah Berikutnya</button>
+          <button class="btn small ghost allstep">Tampilkan Semua</button>
+        </div>
+      </div>
+      <div class="rev" style="display:grid;gap:10px">
+        <div class="card" style="padding:14px 16px"><b>1 · Ada koefisien sama / berlawanan?</b><br><span style="font-size:.88rem;color:var(--sub)">→ ELIMINASI dulu pasangan itu.</span></div>
+        <div class="card" style="padding:14px 16px"><b>2 · Ada koefisien 1 / −1 yang mudah diisolir?</b><br><span style="font-size:.88rem;color:var(--sub)">→ SUBSTITUSI dari persamaan itu.</span></div>
+        <div class="card" style="padding:14px 16px"><b>3 · Sistem "biasa" soal cerita?</b><br><span style="font-size:.88rem;color:var(--sub)">→ CAMPURAN: eliminasi satu variabel, lalu substitusi sisanya. Paling sering dipakai!</span></div>
+        <div class="card" style="padding:14px 16px;border-left:5px solid var(--coral)"><b>4 · Ditanya jumlah (x+y+z), koefisien simetris?</b><br><span style="font-size:.88rem;color:var(--sub)">→ JURUS KILAT: <b>jumlahkan semua persamaan</b>. Contoh: (2x+y+z) + (x+2y+z) + (x+y+2z) = 4(x+y+z).</span></div>
+      </div>
+    </div>
+    <h3 class="sub">Uji Jurusmu (klik pilihan)</h3>
+    <div class="cols2">
+      <div class="card mcq rev" data-k="0">
+        <p class="q">Sistem: x + 2y − z = 4 (1); −x + 2y + 3z = 6 (2); x + y + z = 5 (3). Langkah pembuka terbaik?</p>
+        <button class="opt">Eliminasi: (1) + (2) langsung menghapus x</button>
+        <button class="opt">Substitusi z dari persamaan (3)</button>
+        <button class="opt">Jumlahkan ketiga persamaan sekaligus</button>
+        <p class="why hidden">Benar! Koefisien x pada (1) dan (2) adalah +1 dan −1 — saling menghapus begitu dijumlahkan.</p>
+      </div>
+      <div class="card mcq rev" data-k="2">
+        <p class="q">Sistem: 2x + y + z = 13 (1); x + 2y + z = 12 (2); x + y + 2z = 11 (3). Ditanya: x + y + z. Jurus terbaik?</p>
+        <button class="opt">Eliminasi satu per satu sampai dapat x, y, z</button>
+        <button class="opt">Substitusi z dari persamaan (1)</button>
+        <button class="opt">Jumlahkan ketiganya: 4(x + y + z) = 36 → S = 9</button>
+        <p class="why hidden">Tepat! Koefisien simetris — menjumlahkan langsung memberi 4S = 36 → S = 9. Tiga detik, selesai.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 11 · PEMODELAN -->
+<section class="slide" id="s-model" data-label="Dari Cerita ke SPLTV">
+  <div class="wrap">
+    <div class="kicker">Materi 6 · Pemodelan</div>
+    <h2 class="title">Mengubah Permasalahan Menjadi <span class="mark">SPLTV</span></h2>
+    <p class="lede"><b>5 Langkah Emas:</b> Baca → Tentukan Variabel → Modelkan → Pilih Strategi → Eksekusi &amp; Cek.</p>
+    <div class="cols2" style="align-items:start">
+      <div class="card rev">
+        <span class="chip tag">Contoh · Struk Belanja</span>
+        <p class="qt" style="margin-top:10px">Andi menyimpan tiga struk belanja:<br>• Struk 1: 1 kg mangga + 1 kg jeruk + 1 kg apel = Rp60.000<br>• Struk 2: 2 kg mangga + 1 kg jeruk + 2 kg apel = Rp105.000<br>• Struk 3: 1 kg mangga + 2 kg jeruk + 1 kg apel = Rp75.000<br>Tentukan harga 1 kg jeruk!</p>
+      </div>
+      <div class="card steps rev">
+        <h3>Penyelesaian</h3>
+        <ol>
+          <li class="off">Variabel: M = harga 1 kg mangga, J = harga 1 kg jeruk, A = harga 1 kg apel (rupiah).</li>
+          <li class="off">Model: M + J + A = 60.000 (1); 2M + J + 2A = 105.000 (2); M + 2J + A = 75.000 (3).</li>
+          <li class="off">Strategi: yang ditanya hanya J — tidak perlu menghitung M dan A! (2) − (1) → M + A = 45.000 …(4).</li>
+          <li class="off">(3) − (1) → J = 75.000 − 60.000 = <b>15.000</b>. Langsung dapat!</li>
+          <li class="off">Kesimpulan: harga 1 kg jeruk <b>Rp15.000</b>. Cek konsistensi: pilih M = 30.000, A = 15.000 → ketiga struk cocok ✓</li>
+        </ol>
+        <div class="srow">
+          <button class="btn small primary nextstep">Langkah Berikutnya</button>
+          <button class="btn small ghost allstep">Tampilkan Semua</button>
+        </div>
+      </div>
+    </div>
+    <div class="card rev" style="margin-top:14px">
+      <div class="row" style="margin-top:0;justify-content:space-between">
+        <span style="font-weight:800">Latihan terbimbing: Umur ayah + ibu + anak = 88 tahun; ayah 4 tahun lebih tua dari ibu; ibu 3 kali umur anak. Umur anak?</span>
+        <button class="btn small ghost ptoggle" data-t="umur-pb">Lihat Penyelesaian</button>
+      </div>
+      <div class="steps hidden" id="umur-pb" style="margin-top:10px">
+        <ol>
+          <li>Variabel: a = umur ayah, i = umur ibu, n = umur anak.</li>
+          <li class="off">Model: a + i + n = 88 (1); a = i + 4 (2); i = 3n (3).</li>
+          <li class="off">Substitusi (3) &amp; (2) ke (1): (3n + 4) + 3n + n = 88 → 7n = 84.</li>
+          <li class="off">n = 12 → umur anak 12 tahun (ibu 36, ayah 40). Cek: 40 + 36 + 12 = 88 ✓</li>
+        </ol>
+        <div class="srow">
+          <button class="btn small primary nextstep">Langkah Berikutnya</button>
+          <button class="btn small ghost allstep">Tampilkan Semua</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 12-14 · LATIHAN ROUNDS -->
+<section class="slide" id="s-r1" data-label="Latihan 4 Siswa · Ronde 1"><div class="wrap" id="rc-0"></div></section>
+<section class="slide" id="s-r2" data-label="Latihan 4 Siswa · Ronde 2"><div class="wrap" id="rc-1"></div></section>
+<section class="slide" id="s-r3" data-label="Latihan 4 Siswa · Ronde 3"><div class="wrap" id="rc-2"></div></section>
+
+<!-- 15 · HASIL -->
+<section class="slide" id="s-hasil" data-label="Hasil Latihan">
+  <div class="wrap">
+    <div class="kicker">Evaluasi · Latihan Terstruktur</div>
+    <h2 class="title">Hasil Pengerjaan <span class="mark">4 Siswa</span></h2>
+    <p class="lede">Waktu tercatat saat siswa menekan <b>Kunci Jawaban</b>. "Tidak menjawab" = waktu habis tanpa mengunci. Rata-rata dihitung dari soal yang dijawab.</p>
+    <div id="hasil-box"></div>
+    <div class="row">
+      <button class="btn ghost" id="btn-ulang">Ulangi Latihan (Reset Semua)</button>
+    </div>
+  </div>
+</section>
+
+<!-- 16 · GAME -->
+<section class="slide" id="s-game" data-label="Game Turnamen Poin">
+  <div class="wrap">
+    <div class="rhead">
+      <div>
+        <div class="kicker">Kuis · Game Turnamen</div>
+        <h2 class="title">Game <span class="mark">Kumpulkan Poin</span></h2>
+        <p class="lede" style="font-size:.9rem">Tutor klik <b>nama siswa</b> → siswa memilih <b>nomor soal</b> → soal muncul di panel siswa tersebut. Nomor yang sudah dipilih tidak bisa dipilih lagi. Selesai menjawab? Boleh pilih nomor berikutnya. Mudah +1 · Sedang +2 · HOTS +3.</p>
+      </div>
+      <button class="btn warn" id="btn-endgame">Akhiri Game</button>
+    </div>
+    <div class="row" style="margin-top:10px" id="scorechips"></div>
+    <div class="glayout">
+      <div class="gside">
+        <div class="card" style="padding:14px">
+          <b style="font-size:.85rem">GILIRAN — klik nama siswa</b>
+          <div id="stusel" style="margin-top:10px"></div>
+        </div>
+        <div class="card" style="padding:14px">
+          <b style="font-size:.85rem">PILIH NOMOR SOAL (1–30)</b>
+          <div id="numgrid" style="margin-top:10px"></div>
+          <div class="legend" style="margin-top:10px">
+            <span class="chip dchip d1">No. 1–10 · Mudah +1</span>
+            <span class="chip dchip d2">No. 11–20 · Sedang +2</span>
+            <span class="chip dchip d3">No. 21–30 · HOTS +3</span>
+          </div>
+          <p id="gprog" style="margin-top:10px;font-size:.8rem;font-weight:800;color:var(--sub)"></p>
+        </div>
+      </div>
+      <div class="gquad">
+        <div class="gpanel st0" id="gp0"><header><span class="dot"></span><span class="nm-slot" data-i="0"></span></header><div class="gbody"></div></div>
+        <div class="gpanel st1" id="gp1"><header><span class="dot"></span><span class="nm-slot" data-i="1"></span></header><div class="gbody"></div></div>
+        <div class="gpanel st2" id="gp2"><header><span class="dot"></span><span class="nm-slot" data-i="2"></span></header><div class="gbody"></div></div>
+        <div class="gpanel st3" id="gp3"><header><span class="dot"></span><span class="nm-slot" data-i="3"></span></header><div class="gbody"></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 17 · GAME RESULT -->
+<section class="slide" id="s-gres" data-label="Papan Juara">
+  <div class="wrap">
+    <div class="kicker">Game Turnamen · Hasil Akhir</div>
+    <h2 class="title">Papan <span class="mark">Juara</span></h2>
+    <div id="gres-box"><div class="card"><p>Tekan <b>Akhiri Game</b> di slide Game untuk melihat skor akhir dan pemenangnya.</p></div></div>
+    <div class="row">
+      <button class="btn primary" id="btn-announce">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg>
+        Ucapkan Selamat (Suara)</button>
+      <button class="btn ghost" id="btn-again">Main Lagi (Reset)</button>
+      <button class="btn ghost" id="btn-backgame">Kembali ke Game</button>
+    </div>
+  </div>
+</section>
+
+<!-- 18 · KESIMPULAN -->
+<section class="slide" id="s-tutup" data-label="Kesimpulan &amp; Refleksi">
+  <div class="wrap">
+    <div class="kicker">Penutup · Refleksi</div>
+    <h2 class="title">Kesimpulan &amp; <span class="mark">Refleksi</span></h2>
+    <div class="cols2" style="align-items:start">
+      <div class="card rev">
+        <h3>Yang Kita Bawa Pulang</h3>
+        <ul class="sumlist">
+          <li>SPLTV = <b>3 persamaan linear, 3 variabel</b> (x, y, z), pangkat tertinggi 1; solusinya tripel (x, y, z).</li>
+          <li>Penyelesaian: <b>eliminasi, substitusi, atau campuran</b> — pilih dengan membaca pola koefisien.</li>
+          <li>Jurus kilat: koefisien simetris → <b>jumlahkan semua persamaan</b>; hanya satu variabel ditanya → eliminasi menuju variabel itu.</li>
+          <li>Soal cerita: 5 langkah emas — <b>baca, variabel, model, strategi, cek</b>.</li>
+          <li>Selalu <b>verifikasi</b> dengan substitusi balik ke persamaan awal.</li>
+        </ul>
+      </div>
+      <div class="card rev">
+        <h3>Refleksi Kelas (diskusi 3 menit)</h3>
+        <ol class="refl">
+          <li>Bagian mana yang paling menantang saat mengerjakan dengan timer 5 menit?</li>
+          <li>Metode mana yang menurutmu paling cepat? Mengapa?</li>
+          <li>Di mana kamu akan menemui SPLTV dalam kehidupan nyata?</li>
+        </ol>
+        <label class="kata">Satu kata untuk hari ini
+          <input id="katahari" maxlength="24" placeholder="mis.: seru!">
+        </label>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 19 · THANKS -->
+<section class="slide" id="s-thanks" data-label="Penutup">
+  <span class="g" style="left:5%;top:16%;font-size:11rem;--r:-6deg">∑</span>
+  <span class="g" style="right:6%;bottom:12%;font-size:10rem;--r:9deg">√</span>
+  <div class="wrap thanks">
+    <div class="kicker rev">Sampai jumpa di petualangan berikutnya</div>
+    <h1 class="thx rev">Thank you <span class="mark">for today!</span></h1>
+    <p class="lede rev" style="text-align:center">Dari PLSV, SPLDV, hingga menaklukkan SPLTV dengan tiga metode —<br>kalian resmi naik satu dimensi berpikir.</p>
+    <div class="row rev" style="justify-content:center"><span class="chip big">Kata hari ini: <b id="kata-out">…</b></span></div>
+    <p id="signoff" class="sign rev"></p>
+    <p class="credit rev">Matematika · Fase E · Kelas X · Kurikulum Merdeka — SPLTV·LAB</p>
+  </div>
+</section>
+
+</main>
+
+<footer id="navbar">
+  <button class="navbtn" id="btn-prev" aria-label="Sebelumnya"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+  <div id="progress"><i></i></div>
+  <span id="pagenum">1 / 19</span>
+  <button class="navbtn" id="btn-next" aria-label="Berikutnya"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+</footer>
+
+<div id="toast"></div>
+
+<script>
+/* ================= DATA: LATIHAN 4 SISWA (3 ronde × 4 soal berbeda, kesulitan setara) ================= */
+const ROUNDS=[
+{tag:'Ronde 1 · Pemanasan',lvl:'Mudah',hint:'JURUS: koefisien +y dan −y sudah berlawanan → eliminasi langsung!',
+ qs:[
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['x + y + z = 6','x − y + z = 2','2x + y − z = 1'],lab:['x','y','z'],ans:[1,2,3],
+   steps:['Eliminasi y — koefisiennya +1 dan −1: (1) − (2) → 2y = 4 → y = 2.','Eliminasi z: (1) + (3) → 3x + 2y = 7 → 3x + 4 = 7 → x = 1.','Substitusi ke (1): 1 + 2 + z = 6 → z = 3.','HP = {(1, 2, 3)}. Verifikasi ke (3): 2(1) + 2 − 3 = 1 ✓.']},
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['x + y + z = 9','x − y + z = 3','2x + y − z = 3'],lab:['x','y','z'],ans:[2,3,4],
+   steps:['(1) − (2): 2y = 6 → y = 3.','(2) + (3): 3x = 6 → x = 2.','Substitusi ke (1): 2 + 3 + z = 9 → z = 4.','HP = {(2, 3, 4)}. Cek (3): 4 + 3 − 4 = 3 ✓.']},
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['x + y + z = 6','x − y − z = 0','2x + y − z = 7'],lab:['x','y','z'],ans:[3,2,1],
+   steps:['(1) + (2): y dan z saling menghapus → 2x = 6 → x = 3.','(3) − (1): x − 2z = 1 → 3 − 2z = 1 → z = 1.','Substitusi ke (1): 3 + y + 1 = 6 → y = 2.','HP = {(3, 2, 1)}. Cek (2): 3 − 2 − 1 = 0 ✓.']},
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['x + y + z = 6','x − y − z = −4','2x + 3y − z = 9'],lab:['x','y','z'],ans:[1,3,2],
+   steps:['(1) + (2): 2x = 2 → x = 1; tersisa y + z = 5.','(3) − (1): x + 2y − 2z = 3 → 2y − 2z = 2 → y − z = 1.','Jumlahkan y + z = 5 dengan y − z = 1 → y = 3, z = 2.','HP = {(1, 3, 2)}. Cek (3): 2 + 9 − 2 = 9 ✓.']}
+ ]},
+{tag:'Ronde 2 · Naik Level',lvl:'Sedang',hint:'JURUS: cari pasangan persamaan yang menghapus satu variabel secara penuh, lalu substitusi.',
+ qs:[
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['x + y + z = 12','2x − y + z = 6','x + y − z = 6'],lab:['x','y','z'],ans:[4,5,3],
+   steps:['(1) − (3): 2z = 6 → z = 3.','(1) + (2): 3x + 2z = 18 → 3x + 6 = 18 → x = 4.','Substitusi ke (1): 4 + y + 3 = 12 → y = 5.','HP = {(4, 5, 3)}. Cek (2): 8 − 5 + 3 = 6 ✓.']},
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['x + 2y + z = 10','2x − y − z = 7','x + y − 2z = 5'],lab:['x','y','z'],ans:[5,2,1],
+   steps:['(1) + (2): 3x + y = 17 …(4).','(2) + (3): 3x − 3z = 12 → x = z + 4 …(5).','Substitusi (5) ke (4): y = 17 − 3(z + 4) = 5 − 3z.','Masukkan ke (1): (z + 4) + 2(5 − 3z) + z = 10 → −4z + 14 = 10 → z = 1.','x = 5, y = 2 → HP = {(5, 2, 1)}. Cek (2): 10 − 2 − 1 = 7 ✓.']},
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['x − y + z = 1','2x + y − z = 5','x + y + 2z = 12'],lab:['x','y','z'],ans:[2,4,3],
+   steps:['(1) + (2): 3x = 6 → x = 2.','(2) + (3): 3x + 2y + z = 17 → 2y + z = 11 …(4).','Dari (1): z = y − 1. Sub ke (4): 2y + y − 1 = 11 → y = 4.','z = 3 → HP = {(2, 4, 3)}. Cek (3): 2 + 4 + 6 = 12 ✓.']},
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['x − y − z = −2','2x + y + z = 11','x + 2y − z = 1'],lab:['x','y','z'],ans:[3,1,4],
+   steps:['(1) + (2): 3x = 9 → x = 3.','Dari (2): y + z = 5 …(4).','Dari (3): 2y − z = −2 …(5).','(4) + (5): 3y = 3 → y = 1, z = 4. HP = {(3, 1, 4)}. Cek (3): 3 + 2 − 4 = 1 ✓.']}
+ ]},
+{tag:'Ronde 3 · Tantangan',lvl:'Aplikatif',hint:'JURUS: soal (1) & (2) koefisien simetris → jumlahkan semua persamaan! Soal (3) & (4) → substitusi dari persamaan paling sederhana.',
+ qs:[
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['2x + y + z = 13','x + 2y + z = 12','x + y + 2z = 11'],lab:['x','y','z'],ans:[4,3,2],
+   steps:['Jurus kilat — jumlahkan (1)+(2)+(3): 4x + 4y + 4z = 36 → x + y + z = 9.','x = (1) − 9 = 4  (karena 2x + y + z = x + S).','y = (2) − 9 = 3;  z = (3) − 9 = 2.','HP = {(4, 3, 2)}. Cek (1): 8 + 3 + 2 = 13 ✓.']},
+  {t:'Tentukan nilai x, y, z dari sistem berikut.',eq:['2x + y + z = 13','x + 2y + z = 15','x + y + 2z = 12'],lab:['x','y','z'],ans:[3,5,2],
+   steps:['Jumlahkan semua: 4(x + y + z) = 40 → S = 10.','x = 13 − 10 = 3;  y = 15 − 10 = 5;  z = 12 − 10 = 2.','HP = {(3, 5, 2)}. Cek (3): 3 + 5 + 4 = 12 ✓.']},
+  {t:'Umur Ayah, Ibu, dan Anak berjumlah 62 tahun. Umur Ayah 14 tahun lebih tua dari Ibu. Jumlah umur Ibu dan Anak adalah 2 tahun kurangnya dari umur Ayah. Tentukan umur masing-masing (tahun)!',eq:null,lab:['Ayah','Ibu','Anak'],ans:[32,18,12],
+   steps:['Variabel: a = umur ayah, i = umur ibu, n = umur anak. Model: a + i + n = 62 (1); a − i = 14 (2); i + n = a − 2 (3).','Dari (3): i + n = a − 2. Substitusi ke (1): a + (a − 2) = 62 → a = 32.','Dari (2): i = 32 − 14 = 18.','Dari (3): n = 30 − 18 = 12.','Ayah 32 th, Ibu 18 th, Anak 12 th. Cek (1): 32 + 18 + 12 = 62 ✓.']},
+  {t:'Uang Adi, Beni, dan Cika berjumlah Rp60.000. Uang Adi Rp5.000 lebih banyak dari Beni, dan uang Cika Rp10.000 lebih banyak dari Beni. Tentukan uang masing-masing (jawab dalam ribuan rupiah)!',eq:null,lab:['Adi','Beni','Cika'],ans:[20,15,25],
+   steps:['Variabel (dalam ribuan rupiah): a = Adi, b = Beni, c = Cika. Model: a + b + c = 60 (1); a = b + 5 (2); c = b + 10 (3).','Substitusi (2) dan (3) ke (1): (b + 5) + b + (b + 10) = 60 → 3b = 45 → b = 15.','a = 20 dan c = 25.','Adi Rp20.000, Beni Rp15.000, Cika Rp25.000. Cek: 20 + 15 + 25 = 60 ✓.']}
+ ]}
+];
+
+/* ================= DATA: GAME — 30 SOAL BANK SPLTV (10 mudah, 10 sedang, 10 HOTS, terverifikasi) ================= */
+const GAME_QS=[
+{d:1,q:'Himpunan penyelesaian dari x + y + z = 6, x − y + z = 2, dan 2x + y − z = 1 adalah…',o:['(1, 2, 3)','(2, 1, 3)','(1, 3, 2)','(3, 2, 1)','(2, 3, 1)'],k:0,e:'(1)−(2) → 2y = 4 → y = 2; (1)+(3) → 3x + 2y = 7 → x = 1; substitusi → z = 3. HP = (1, 2, 3).'},
+{d:1,q:'Nilai x yang memenuhi 2x + y + z = 12, x + 2y − z = 3, dan 3x − y + 2z = 13 adalah…',o:['1','2','3','4','5'],k:1,e:'(1)+(2): x + y = 5; dari (2): z = 7 − x. Substitusi ke (3): 2x + 9 = 13 → x = 2.'},
+{d:1,q:'Diketahui x + 2y + z = 4, 2x + y + z = 5, dan x + y + 2z = 7. Nilai z adalah…',o:['1','2','3','4','5'],k:2,e:'Jurus kilat: jumlahkan ketiganya → 4(x+y+z) = 16 → S = 4. Maka z = (3) − S = 7 − 4 = 3.'},
+{d:1,q:'Jika x, y, z memenuhi x + y = 5, y + z = 7, dan x + z = 6, maka x + y + z = …',o:['9','10','12','15','18'],k:0,e:'Jumlahkan ketiga persamaan: 2(x + y + z) = 18 → x + y + z = 9.'},
+{d:1,q:'Nilai y dari sistem 3x − y + 2z = 7, 2x + y + z = 6, dan x + 2y − z = 3 adalah…',o:['−2','−1','0','1','2'],k:3,e:'Eliminasi bertahap menghasilkan (x, y, z) = (2, 1, 1) → y = 1. Cek: 3(2) − 1 + 2(1) = 7 ✓.'},
+{d:1,q:'Diberikan persamaan x + y + z = 13, x − y = 2, dan y − z = 1. Nilai z adalah…',o:['2','3','4','5','6'],k:1,e:'x = y + 2 dan z = y − 1 → substitusi ke (1): 3y + 1 = 13 → y = 4 → z = 3.'},
+{d:1,q:'Jika 2x + 3y − z = 7, x − y + 2z = 6, dan 3x + y + z = 12, maka x + y + z = …',o:['4','5','6','7','8'],k:2,e:'Solusi sistem: x = 3, y = 1, z = 2 (cek ketiga persamaan ✓) → jumlah = 6.'},
+{d:1,q:'Himpunan penyelesaian dari x + y + z = 6, x + z = 4, dan z − y = 1 adalah…',o:['(1, 2, 3)','(2, 1, 4)','(1, 1, 4)','(2, 2, 3)','(3, 1, 2)'],k:0,e:'(1)−(2): y = 2; dari (3): z = y + 1 = 3; dari (2): x = 4 − 3 = 1 → (1, 2, 3).'},
+{d:1,q:'Diketahui 3x + y − z = 3, x + 2y + z = 8, dan x + y + 3z = 15. Nilai x adalah…',o:['1','2','3','4','5'],k:1,e:'(1)+(2): 4x + 3y = 11; (3) − 3(2): −2x − 5y = −9. Eliminasi → y = 1, x = 2 (z = 4).'},
+{d:1,q:'Jika x + y + z = 1, 2x − y + z = 0, dan x + 2y − z = 4, maka nilai x adalah…',o:['−1','0','1','2','3'],k:2,e:'(2)+(3): 3x + y = 4; (1)+(3): 2x + 3y = 5. Eliminasi → x = 1, y = 1, z = −1.'},
+{d:2,q:'Harga 1 kg mangga, 1 kg jeruk, dan 1 kg apel adalah Rp60.000. Harga 2 kg mangga, 1 kg jeruk, dan 2 kg apel adalah Rp105.000. Harga 1 kg mangga, 2 kg jeruk, dan 1 kg apel adalah Rp75.000. Harga 1 kg jeruk adalah…',o:['Rp10.000','Rp15.000','Rp20.000','Rp25.000','Rp30.000'],k:1,e:'(2)−(1): M + A = 45.000. (3)−(1): J = 75.000 − 60.000 = 15.000. Tidak perlu mencari M dan A!'},
+{d:2,q:'Umur Aisyah, Billa, dan Cindi berjumlah 50 tahun. Umur Aisyah 3 tahun lebih muda dari Billa, sedangkan umur Cindi 5 tahun lebih tua dari Billa. Umur Billa adalah…',o:['14 tahun','15 tahun','16 tahun','17 tahun','18 tahun'],k:2,e:'(B − 3) + B + (B + 5) = 50 → 3B + 2 = 50 → B = 16 tahun.'},
+{d:2,q:'Jika a + b + c = 15, a − b = 1, dan b + c = 12, maka nilai a × b × c adalah…',o:['30','40','60','80','90'],k:2,e:'Dari (2): a = b + 1 → (1): 2b + c = 14; dengan (3) b + c = 12 → b = 2, c = 10, a = 3 → hasil kali = 60.'},
+{d:2,q:'Bilangan pertama ditambah dua kali bilangan kedua dikurangi bilangan ketiga = 7. Dua kali bilangan pertama dikurangi bilangan kedua ditambah bilangan ketiga = 11. Jumlah ketiga bilangan = 12. Bilangan pertama adalah…',o:['2','3','4','5','6'],k:3,e:'Model: x + 2y − z = 7; 2x − y + z = 11; x + y + z = 12. (1)+(2): 3x + y = 18; (1)+(3): 2x + 3y = 19 → x = 5.'},
+{d:2,q:'Penyelesaian sistem 1/x + 1/y + 1/z = 6, 2/x − 1/y + 3/z = 12, dan 3/x + 2/y − 1/z = 5 memberikan nilai x = …',o:['1/6','1/4','1/3','1/2','1'],k:3,e:'Misal a = 1/x, b = 1/y, c = 1/z → a+b+c = 6; 2a−b+3c = 12; 3a+2b−c = 5 → a = 2 → x = 1/2.'},
+{d:2,q:'Jumlah umur ayah, ibu, dan anak 88 tahun. Umur ayah 4 tahun lebih tua dari ibu, dan umur ibu 3 kali umur anak. Umur anak sekarang adalah…',o:['10 tahun','11 tahun','12 tahun','13 tahun','14 tahun'],k:2,e:'A = I + 4 dan I = 3C → (3C + 4) + 3C + C = 88 → 7C = 84 → C = 12 tahun.'},
+{d:2,q:'Sistem x + 2y − z = 3, 2x + y + z = 7, dan ax + y + 2z = 8 memiliki penyelesaian tunggal jika a ≠ …',o:['1','2','3','4','5'],k:2,e:'Determinan matriks koefisien = 3a − 9. Penyelesaian tunggal terjadi saat det ≠ 0, yaitu a ≠ 3.'},
+{d:2,q:'Jika x : y : z = 2 : 3 : 5 dan 3x + 2y = 18, maka x + y + z = …',o:['10','15','20','25','30'],k:1,e:'x = 2k, y = 3k → 3(2k) + 2(3k) = 12k = 18 → k = 1,5 → jumlah = 10k = 15.'},
+{d:2,q:'Suatu bilangan tiga digit memiliki jumlah digit 16, digit ratusan dua kali digit satuan, dan digit puluhan sama dengan digit satuan. Bilangan tersebut adalah…',o:['432','633','844','642','444'],k:2,e:'a = 2c dan b = c → 2c + c + c = 16 → c = 4 → bilangan 844.'},
+{d:2,q:'Sistem x + 2y + z = 3, 2x + 4y + 2z = 6, dan 3x + 6y + kz = 9 memiliki tak hingga penyelesaian jika k = …',o:['1','2','3','semua bilangan real','tidak ada'],k:2,e:'(2) = 2×(1). Agar konsisten, (3) harus = 3×(1) → koefisien z: k = 3 (dan 9 = 3×3 ✓).'},
+{d:3,q:'Pabrik memproduksi pakaian P, Q, R. Per unit: P butuh 2 m kain, 1 roll benang, 1 lusin kancing; Q: 1, 2, 1; R: 3, 1, 2. Persediaan tersedia 95 m kain, 75 roll benang, 70 lusin kancing. Total P, Q, R yang dapat diproduksi…',o:['40','45','50','55','60'],k:2,e:'Model: 2P + Q + 3R = 95; P + 2Q + R = 75; P + Q + 2R = 70 → P = 5, Q = 25, R = 20 → total 50 pakaian.'},
+{d:3,q:'Parabola y = ax² + bx + c melalui titik (1, 6), (2, 11), dan (−1, 2). Nilai a + b + c adalah…',o:['5','6','7','8','9'],k:1,e:'a + b + c = f(1) = 6 — persamaan pertama langsung memberi jawaban! (a = 1, b = 2, c = 3.)'},
+{d:3,q:'Tiga tukang cat A, B, C bersama-sama menyelesaikan gedung dalam 4 hari. A dan B saja butuh 6 hari; B dan C saja butuh 8 hari. Waktu tukang A saja mengecat gedung adalah…',o:['8,0 hari','9,6 hari','10,2 hari','12,0 hari','15,0 hari'],k:0,e:'Laju gabungan 1/4. Laju C = 1/4 − 1/6 = 1/12; laju A = 1/4 − 1/8 = 1/8 → A = 8 hari.'},
+{d:3,q:'a, b, c akar-akar real polinomial kubik dengan a + b + c = 6, ab + bc + ac = 11, dan abc = 6. Nilai a² + b² + c² adalah…',o:['10','12','14','16','18'],k:2,e:'a² + b² + c² = (a+b+c)² − 2(ab+bc+ac) = 36 − 22 = 14.'},
+{d:3,q:'Total modal tiga portofolio Rp100 juta (return: A 5%, B 8%, C 10% per tahun). Total return tahunan Rp8,4 juta. Modal C = modal A + modal B. Modal B adalah…',o:['Rp10 jt','Rp20 jt','Rp30 jt','Rp40 jt','Rp50 jt'],k:2,e:'C = A + B = 50 jt → return C = 5 jt. Sisa return 3,4 jt: 0,05A + 0,08B = 3,4 dan A + B = 50 → B = 30 jt.'},
+{d:3,q:'Turnamen catur: seluruh 30 pertandingan berakhir tanpa seri dan semua dimenangkan oleh tiga pemain teratas X, Y, Z dengan rasio kemenangan 3 : 2 : 1. Banyak kemenangan X adalah…',o:['5','10','15','20','25'],k:2,e:'3k + 2k + k = 30 → k = 5 → kemenangan X = 3k = 15.'},
+{d:3,q:'Jika matriks koefisien SPLTV determinannya nol tetapi sistemnya konsisten, interpretasi geometris himpunan penyelesaiannya di ruang 3D adalah…',o:['Titik tunggal','Garis lurus atau bidang','Himpunan kosong','Bola','Titik asal'],k:1,e:'Solusi tak hingga → himpunan penyelesaian berupa garis (kasus satuan) atau bidang di ruang 3 dimensi.'},
+{d:3,q:'Diketahui x + y + z = 1, x² + y² + z² = 2, dan x³ + y³ + z³ = 3. Nilai xyz adalah…',o:['1/6','1/3','1/2','2/3','5/6'],k:0,e:'xy + yz + zx = (1² − 2)/2 = −1/2. Rumus: x³+y³+z³ − 3xyz = (x+y+z)(x²+y²+z² − xy−yz−zx) → 3 − 3xyz = 1·(2 + ½) → xyz = 1/6.'},
+{d:3,q:'Tangki diisi pipa P dan Q dalam 10 menit; Q dan R dalam 15 menit; P dan R dalam 12 menit. Jika ketiganya dibuka bersama, waktu mengisi penuh tangki adalah…',o:['6 menit','8 menit','10 menit','12 menit','15 menit'],k:1,e:'Jumlahkan laju: 2(laju gabungan) = 1/10 + 1/15 + 1/12 = 1/4 → gabungan = 1/8 → 8 menit.'},
+{d:3,q:'f(x, y, z) = 3x + 2y + 5z dengan kendala x + y + z ≤ 10, 2x + y + 3z ≤ 30, dan x, y, z ≥ 0. Nilai maksimum f pada titik pojok sistem adalah…',o:['35','40','45','50','55'],k:3,e:'Uji titik pojok: (0, 0, 10) memenuhi kedua kendala dan f = 5(10) = 50 — nilai maksimum.'}
+];
+
+/* ================= SETUP ================= */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const ORDER=['s-cover','s-review','s-drill','s-bridge','s-goal','s-def','s-notasi','s-elim','s-sub','s-mix','s-model','s-r1','s-r2','s-r3','s-hasil','s-game','s-gres','s-tutup','s-thanks'];
+const LABELS=['Cover','Review PLSV & SPLDV','Penguatan SPLDV','Jembatan ke SPLTV','Tujuan Pembelajaran','Definisi SPLTV','Notasi & Jenis Solusi','Metode Eliminasi','Metode Substitusi','Campuran & Jurus Kilat','Dari Cerita ke SPLTV','Latihan · Ronde 1','Latihan · Ronde 2','Latihan · Ronde 3','Hasil Latihan','Game Turnamen Poin','Papan Juara','Kesimpulan & Refleksi','Penutup'];
+const IDX={}; ORDER.forEach((id,i)=>IDX[id]=i);
+let cur=0;
+const state={names:['Siswa 1','Siswa 2','Siswa 3','Siswa 4']};
+const freshRound=()=>({times:[null,null,null,null],locked:[false,false,false,false],answered:[false,false,false,false],checked:[false,false,false,false],correct:[false,false,false,false]});
+let LX=[freshRound(),freshRound(),freshRound()];
+const lt={round:0,remaining:300,running:false,endAt:0,iv:null};
+const G={scores:[0,0,0,0],picked:new Set(),active:null,panels:[null,null,null,null],ended:false};
+
+/* ================= UTIL ================= */
+let toastT=null;
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2600);}
+function fmt(s){s=Math.max(0,Math.round(s));return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');}
+/* Suara (WebAudio) */
+const AC=window.AudioContext||window.webkitAudioContext;let ac=null;
+function ensureAC(){if(!ac){try{ac=new AC()}catch(e){}}if(ac&&ac.state==='suspended')ac.resume();}
+function note(f,t,d,type,g){ensureAC();if(!ac)return;type=type||'sine';g=g||.12;const o=ac.createOscillator(),v=ac.createGain();o.type=type;o.frequency.value=f;const n=ac.currentTime+t;v.gain.setValueAtTime(0,n);v.gain.linearRampToValueAtTime(g,n+.02);v.gain.exponentialRampToValueAtTime(.001,n+d);o.connect(v).connect(ac.destination);o.start(n);o.stop(n+d+.05);}
+function sDing(){note(880,0,.15);note(1174.66,.1,.3);}
+function sBuzz(){note(180,0,.28,'sawtooth',.14);note(140,.14,.32,'sawtooth',.14);}
+function sEnd(){note(220,0,.25,'square',.11);note(220,.3,.25,'square',.11);note(220,.6,.5,'square',.11);}
+function sFanfare(){[[523.25,0],[659.25,.15],[783.99,.3],[1046.5,.45],[783.99,.65],[1046.5,.85],[1318.5,1.05]].forEach(p=>note(p[0],p[1],.38,'triangle',.14));}
+function speak(text){try{const u=new SpeechSynthesisUtterance(text);u.lang='id-ID';u.rate=.95;u.pitch=1.05;const vs=speechSynthesis.getVoices();const v=vs.find(v=>/id[-_]?ID/i.test(v.lang));if(v)u.voice=v;speechSynthesis.cancel();speechSynthesis.speak(u);}catch(e){}}
+try{speechSynthesis.getVoices();}catch(e){}
+function burst(x,y){const cols=['#0E7C7B','#E4572E','#6D5BD0','#E8A013','#3E9B4F'];for(let k=0;k<16;k++){const s=document.createElement('span');s.className='cf';s.style.left=x+'px';s.style.top=y+'px';s.style.background=cols[k%cols.length];const a=Math.random()*Math.PI*2,d=60+Math.random()*90;s.style.setProperty('--dx',Math.cos(a)*d+'px');s.style.setProperty('--dy',(Math.sin(a)*d-40)+'px');document.body.appendChild(s);setTimeout(()=>s.remove(),900);}}
+
+/* ================= NAVIGASI ================= */
+function goTo(i){
+  if(i<0||i>=ORDER.length)return;
+  const prev=$('.slide.active');
+  if(prev){
+    if(/^s-r[123]$/.test(prev.id)&&lt.running){lt.remaining=Math.max(0,(lt.endAt-Date.now())/1000);lt.running=false;clearInterval(lt.iv);updateTimerButtons(lt.round);}
+    prev.classList.remove('active');
+  }
+  cur=i;const el=document.getElementById(ORDER[i]);el.classList.add('active');
+  const w=el.querySelector('.wrap');if(w)w.scrollTop=0;
+  $('#sec-label').innerHTML=LABELS[i];$('#pagenum').textContent=(i+1)+' / '+ORDER.length;
+  $('#progress i').style.width=(i/(ORDER.length-1)*100)+'%';$('#jump').value=i;
+  el.querySelectorAll('.rev').forEach((n,k)=>n.style.animationDelay=(k*60)+'ms');
+  $('#btn-prev').disabled=i===0;$('#btn-next').disabled=i===ORDER.length-1;
+  if(ORDER[i]==='s-hasil')renderResults();
+}
+ $('#btn-prev').onclick=()=>goTo(cur-1);
+ $('#btn-next').onclick=()=>goTo(cur+1);
+document.addEventListener('keydown',e=>{if(e.target.matches('input,textarea,select'))return;if(e.key==='ArrowRight'||e.key==='PageDown')goTo(cur+1);if(e.key==='ArrowLeft'||e.key==='PageUp')goTo(cur-1);});
+LABELS.forEach((l,i)=>{const o=document.createElement('option');o.value=i;o.textContent=(i+1)+'. '+l;$('#jump').appendChild(o);});
+ $('#jump').onchange=e=>goTo(+e.target.value);
+
+/* ================= NAMA SISWA ================= */
+function refreshNames(){
+  state.names=[0,1,2,3].map(i=>{const el=document.getElementById('nm'+i);return (el&&el.value.trim())||('Siswa '+(i+1));});
+  $$('.nm-slot').forEach(s=>s.textContent=state.names[+s.dataset.i]);
+  renderScoreChips();renderStuSelect();
+  $('#signoff').textContent='Sampai jumpa, '+state.names.join(' · ')+'!';
+}
+[0,1,2,3].forEach(i=>{const el=document.getElementById('nm'+i);el.addEventListener('input',refreshNames);});
+ $('#btn-start').onclick=()=>{refreshNames();goTo(1);toast('Selamat datang, '+state.names.join(', ')+'!');};
+ $('#katahari').addEventListener('input',e=>{$('#kata-out').textContent=e.target.value.trim()||'…';});
+
+/* ================= STEP-BY-STEP (EVENT DELEGATION — anti-gagal, bekerja untuk konten statis & dinamis) ================= */
+function refreshStepBtns(st){
+  const items=[...st.querySelectorAll('li')];
+  const nx=st.querySelector('.nextstep'), al=st.querySelector('.allstep');
+  const remaining=items.some(li=>li.classList.contains('off'));
+  if(nx){nx.disabled=!remaining;nx.textContent=remaining?'Langkah Berikutnya':'Semua Langkah Tampil ✓';}
+  if(al){al.disabled=!remaining;al.textContent=remaining?'Tampilkan Semua':'Selesai ✓';}
+}
+/* Satu listener global menangani: .nextstep, .allstep, .ptoggle — apapun waktu elemen dibuat */
+document.addEventListener('click',e=>{
+  const nx=e.target.closest('button.nextstep');
+  if(nx){
+    const st=nx.closest('.steps');
+    if(st){
+      const li=[...st.querySelectorAll('li')].find(x=>x.classList.contains('off'));
+      if(li){li.classList.remove('off');note(700,0,.06);}
+      refreshStepBtns(st);
+    }
+    return;
+  }
+  const al=e.target.closest('button.allstep');
+  if(al){
+    const st=al.closest('.steps');
+    if(st){st.querySelectorAll('li.off').forEach(x=>x.classList.remove('off'));note(700,0,.06);note(940,.08,.12);refreshStepBtns(st);}
+    return;
+  }
+  const pt=e.target.closest('button.ptoggle');
+  if(pt){
+    const t=document.getElementById(pt.dataset.t);
+    if(t){
+      if(pt.dataset.orig===undefined)pt.dataset.orig=pt.textContent.trim();
+      t.classList.toggle('hidden');
+      pt.textContent=t.classList.contains('hidden')?pt.dataset.orig:'Sembunyikan';
+      if(!t.classList.contains('hidden'))t.querySelectorAll('.steps').forEach(refreshStepBtns);
+    }
+  }
+});
+
+/* ================= KOMPONEN INTERAKTIF STATIS ================= */
+function initMCQ(){$$('.mcq').forEach(m=>{const opts=[...m.querySelectorAll('.opt')];opts.forEach((b)=>{b.addEventListener('click',()=>{if(m.classList.contains('done'))return;const idx=opts.indexOf(b);if(idx===+m.dataset.k){b.classList.add('right');m.classList.add('done');m.querySelector('.why').classList.remove('hidden');note(880,0,.12);note(1174.66,.1,.22);}else{b.classList.add('wrong');setTimeout(()=>b.classList.remove('wrong'),600);sBuzz();}});});});}
+function initTiles(){$$('.tile').forEach(t=>t.addEventListener('click',()=>{if(t.classList.contains('right')||t.classList.contains('wrong'))return;const ok=t.dataset.ok==='1';t.classList.add(ok?'right':'wrong');const fb=t.closest('.tilebox').querySelector('.tilefb');fb.textContent=t.dataset.why;fb.classList.remove('hidden');ok?sDing():sBuzz();}));}
+
+/* ================= LATIHAN 4 SISWA ================= */
+function cardHTML(r,q,i){
+  const eq=q.eq?`<div class="eqbox sm">${q.eq.map((e,k)=>`<div><span class="tagno">${k+1}</span> ${e}</div>`).join('')}</div>`:'';
+  return `<article class="scard st${i}" data-card="${i}">
+    <header><span class="dot"></span><div class="who"><b>Siswa ${i+1}</b><span class="nm-slot" data-i="${i}"></span></div><span class="stat" data-stat="${i}">Siap</span></header>
+    <p class="qt">${q.t}</p>${eq}
+    <div class="ansrow">${q.lab.map((l,k)=>`<label>${l}<input inputmode="numeric" data-ans="${i}-${k}" placeholder="…"></label>`).join('')}</div>
+    <div class="brow">
+      <button class="btn small" data-lock="${i}">Kunci Jawaban</button>
+      <button class="btn small good" data-check="${i}" disabled>Cek Jawaban</button>
+      <span class="verdict" data-verdict="${i}"></span>
+    </div>
+    <div class="pemb hidden">
+      <b>Pembahasan</b>
+      <div class="steps">
+        <ol>${q.steps.map(s=>`<li class="off">${s}</li>`).join('')}</ol>
+        <div class="srow">
+          <button class="btn small primary nextstep">Langkah Berikutnya</button>
+          <button class="btn small ghost allstep">Tampilkan Semua</button>
+        </div>
+      </div>
+    </div>
+  </article>`;
+}
+function buildRound(r){
+  const R=ROUNDS[r],c=$('#rc-'+r);
+  c.innerHTML=`
+    <div class="rhead">
+      <div style="flex:1;min-width:260px">
+        <div class="kicker">Latihan Terstruktur · 4 Siswa · Soal Berbeda, Kesulitan Setara</div>
+        <h2 class="title">${R.tag} — <span class="mark">${R.lvl}</span></h2>
+        <p class="lede">Klik <b>Mulai Timer</b>, siswa mengerjakan soal masing-masing, lalu tekan <b>Kunci Jawaban</b> saat selesai — waktunya tercatat. Yang tidak mengunci sampai waktu habis dianggap <b>tidak menjawab</b>. Tutor memeriksa dengan <b>Cek Jawaban</b>, lalu membuka pembahasan langkah demi langkah.</p>
+      </div>
+      <div class="timer">
+        <div class="clock" data-r="${r}">05:00</div>
+        <div class="tbar"><i class="tfill" data-r="${r}"></i></div>
+        <div class="tbtns">
+          <button class="btn primary small" data-tstart="${r}">Mulai Timer 5:00</button>
+          <button class="btn ghost small" data-treset="${r}">Reset Ronde</button>
+        </div>
+      </div>
+    </div>
+    <div class="hintchip">${R.hint}</div>
+    <div class="quadgrid">${R.qs.map((q,i)=>cardHTML(r,q,i)).join('')}</div>
+    <div class="rfoot">
+      <button class="btn ghost" data-checkall="${r}">Cek Semua Jawaban</button>
+      <button class="btn good" data-nextr="${r}">${r<2?'Soal Berikutnya →':'Lihat Hasil →'}</button>
+    </div>`;
+  c.querySelector('[data-tstart]').onclick=()=>startTimer(r);
+  c.querySelector('[data-treset]').onclick=()=>resetRound(r);
+  c.querySelectorAll('[data-lock]').forEach(b=>b.onclick=()=>lockAns(r,+b.dataset.lock));
+  c.querySelectorAll('[data-check]').forEach(b=>b.onclick=()=>checkAns(r,+b.dataset.check,false));
+  c.querySelectorAll('.steps').forEach(refreshStepBtns);
+  c.querySelector('[data-checkall]').onclick=()=>checkAll(r);
+  c.querySelector('[data-nextr]').onclick=()=>nextRound(r);
+  refreshNames();updateClocks();updateTimerButtons(r);
+}
+function updateClocks(){
+  $$('.clock').forEach(c=>{const r=+c.dataset.r;const v=(r===lt.round)?lt.remaining:300;c.textContent=fmt(v);c.classList.toggle('low',r===lt.round&&lt.running&&v<=60);});
+  $$('.tfill').forEach(f=>{const r=+f.dataset.r;const v=(r===lt.round)?lt.remaining:300;f.style.width=(v/300*100)+'%';f.style.background=v<=60?'var(--red)':'var(--teal)';});
+}
+function updateTimerButtons(r){const b=$(`#rc-${r} [data-tstart]`);if(!b)return;
+  if(lt.running&&lt.round===r){b.disabled=true;b.textContent='Timer Berjalan…';}
+  else{b.disabled=false;b.textContent=(lt.round===r&&lt.remaining<300&&lt.remaining>0)?'Lanjut Timer':'Mulai Timer 5:00';}}
+function startTimer(r){
+  if(lt.round!==r){lt.round=r;lt.remaining=300;}
+  lt.running=true;lt.endAt=Date.now()+lt.remaining*1000;
+  clearInterval(lt.iv);lt.iv=setInterval(tick,200);
+  const c=$(`#rc-${r}`);c.querySelectorAll('[data-stat]').forEach((st,i)=>{if(!LX[r].locked[i]){st.textContent='Mengerjakan…';st.className='stat work';}});
+  updateTimerButtons(r);updateClocks();toast('Timer berjalan — mulai sekarang!');
+}
+function tick(){if(!lt.running)return;lt.remaining=Math.max(0,(lt.endAt-Date.now())/1000);updateClocks();if(lt.remaining<=0){lt.running=false;clearInterval(lt.iv);timeUp();}}
+function timeUp(){
+  const r=lt.round;sEnd();toast('Waktu habis!');
+  const c=$(`#rc-${r}`);c.querySelectorAll('[data-stat]').forEach((st,i)=>{
+    if(!LX[r].locked[i]){LX[r].locked[i]=true;LX[r].answered[i]=false;st.textContent='TIDAK MENJAWAB';st.className='stat no';
+      const card=st.closest('.scard');card.querySelectorAll('input').forEach(x=>x.disabled=true);card.querySelector('[data-lock]').disabled=true;card.querySelector('[data-check]').disabled=false;}});
+  updateTimerButtons(r);
+}
+function lockAns(r,i){
+  if(!lt.running){toast("Klik 'Mulai Timer' dulu, ya!");return;}
+  const D=LX[r];if(D.locked[i])return;
+  const el=Math.round(300-lt.remaining);
+  D.times[i]=el;D.locked[i]=true;D.answered[i]=true;
+  const card=$(`#rc-${r} [data-card="${i}"]`);
+  card.querySelectorAll('input').forEach(inp=>inp.disabled=true);
+  card.querySelector('[data-lock]').disabled=true;card.querySelector('[data-check]').disabled=false;
+  const st=card.querySelector('[data-stat]');st.textContent='TERCATAT · '+fmt(el);st.className='stat lock';
+  note(660,0,.08);
+}
+function checkAns(r,i,quiet){
+  const D=LX[r],q=ROUNDS[r].qs[i];
+  if(!D.locked[i]){toast('Tunggu siswa mengunci jawaban / waktu habis.');return;}
+  if(D.checked[i])return;
+  const card=$(`#rc-${r} [data-card="${i}"]`);
+  if(D.answered[i]){
+    const vals=q.lab.map((_,k)=>parseInt(card.querySelector(`[data-ans="${i}-${k}"]`).value,10));
+    if(vals.some(v=>isNaN(v))){toast('Jawaban belum lengkap — isi semua kotak angka.');D.checked[i]=false;return;}
+    D.correct[i]=q.ans.every((a,k)=>vals[k]===a);
+  }
+  D.checked[i]=true;
+  const v=card.querySelector('[data-verdict]');
+  if(!D.answered[i]){v.textContent='✗ Tanpa Jawaban';v.className='verdict bad';}
+  else if(D.correct[i]){v.textContent='✓ BENAR';v.className='verdict good';if(!quiet){sDing();const rc=card.getBoundingClientRect();burst(rc.left+rc.width/2,rc.top+rc.height/2);}}
+  else{v.textContent='✗ BELUM TEPAT';v.className='verdict bad';if(!quiet)sBuzz();}
+  const pemb=card.querySelector('.pemb');
+  pemb.classList.remove('hidden');
+  pemb.querySelectorAll('.steps').forEach(refreshStepBtns);
+}
+function checkAll(r){const D=LX[r];
+  if(D.locked.some(l=>!l)){toast('Semua siswa harus mengunci / waktu harus habis dulu.');return;}
+  let any=false;for(let i=0;i<4;i++){if(!D.checked[i]){checkAns(r,i,true);any=true;}}
+  if(any){sDing();toast('Semua jawaban diperiksa — pembahasan tampil.');}
+}
+function nextRound(r){
+  lt.running=false;clearInterval(lt.iv);lt.round=r+1;lt.remaining=300;
+  if(r<2){updateClocks();goTo(IDX['s-r'+(r+2)]);}
+  else{updateClocks();goTo(IDX['s-hasil']);}
+}
+function resetRound(r){
+  LX[r]=freshRound();lt.round=r;lt.remaining=300;lt.running=false;clearInterval(lt.iv);
+  buildRound(r);toast('Ronde '+(r+1)+' direset.');
+}
+ $('#btn-ulang').onclick=()=>{LX=[freshRound(),freshRound(),freshRound()];for(let r=0;r<3;r++)buildRound(r);lt.round=0;updateClocks();toast('Latihan direset — selamat berlatih lagi!');goTo(IDX['s-r1']);};
+
+function renderResults(){
+  const box=$('#hasil-box');
+  if(!LX.some(r=>r.locked.some(l=>l))){box.innerHTML='<div class="card"><p>Belum ada data pengerjaan. Buka Ronde 1–3, jalankan timer, dan minta siswa mengunci jawabannya.</p></div>';return;}
+  const rows=state.names.map((nm,i)=>{
+    const cells=LX.map(r=>{
+      if(!r.locked[i])return '<td class="mut">—</td>';
+      if(!r.answered[i])return '<td><span class="no">Tidak menjawab</span></td>';
+      return `<td class="time">${fmt(r.times[i])}${r.checked[i]?(r.correct[i]?' <b class="good">✓</b>':' <b class="bad">✗</b>'):''}</td>`;
+    }).join('');
+    const done=LX.filter(r=>r.answered[i]);
+    const avg=done.length?done.reduce((a,r)=>a+r.times[i],0)/done.length:null;
+    const benar=LX.filter(r=>r.checked[i]&&r.correct[i]).length;
+    return {nm,cells,avg,benar,i};
+  });
+  let best=null;rows.forEach(r=>{if(r.avg!=null&&(best==null||r.avg<best.avg))best=r;});
+  const topB=[...rows].sort((a,b)=>b.benar-a.benar)[0];
+  box.innerHTML=`<table class="rtable"><thead><tr><th>Siswa</th><th>Ronde 1</th><th>Ronde 2</th><th>Ronde 3</th><th>Rata-rata Waktu</th><th>Jawaban Benar</th></tr></thead>
+  <tbody>${rows.map(r=>`<tr class="st${r.i}"><td><span class="dot"></span> ${r.nm}</td>${r.cells}<td class="time">${r.avg!=null?fmt(r.avg):'—'}</td><td>${r.benar} / 3</td></tr>`).join('')}</tbody></table>
+  <div class="row">${best?`<span class="chip">Tercepat: <b>${best.nm}</b> · ${fmt(best.avg)}</span>`:''}<span class="chip">Akurasi terbaik: <b>${topB.nm}</b> · ${topB.benar}/3</span></div>`;
+}
+
+/* ================= GAME ================= */
+const LET=['A','B','C','D','E'];
+function renderScoreChips(){$('#scorechips').innerHTML=state.names.map((n,i)=>`<span class="schip st${i}"><span class="dot"></span>${n}<b>${G.scores[i]}</b></span>`).join('');}
+function renderStuSelect(){$('#stusel').innerHTML=state.names.map((n,i)=>`<button class="stu st${i} ${G.active===i?'on':''}" data-stu="${i}"><span class="dot"></span>${n}</button>`).join('');
+  $$('#stusel .stu').forEach(b=>b.onclick=()=>{if(G.ended){toast('Game sudah diakhiri — lihat papan juara.');return;}G.active=+b.dataset.stu;renderStuSelect();toast('Giliran '+state.names[G.active]+' — pilih nomor soal!');});}
+function renderGrid(){$('#numgrid').innerHTML=GAME_QS.map((q,idx)=>`<button class="numb d${q.d} ${G.picked.has(idx+1)?'picked':''}" data-n="${idx+1}" title="${q.d===1?'Mudah +1':q.d===2?'Sedang +2':'HOTS +3'} poin">${idx+1}<span class="pt">+${q.d}</span></button>`).join('');
+  $$('#numgrid .numb').forEach(b=>b.onclick=()=>pickNum(+b.dataset.n));
+  $('#gprog').textContent=G.picked.size+' / 30 soal dimainkan';}
+function pickNum(n){
+  if(G.ended){toast('Game sudah diakhiri.');return;}
+  if(G.active==null){toast('Pilih siswa dulu (tombol giliran).');return;}
+  if(G.picked.has(n)){toast('Nomor '+n+' sudah dipilih — cari nomor lain.');return;}
+  const p=G.panels[G.active];if(p&&!p.checked){toast('Selesaikan dulu soal yang sedang berjalan.');return;}
+  G.picked.add(n);G.panels[G.active]={qi:n-1,chosen:null,checked:false,ok:false};
+  note(760,0,.07);renderGrid();renderPanel(G.active);
+}
+function renderPanel(i){
+  const el=$('#gp'+i+' .gbody'),p=G.panels[i],nm=state.names[i];
+  if(!p){el.innerHTML=`<p class="idle">Menunggu giliran.<br>Tutor memilih <b>${nm}</b>, lalu <b>${nm}</b> memilih nomor soal di panel kiri.</p>`;return;}
+  const q=GAME_QS[p.qi];
+  el.innerHTML=`
+    <div class="qmeta"><span class="chip dchip d${q.d}">${q.d===1?'Mudah':q.d===2?'Sedang':'HOTS'} · +${q.d} poin</span><span class="qno">Soal No. ${p.qi+1} · untuk ${nm}</span></div>
+    <p class="qt">${q.q}</p>
+    <div>${q.o.map((o,k)=>`<button class="opt ${p.checked?(k===q.k?'right':(k===p.chosen?'wrong':'')):(p.chosen===k?'sel':'')}" data-k="${k}"><b>${LET[k]}.</b> ${o}</button>`).join('')}</div>
+    <div class="brow">
+      <button class="btn small good" data-gcheck="${i}" ${p.checked?'disabled':''}>Cek Jawaban</button>
+      <button class="btn small ghost" data-gexp="${i}">Pembahasan</button>
+    </div>
+    ${p.checked?`<div class="banner ${p.ok?'ok':'no'}">${p.ok?'✓ BENAR! +'+q.d+' poin untuk '+nm:'✗ Belum tepat — kunci: '+LET[q.k]}</div><p class="nexttip">${nm} boleh memilih nomor berikutnya.</p>`:''}
+    <div class="pemb hidden"><b>Pembahasan</b><p style="margin-top:4px;line-height:1.6">${q.e}</p></div>`;
+  el.querySelectorAll('.opt').forEach(b=>b.onclick=()=>{if(p.checked)return;p.chosen=+b.dataset.k;renderPanel(i);});
+  el.querySelector('[data-gcheck]').onclick=()=>{
+    if(p.checked)return;
+    if(p.chosen==null){toast('Pilih salah satu opsi dulu.');return;}
+    p.checked=true;p.ok=p.chosen===q.k;
+    if(p.ok){G.scores[i]+=q.d;sDing();const rc=el.getBoundingClientRect();burst(rc.left+rc.width/2,rc.top+60);}
+    else sBuzz();
+    renderPanel(i);renderScoreChips();renderGrid();
+  };
+  el.querySelector('[data-gexp]').onclick=()=>el.querySelector('.pemb').classList.toggle('hidden');
+}
+function standings(){return state.names.map((n,i)=>({n,s:G.scores[i],i})).sort((a,b)=>b.s-a.s);}
+function announce(){const st=standings(),top=st[0].s;
+  if(top<=0){speak('Belum ada pemenang. Ayo coba lagi!');return;}
+  const names=st.filter(x=>x.s===top).map(x=>x.n).join(' dan ');
+  speak('Selamat '+names+'! Kamu berhasil memenangkan game SPLTV dengan skor '+top+' poin. Kerja bagus, hebat sekali!');}
+function renderGres(){
+  const st=standings(),top=st[0].s,winners=st.filter(x=>x.s===top);
+  const winHtml=winners.map(w=>`<div class="wincard"><svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#E8B33B" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0V4z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/></svg><div><div class="wlabel">${top>0?'Juara 1':'Hasil Akhir'}</div><div class="wname">${w.n}</div></div><div class="wscore">${w.s}</div></div>`).join('');
+  const restHtml=top>0?`<ol class="rest">${st.slice(winners.length).map((w,k)=>`<li class="st${w.i}"><span class="rank">Ke-${k+2}</span><span class="dot"></span>${w.n}<span class="rs">${w.s} poin</span></li>`).join('')}</ol>`:'<p class="lede" style="margin-top:10px">Belum ada poin yang terkumpul. Klik "Main Lagi" dan kejar skornya!</p>';
+  $('#gres-box').innerHTML=winHtml+restHtml;
+}
+ $('#btn-endgame').onclick=()=>{
+  if(G.picked.size===0){toast('Belum ada soal yang dimainkan.');return;}
+  G.ended=true;renderGres();goTo(IDX['s-gres']);
+  setTimeout(()=>{sFanfare();announce();},600);
+};
+ $('#btn-announce').onclick=()=>{sFanfare();announce();};
+ $('#btn-backgame').onclick=()=>goTo(IDX['s-game']);
+ $('#btn-again').onclick=()=>{
+  G.scores=[0,0,0,0];G.picked.clear();G.panels=[null,null,null,null];G.ended=false;G.active=null;
+  renderScoreChips();renderStuSelect();renderGrid();[0,1,2,3].forEach(renderPanel);
+  toast('Game direset — selamat bertanding kembali!');goTo(IDX['s-game']);
+};
+
+/* ================= INIT (tangguh: satu bagian gagal ≠ semuanya gagal) ================= */
+const safe=(n,f)=>{try{f()}catch(err){console.error('[init] '+n,err);toast('Bagian "'+n+'" gagal dimuat — cek console (F12).');}};
+safe('kuis-kilat',initMCQ);
+safe('klasifikasi',initTiles);
+for(let r=0;r<3;r++)safe('latihan-ronde-'+(r+1),()=>buildRound(r));
+safe('skor-game',()=>{renderScoreChips();renderStuSelect();renderGrid();[0,1,2,3].forEach(renderPanel);});
+safe('nama-siswa',refreshNames);
+safe('jam',updateClocks);
+safe('navigasi',()=>goTo(0));
+</script>
+</body>
+</html>

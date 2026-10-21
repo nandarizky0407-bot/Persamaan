@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ular Tangga: SPLDV &amp; SPLTV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@600;700;800;900&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{font-family:'Nunito',sans-serif;background:linear-gradient(135deg,#0ea5e9 0%,#6366f1 52%,#a855f7 100%);background-attachment:fixed;min-height:100vh;color:#1e293b}
+.hidden{display:none!important}
+#screen-setup{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:18px}
+.card{background:#fff;border-radius:26px;box-shadow:0 24px 60px rgba(0,0,0,.28);padding:24px 22px;max-width:620px;width:100%;text-align:center}
+.logo{font-size:42px;line-height:1}
+h1{font-family:'Baloo 2',cursive;font-size:29px;color:#312e81;line-height:1.15;margin:6px 0 4px}
+h1 span{color:#0284c7}
+h2{font-family:'Baloo 2',cursive;font-size:16px;color:#334155;margin:14px 0 8px}
+.tagline{color:#64748b;font-weight:700;font-size:14px;margin-bottom:10px}
+.chips{display:flex;flex-wrap:wrap;gap:7px;justify-content:center;margin-bottom:4px}
+.tp{background:#e0f2fe;color:#0369a1;border-radius:999px;padding:4px 12px;font-weight:800;font-size:12px}
+.count-row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.chip{font-family:'Baloo 2',cursive;font-size:15px;padding:8px 16px;border-radius:999px;border:3px solid #e2e8f0;background:#f8fafc;color:#475569;cursor:pointer;transition:.15s}
+.chip.sel{border-color:#0ea5e9;background:#f0f9ff;color:#0369a1;transform:scale(1.07)}
+.nrow{display:flex;align-items:center;gap:10px;margin:8px auto;max-width:330px}
+.nrow input{flex:1;min-width:0;padding:10px 14px;border:2px solid #e2e8f0;border-radius:12px;font-family:'Nunito',sans-serif;font-weight:700;font-size:15px;outline:none}
+.nrow input:focus{border-color:#6366f1}
+.dot{width:28px;height:28px;border-radius:50%;color:#fff;font-weight:900;display:flex;align-items:center;justify-content:center;font-size:13px;flex:none}
+.resume{background:#ecfdf5;border:2px dashed #10b981;border-radius:14px;padding:12px;margin:12px 0;font-size:14px;color:#065f46}
+.rpos{margin:8px 0;display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.rtag{background:#d1fae5;border-radius:999px;padding:2px 10px;font-weight:800;font-size:12px}
+.btn-primary{font-family:'Baloo 2',cursive;font-size:17px;background:linear-gradient(180deg,#38bdf8,#0284c7);color:#fff;border:none;border-radius:999px;padding:12px 26px;cursor:pointer;box-shadow:0 4px 0 #075985,0 8px 18px rgba(2,132,199,.35);font-weight:800;transition:.12s;text-shadow:0 1px 2px rgba(0,0,0,.2)}
+.btn-primary:active{transform:translateY(3px);box-shadow:0 1px 0 #075985}
+.btn-primary:disabled{filter:grayscale(.55);opacity:.7;cursor:not-allowed}
+.btn-resume{font-family:'Baloo 2',cursive;font-size:16px;background:linear-gradient(180deg,#34d399,#10b981);color:#064e3b;border:none;border-radius:999px;padding:10px 22px;cursor:pointer;box-shadow:0 3px 0 #047857;font-weight:800;margin-top:4px}
+.btn-ghost{background:rgba(255,255,255,.18);border:2px solid rgba(255,255,255,.5);color:#fff;border-radius:999px;padding:6px 14px;font-family:'Baloo 2',cursive;font-size:14px;cursor:pointer}
+.btn-ghost:hover{background:rgba(255,255,255,.3)}
+.howto{text-align:left;background:#f8fafc;border:2px solid #e2e8f0;border-radius:14px;padding:10px 14px;margin-top:14px;font-size:13.5px;color:#334155}
+.howto summary{font-family:'Baloo 2',cursive;font-weight:700;color:#0369a1;cursor:pointer;font-size:15px}
+.howto ul{margin:8px 0 4px 18px;display:grid;gap:5px}
+.note{font-size:12.5px;color:#94a3b8;font-weight:700;margin-top:12px}
+#screen-game{min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:10px 8px 30px}
+.topbar{width:100%;max-width:1020px;display:flex;align-items:center;justify-content:space-between;gap:10px;padding:4px 4px 10px}
+.topbar h1{font-size:19px;color:#fff;margin:0}
+.game-wrap{display:flex;gap:16px;justify-content:center;align-items:flex-start;width:100%;max-width:1020px}
+.board-zone{width:min(94vw,560px);flex:none}
+.board{position:relative;width:100%;aspect-ratio:1/1;background:#fffdf4;border:7px solid #0ea5e9;border-radius:18px;box-shadow:0 16px 40px rgba(0,0,0,.35)}
+#cells{position:absolute;inset:0;display:grid;grid-template-columns:repeat(10,1fr);grid-template-rows:repeat(10,1fr);border-radius:11px;overflow:hidden}
+.cell{position:relative;border:.5px solid rgba(100,116,139,.16)}
+.cell.alt{background:#e0f2fe}
+.cell.lb{background:#bbf7d0}
+.cell.lt{background:#fef08a}
+.cell.sh{background:#fecaca}
+.cell.st{background:#bae6fd}
+.cell.gt{background:#fde68a}
+.cell .num{position:absolute;top:1px;left:3px;font-size:clamp(6px,1.3vw,11px);font-weight:900;color:#475569;opacity:.9}
+.cell .ic{position:absolute;bottom:0;width:100%;text-align:center;font-size:clamp(8px,2.1vw,16px);line-height:1}
+#overlay{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:5}
+#tokens{position:absolute;inset:0;pointer-events:none;z-index:6}
+.token{position:absolute;width:9.4%;height:9.4%;border-radius:50%;border:2.5px solid #fff;box-shadow:0 3px 8px rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:clamp(8px,1.8vw,14px);transform:translate(-50%,-50%);transition:left .24s ease,top .24s ease;font-family:'Baloo 2',cursive}
+.panel{width:min(94vw,340px);display:flex;flex-direction:column;gap:12px}
+#players{display:flex;flex-direction:column;gap:8px}
+.pcard{display:flex;align-items:center;gap:10px;background:#fff;border-radius:14px;padding:8px 12px;border:3px solid transparent;box-shadow:0 4px 12px rgba(0,0,0,.15);transition:.15s}
+.pcard.active{border-color:#0ea5e9;background:#f0f9ff;transform:scale(1.02)}
+.pinfo{display:flex;flex-direction:column;line-height:1.15;text-align:left}
+.pinfo small{color:#64748b;font-weight:800}
+.dice-zone{background:#fff;border-radius:16px;padding:14px;display:flex;flex-direction:column;align-items:center;gap:12px;box-shadow:0 4px 12px rgba(0,0,0,.15)}
+.dice{width:70px;height:70px;background:#fff;border:3px solid #0f172a;border-radius:16px;box-shadow:0 6px 14px rgba(0,0,0,.25);display:flex}
+.dice-grid{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(3,1fr);width:100%;height:100%;padding:9px;gap:2px}
+.pip{width:10px;height:10px;border-radius:50%;background:#0f172a;place-self:center;opacity:0;transform:scale(.5);transition:.12s}
+.pip.on{opacity:1;transform:scale(1)}
+@keyframes diceShake{0%{transform:rotate(0)}25%{transform:rotate(-16deg) translateY(-5px)}50%{transform:rotate(12deg) translateY(2px)}75%{transform:rotate(-9deg) translateY(-3px)}100%{transform:rotate(0)}}
+.dice.rolling{animation:diceShake .14s linear infinite}
+.status{background:#fff;border-radius:14px;padding:12px 14px;font-weight:800;color:#334155;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,.15);min-height:54px}
+.status b{color:#0369a1}
+.btn-primary.big{width:100%;font-size:19px}
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.65);display:flex;align-items:center;justify-content:center;z-index:50;padding:14px}
+.qcard{background:#fff;border-radius:24px;max-width:560px;width:100%;padding:20px 20px 18px;border-top:10px solid #0ea5e9;box-shadow:0 30px 80px rgba(0,0,0,.5);max-height:92vh;overflow:auto;animation:pop .22s ease}
+@keyframes pop{from{transform:scale(.85);opacity:0}to{transform:scale(1);opacity:1}}
+.qhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:8px;flex-wrap:wrap}
+.qcell{font-family:'Baloo 2',cursive;background:#e0f2fe;color:#075985;padding:4px 14px;border-radius:999px;font-weight:800;font-size:14px}
+.qbadge{padding:3px 12px;border-radius:999px;font-weight:900;font-size:12px;letter-spacing:.5px}
+.qbadge.mudah{background:#dcfce7;color:#166534}
+.qbadge.sedang{background:#fef9c3;color:#854d0e}
+.qbadge.sulit{background:#ffedd5;color:#9a3412}
+.qbadge.hots{background:#fee2e2;color:#b91c1c}
+.qhint{font-size:13px;font-weight:700;color:#64748b;margin-bottom:8px}
+.eqbox{border-left:6px double #0ea5e9;background:#f0f9ff;border-radius:0 14px 14px 0;padding:10px 16px;font-family:'Baloo 2',cursive;font-weight:700;font-size:18px;line-height:1.7;color:#0c4a6e}
+.qask{font-family:'Baloo 2',cursive;font-size:19px;font-weight:800;color:#1e293b;text-align:center;margin:13px 0 11px}
+.qopts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;align-items:center;gap:10px;padding:10px 14px;border:2.5px solid #e2e8f0;border-radius:14px;background:#fff;font-family:'Nunito',sans-serif;font-weight:800;font-size:16px;color:#1e293b;cursor:pointer;text-align:left;transition:.12s}
+.opt b{font-family:'Baloo 2',cursive;background:#e0f2fe;color:#0369a1;border-radius:9px;min-width:30px;text-align:center;padding:2px 0;font-size:15px;flex:none}
+.opt:hover:not(:disabled){border-color:#0ea5e9;background:#f0f9ff;transform:translateX(3px)}
+.opt:disabled{cursor:default;opacity:.75}
+.opt.correct{background:#dcfce7;border-color:#16a34a;opacity:1}
+.opt.correct b{background:#16a34a;color:#fff}
+.opt.wrong{background:#fee2e2;border-color:#dc2626;opacity:1}
+.opt.wrong b{background:#dc2626;color:#fff}
+.qfeedback{margin-top:12px;padding:11px 13px;border-radius:12px;font-size:14px;font-weight:700;line-height:1.5;animation:pop .2s}
+.qfeedback.good{background:#dcfce7;color:#166534;border-left:5px solid #22c55e}
+.qfeedback.bad{background:#fee2e2;color:#991b1b;border-left:5px solid #ef4444}
+.qfeedback .exp{display:block;margin-top:6px;color:#475569;font-weight:600}
+#qNext{margin-top:12px;width:100%}
+@keyframes shakeX{0%,100%{transform:translateX(0)}25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+.shake{animation:shakeX .3s}
+.wincard{background:linear-gradient(160deg,#fff,#e0f2fe);border-radius:28px;max-width:520px;width:100%;padding:34px 24px;text-align:center;position:relative;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.5);animation:pop .3s}
+.trophy{font-size:64px;animation:pop .5s}
+.wincard h2{font-family:'Baloo 2',cursive;font-size:30px;color:#0369a1;margin:6px 0}
+.wincard p{color:#0c4a6e;font-weight:800;margin-bottom:16px}
+#confetti{position:absolute;inset:0;pointer-events:none}
+.cf{position:absolute;top:-24px;width:10px;height:16px;border-radius:3px;animation:fall linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(680deg)}}
+@media(max-width:920px){.game-wrap{flex-direction:column;align-items:center}.panel{width:min(94vw,560px)}}
+</style>
+</head>
+<body>
+
+<section id="screen-setup">
+  <div class="card">
+    <div class="logo">🐍🪜</div>
+    <h1>ULAR TANGGA MATEMATIKA<br><span>SPLDV &amp; SPLTV</span></h1>
+    <p class="tagline">100 soal pilihan ganda (A–E): Sistem Persamaan Linear Dua Variabel &amp; Tiga Variabel</p>
+    <div class="chips">
+      <span class="tp">✖️ SPLDV (x, y)</span>
+      <span class="tp">🧮 SPLTV (x, y, z)</span>
+      <span class="tp">📝 Pilihan Ganda A–E</span>
+      <span class="tp">🧠 Soal HOTS</span>
+    </div>
+    <h2>Jumlah Pemain (2–5)</h2>
+    <div id="countChips" class="count-row"></div>
+    <div id="nameInputs"></div>
+    <div id="resumeBox" class="resume hidden"></div>
+    <button id="btnStart" class="btn-primary">🚀 Mulai Permainan Baru</button>
+    <details class="howto">
+      <summary>📜 Cara Bermain</summary>
+      <ul>
+        <li>🎲 Lempar dadu bergiliran. Untuk <b>maju sesuai angka dadu</b>, jawab soal dari <b>kotak tujuan</b> dengan memilih A–E (2 kesempatan). Benar → maju; salah → <b>tetap di tempat</b>.</li>
+        <li>🪜 Kotak <b>dasar tangga</b> (hijau): jawab benar → naik ke puncak tangga ⭐. Soalnya level <b>HOTS</b>!</li>
+        <li>🐍 Kotak <b>kepala ular</b> (merah): jawab benar → aman; salah → tergelincir ke ekor ular 🎯. Soalnya level <b>HOTS</b>!</li>
+        <li>🏁 Harus berhenti <b>tepat di kotak 100</b> untuk menang. Jika lebih, kamu memantul mundur.</li>
+        <li>📊 Kotak awal = soal <b>mudah/sedang</b> (SPLDV), kotak belakang = soal <b>sulit</b> (SPLTV), kotak tangga &amp; ular = soal <b>HOTS</b>.</li>
+      </ul>
+    </details>
+    <p class="note">💾 Progres tersimpan otomatis tiap giliran — ketik nama pemain di atas untuk melanjutkan permainan terakhir.</p>
+  </div>
+</section>
+
+<section id="screen-game" class="hidden">
+  <header class="topbar">
+    <h1>🐍 Ular Tangga · SPLDV &amp; SPLTV 🪜</h1>
+    <button id="btnExit" class="btn-ghost">🏠 Keluar</button>
+  </header>
+  <div class="game-wrap">
+    <div class="board-zone">
+      <div id="board" class="board">
+        <div id="cells"></div>
+        <svg id="overlay" viewBox="0 0 100 100" preserveAspectRatio="none"></svg>
+        <div id="tokens"></div>
+      </div>
+    </div>
+    <aside class="panel">
+      <div id="players"></div>
+      <div class="dice-zone">
+        <div id="dice" class="dice"><div id="diceGrid" class="dice-grid">
+          <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+          <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+          <span class="pip"></span><span class="pip"></span><span class="pip"></span>
+        </div></div>
+        <button id="btnRoll" class="btn-primary big">🎲 Lempar Dadu</button>
+      </div>
+      <div id="status" class="status">Selamat datang!</div>
+    </aside>
+  </div>
+</section>
+
+<div id="qmodal" class="overlay hidden">
+  <div class="qcard">
+    <div class="qhead"><span id="qCell" class="qcell"></span><span id="qBadge" class="qbadge mudah"></span></div>
+    <p class="qhint">Tentukan dulu nilai x, y (dan z) dari sistem persamaan berikut, lalu hitung:</p>
+    <div id="qEq" class="eqbox"></div>
+    <p id="qAsk" class="qask"></p>
+    <div id="qOpts" class="qopts"></div>
+    <div id="qFeedback" class="qfeedback hidden"></div>
+    <button id="qNext" class="btn-primary hidden">Lanjut ➜</button>
+  </div>
+</div>
+
+<div id="winOverlay" class="overlay hidden">
+  <div class="wincard">
+    <div class="trophy">🏆</div>
+    <h2 id="winTitle"></h2>
+    <p id="winSub"></p>
+    <div id="confetti"></div>
+    <button id="btnAgain" class="btn-primary">🔁 Main Lagi</button>
+  </div>
+</div>
+<script>
+/* ===== BANK SOAL 1-50: SPLDV (Isi: qi 0-24 mudah, 25-49 sedang) ===== */
+var QBANK=[
+{eq:["2x + y = 8","x - y = 1"],ask:"4x + 3y",o:["14","16","18","20","22"],a:2,e:"x = 3, y = 2, sehingga 4(3) + 3(2) = 12 + 6 = 18"},
+{eq:["x + 2y = 6","2x - y = 7"],ask:"3x - 2y",o:["8","10","12","14","16"],a:1,e:"x = 4, y = 1, sehingga 3(4) - 2(1) = 12 - 2 = 10"},
+{eq:["3x + y = 11","x + 2y = 12"],ask:"5x + 2y",o:["18","19","20","21","24"],a:2,e:"x = 2, y = 5, sehingga 5(2) + 2(5) = 10 + 10 = 20"},
+{eq:["2x - y = 7","x + 3y = 14"],ask:"2x + 4y",o:["18","20","22","24","26"],a:2,e:"x = 5, y = 3, sehingga 2(5) + 4(3) = 10 + 12 = 22"},
+{eq:["4x + y = 8","3x - 2y = -5"],ask:"7x - y",o:["1","2","3","4","5"],a:2,e:"x = 1, y = 4, sehingga 7(1) - 4 = 3"},
+{eq:["x - 2y = 2","2x + y = 14"],ask:"x + 5y",o:["12","14","16","18","20"],a:2,e:"x = 6, y = 2, sehingga 6 + 5(2) = 16"},
+{eq:["5x - 2y = 7","2x + 3y = 18"],ask:"3x + 2y",o:["15","16","17","18","19"],a:2,e:"x = 3, y = 4, sehingga 3(3) + 2(4) = 9 + 8 = 17"},
+{eq:["3x + 4y = 24","2x - y = 5"],ask:"4x - y",o:["11","12","13","15","17"],a:2,e:"x = 4, y = 3, sehingga 4(4) - 3 = 13"},
+{eq:["4x + y = 14","3x - y = 0"],ask:"6x - 2y",o:["-2","0","2","4","6"],a:1,e:"x = 2, y = 6, sehingga 6(2) - 2(6) = 12 - 12 = 0"},
+{eq:["2x + 5y = 20","3x - 2y = 11"],ask:"3x + 5y",o:["20","22","25","27","30"],a:2,e:"x = 5, y = 2, sehingga 3(5) + 5(2) = 15 + 10 = 25"},
+{eq:["2x + 3y = 5","3x - y = -9"],ask:"4x + 5y",o:["5","7","9","11","13"],a:1,e:"x = -2, y = 3, sehingga 4(-2) + 5(3) = -8 + 15 = 7"},
+{eq:["x + 4y = 0","3x + 2y = 10"],ask:"2x - 3y",o:["5","7","9","11","13"],a:3,e:"x = 4, y = -1, sehingga 2(4) - 3(-1) = 8 + 3 = 11"},
+{eq:["3x + 5y = 1","2x + 3y = 0"],ask:"-2x + 3y",o:["6","8","10","12","14"],a:3,e:"x = -3, y = 2, sehingga -2(-3) + 3(2) = 6 + 6 = 12"},
+{eq:["2x + 3y = 4","x - 2y = 9"],ask:"3x + 4y",o:["5","7","9","11","13"],a:1,e:"x = 5, y = -2, sehingga 3(5) + 4(-2) = 15 - 8 = 7"},
+{eq:["4x - y = 0","2x + 3y = -14"],ask:"5x - 2y",o:["-3","1","3","5","7"],a:2,e:"x = -1, y = -4, sehingga 5(-1) - 2(-4) = -5 + 8 = 3"},
+{eq:["x + y = 10","2x - 3y = 5"],ask:"2x - y",o:["9","10","11","12","13"],a:2,e:"x = 7, y = 3, sehingga 2(7) - 3 = 11"},
+{eq:["2x - y = 7","x + 2y = 16"],ask:"3x - 2y",o:["6","8","10","12","14"],a:1,e:"x = 6, y = 5, sehingga 3(6) - 2(5) = 18 - 10 = 8"},
+{eq:["x - 3y = 2","2x + y = 18"],ask:"x + 4y",o:["12","14","16","18","20"],a:2,e:"x = 8, y = 2, sehingga 8 + 4(2) = 16"},
+{eq:["3x - y = 2","2x + y = 13"],ask:"4x + y",o:["17","18","19","20","21"],a:2,e:"x = 3, y = 7, sehingga 4(3) + 7 = 19"},
+{eq:["x - 2y = 1","2x - 3y = 6"],ask:"x + 2y",o:["13","15","17","19","21"],a:2,e:"x = 9, y = 4, sehingga 9 + 2(4) = 17"},
+{eq:["3x + 2y = 22","2x - y = 3"],ask:"5x - 2y",o:["8","10","12","14","16"],a:1,e:"x = 4, y = 5, sehingga 5(4) - 2(5) = 20 - 10 = 10"},
+{eq:["5x + 2y = 4","3x + y = 3"],ask:"6x + 2y",o:["4","6","8","10","12"],a:1,e:"x = 2, y = -3, sehingga 6(2) + 2(-3) = 12 - 6 = 6"},
+{eq:["2x + 3y = 7","3x + 4y = 8"],ask:"5x + 6y",o:["6","8","10","12","14"],a:2,e:"x = -4, y = 5, sehingga 5(-4) + 6(5) = -20 + 30 = 10"},
+{eq:["x + 2y = 2","2x + 3y = 6"],ask:"2x + 5y",o:["0","2","4","6","8"],a:1,e:"x = 6, y = -2, sehingga 2(6) + 5(-2) = 12 - 10 = 2"},
+{eq:["4x - 3y = 5","2x + y = 15"],ask:"3x - y",o:["5","10","15","20","25"],a:1,e:"x = 5, y = 5, sehingga 3(5) - 5 = 10"},
+{eq:["x - 3y = 1","2x - 5y = 5"],ask:"x - 2y",o:["2","3","4","5","6"],a:2,e:"x = 10, y = 3, sehingga 10 - 2(3) = 4"},
+{eq:["4x - y = 4","2x + y = 14"],ask:"5x - y",o:["5","6","7","8","9"],a:2,e:"x = 3, y = 8, sehingga 5(3) - 8 = 7"},
+{eq:["2x - 5y = 4","x - 2y = 3"],ask:"2x + 3y",o:["16","18","20","22","24"],a:2,e:"x = 7, y = 2, sehingga 2(7) + 3(2) = 14 + 6 = 20"},
+{eq:["3x - y = 6","x + y = 10"],ask:"3x + 2y",o:["20","22","24","26","28"],a:2,e:"x = 4, y = 6, sehingga 3(4) + 2(6) = 12 + 12 = 24"},
+{eq:["x - y = 3","2x - 3y = 1"],ask:"2x - 2y",o:["4","6","8","10","12"],a:1,e:"x = 8, y = 5, sehingga 2(8) - 2(5) = 16 - 10 = 6"},
+{eq:["5x + y = 12","3x - y = -4"],ask:"8x + y",o:["13","14","15","16","17"],a:2,e:"x = 1, y = 7, sehingga 8(1) + 7 = 15"},
+{eq:["2x - 3y = 0","x + y = 10"],ask:"4x - 3y",o:["8","10","12","14","16"],a:2,e:"x = 6, y = 4, sehingga 4(6) - 3(4) = 24 - 12 = 12"},
+{eq:["2x + 3y = 2","x + 2y = 3"],ask:"2x + 4y",o:["4","6","8","10","12"],a:1,e:"x = -5, y = 4, sehingga 2(-5) + 4(4) = -10 + 16 = 6"},
+{eq:["3x + 2y = -1","2x + y = 1"],ask:"4x + 2y",o:["0","2","4","6","8"],a:1,e:"x = 3, y = -5, sehingga 4(3) + 2(-5) = 12 - 10 = 2"},
+{eq:["x - 4y = 1","2x - 7y = 4"],ask:"x - 3y",o:["1","2","3","4","5"],a:2,e:"x = 9, y = 2, sehingga 9 - 3(2) = 3"},
+{eq:["3x - 2y = 3","x - y = -1"],ask:"2x + y",o:["14","15","16","17","18"],a:2,e:"x = 5, y = 6, sehingga 2(5) + 6 = 16"},
+{eq:["2x - y = 0","3x - y = 4"],ask:"5x - 2y",o:["2","4","6","8","10"],a:1,e:"x = 4, y = 8, sehingga 5(4) - 2(8) = 20 - 16 = 4"},
+{eq:["x - y = 2","3x - 4y = 1"],ask:"2x - y",o:["7","8","9","10","11"],a:2,e:"x = 7, y = 5, sehingga 2(7) - 5 = 9"},
+{eq:["4x - y = -1","5x - y = 1"],ask:"5x + y",o:["15","17","19","21","23"],a:2,e:"x = 2, y = 9, sehingga 5(2) + 9 = 19"},
+{eq:["x - 5y = 1","2x - 7y = 5"],ask:"3x + 4y",o:["18","20","22","24","26"],a:2,e:"x = 6, y = 1, sehingga 3(6) + 4(1) = 18 + 4 = 22"},
+{eq:["2x + 3y = 15","5x - 2y = 9"],ask:"4x + 4y",o:["16","20","24","28","32"],a:2,e:"x = 3, y = 3, sehingga 4(3) + 4(3) = 12 + 12 = 24"},
+{eq:["x - 2y = 2","3x - 5y = 9"],ask:"2x - 3y",o:["5","7","9","11","13"],a:1,e:"x = 8, y = 3, sehingga 2(8) - 3(3) = 16 - 9 = 7"},
+{eq:["2x - y = 6","3x - 2y = 7"],ask:"3x + 2y",o:["19","21","23","25","27"],a:2,e:"x = 5, y = 4, sehingga 3(5) + 2(4) = 15 + 8 = 23"},
+{eq:["3x - y = 2","5x - 2y = 2"],ask:"7x - 2y",o:["4","6","8","10","12"],a:1,e:"x = 2, y = 4, sehingga 7(2) - 2(4) = 14 - 8 = 6"},
+{eq:["3x - 4y = 4","2x - 3y = 2"],ask:"5x + 3y",o:["22","24","26","28","30"],a:2,e:"x = 4, y = 2, sehingga 5(4) + 3(2) = 20 + 6 = 26"},
+{eq:["x - 5y = 1","x - 3y = 5"],ask:"x - 4y",o:["1","2","3","4","5"],a:2,e:"x = 11, y = 2, sehingga 11 - 4(2) = 3"},
+{eq:["x - y = 3","2x - 3y = 3"],ask:"2x + 3y",o:["15","18","21","24","27"],a:2,e:"x = 6, y = 3, sehingga 2(6) + 3(3) = 12 + 9 = 21"},
+{eq:["2x - y = 1","5x - 2y = 5"],ask:"4x - y",o:["5","7","9","11","13"],a:1,e:"x = 3, y = 5, sehingga 4(3) - 5 = 7"},
+{eq:["x - 2y = -1","2x - 3y = 2"],ask:"3x - 4y",o:["3","5","7","9","11"],a:1,e:"x = 7, y = 4, sehingga 3(7) - 4(4) = 21 - 16 = 5"},
+{eq:["x - y = 5","x - 3y = -5"],ask:"2x - 3y",o:["3","5","7","9","11"],a:1,e:"x = 10, y = 5, sehingga 2(10) - 3(5) = 20 - 15 = 5"}
+,
+/* ===== BANK SOAL 51-100: SPLTV (Isi: qi 50-82 sulit, 83-99 HOTS) ===== */
+{eq:["x + y + z = 6","2x - y + z = 3","x + 2y - z = 2"],ask:"2x + 3y + z",o:["9","10","11","12","13"],a:2,e:"x = 1, y = 2, z = 3, sehingga 2(1) + 3(2) + 3 = 11"},
+{eq:["x + y + z = 6","x - y + 2z = 1","2x + y - z = 6"],ask:"3x + y - 2z",o:["5","6","7","8","9"],a:2,e:"x = 2, y = 3, z = 1, sehingga 3(2) + 3 - 2(1) = 7"},
+{eq:["x + y + z = 6","2x + y - z = 5","x - 2y + z = 3"],ask:"x + 4y + 2z",o:["9","11","13","15","17"],a:1,e:"x = 3, y = 1, z = 2, sehingga 3 + 4 + 4 = 11"},
+{eq:["x + y + z = 7","2x - y + z = 5","x + 2y - z = 3"],ask:"2x + 2y + 2z",o:["10","12","14","16","18"],a:2,e:"x = 2, y = 2, z = 3, sehingga 2(2 + 2 + 3) = 14"},
+{eq:["x + y + z = 8","x - y + z = 6","x + y - z = 2"],ask:"2x - y + z",o:["8","9","10","11","12"],a:2,e:"x = 4, y = 1, z = 3, sehingga 8 - 1 + 3 = 10"},
+{eq:["x + y + z = 8","2x + y - z = 1","x - y + 2z = 6"],ask:"3x + 2y - z",o:["3","4","5","6","7"],a:2,e:"x = 1, y = 3, z = 4, sehingga 3 + 6 - 4 = 5"},
+{eq:["x + y + z = 9","x - y + z = 5","2x + y - z = 4"],ask:"x + 3y - z",o:["3","4","5","6","7"],a:2,e:"x = 3, y = 2, z = 4, sehingga 3 + 6 - 4 = 5"},
+{eq:["x + y + z = 7","2x + y - z = 7","x - y + 2z = 0"],ask:"4x - y + 3z",o:["5","7","9","11","13"],a:1,e:"x = 2, y = 4, z = 1, sehingga 8 - 4 + 3 = 7"},
+{eq:["x + y + z = 8","x - 2y + z = 5","2x + y - z = 9"],ask:"2x + 3y - 2z",o:["7","8","9","10","11"],a:2,e:"x = 5, y = 1, z = 2, sehingga 10 + 3 - 4 = 9"},
+{eq:["x + y + z = 8","2x - y + z = 5","x + 2y - 2z = 5"],ask:"2x + y + 3z",o:["11","13","15","17","19"],a:2,e:"x = 3, y = 3, z = 2, sehingga 6 + 3 + 6 = 15"},
+{eq:["x + y + z = 8","2x + 3y - z = 2","x - y + 2z = 11"],ask:"3x - 2y + z",o:["7","8","9","10","11"],a:2,e:"x = 2, y = 1, z = 5, sehingga 6 - 2 + 5 = 9"},
+{eq:["x + y + z = 7","x - y + 2z = 4","2x + y - 3z = 7"],ask:"x + 2y + 4z",o:["10","12","14","16","18"],a:1,e:"x = 4, y = 2, z = 1, sehingga 4 + 4 + 4 = 12"},
+{eq:["x + y + z = 7","3x + y - z = 5","2x - y + 3z = 4"],ask:"5x + y - 2z",o:["3","5","7","9","11"],a:1,e:"x = 1, y = 4, z = 2, sehingga 5 + 4 - 4 = 5"},
+{eq:["x + y + z = 8","2x - y + 2z = 4","x + 2y - z = 10"],ask:"2x + y - 3z",o:["5","6","7","8","9"],a:2,e:"x = 3, y = 4, z = 1, sehingga 6 + 4 - 3 = 7"},
+{eq:["x + y + z = 10","2x + y - z = 6","x - y + 2z = 3"],ask:"3x - y + 2z",o:["5","7","9","11","13"],a:1,e:"x = 2, y = 5, z = 3, sehingga 6 - 5 + 6 = 7"},
+{eq:["x + y + z = 9","x - y - z = 3","2x + y - 2z = 12"],ask:"x - 2y + 5z",o:["5","6","7","8","9"],a:2,e:"x = 6, y = 2, z = 1, sehingga 6 - 4 + 5 = 7"},
+{eq:["x + y + z = 8","3x + y - 2z = 4","2x - y + 3z = 3"],ask:"4x + 2y - 3z",o:["6","8","10","12","14"],a:1,e:"x = 1, y = 5, z = 2, sehingga 4 + 10 - 6 = 8"},
+{eq:["x + y + z = 9","x - y + 2z = 5","2x + y - z = 9"],ask:"2x - y + 4z",o:["11","12","13","14","15"],a:2,e:"x = 4, y = 3, z = 2, sehingga 8 - 3 + 8 = 13"},
+{eq:["x + y + z = 9","2x - y + z = 5","x + 2y - z = 4"],ask:"3x + 2y - z",o:["6","7","8","9","10"],a:2,e:"x = 2, y = 3, z = 4, sehingga 6 + 6 - 4 = 8"},
+{eq:["x + y + z = 10","x - y + z = 6","2x + y - 2z = 6"],ask:"x + 3y - 2z",o:["3","4","5","6","7"],a:2,e:"x = 5, y = 2, z = 3, sehingga 5 + 6 - 6 = 5"},
+{eq:["x + y + z = 4","2x + y - z = -3","x - 2y + z = -2"],ask:"3x + 2y + z",o:["2","3","4","5","6"],a:2,e:"x = -1, y = 2, z = 3, sehingga -3 + 4 + 3 = 4"},
+{eq:["x + y + z = 5","x - y + z = 7","2x + y - z = -1"],ask:"2x - 3y + z",o:["9","10","11","12","13"],a:2,e:"x = 2, y = -1, z = 4, sehingga 4 + 3 + 4 = 11"},
+{eq:["x + y + z = 4","2x - y + z = 3","x + 2y - 2z = 9"],ask:"x + 2y - 3z",o:["8","9","10","11","12"],a:2,e:"x = 3, y = 2, z = -1, sehingga 3 + 4 + 3 = 10"},
+{eq:["x + y + z = 3","x - y - z = 5","2x + y + 2z = 8"],ask:"2x + 3y + 4z",o:["4","6","8","10","12"],a:1,e:"x = 4, y = -2, z = 1, sehingga 8 - 6 + 4 = 6"},
+{eq:["x + y + z = 3","2x + y - z = -3","x - y + 2z = -1"],ask:"-3x + y + 2z",o:["9","11","13","15","17"],a:2,e:"x = -2, y = 3, z = 2, sehingga 6 + 3 + 4 = 13"},
+{eq:["x + y + z = 6","3x + 2y - z = 1","2x - y + z = 5"],ask:"4x + 3y - z",o:["1","2","3","4","5"],a:2,e:"x = 1, y = 1, z = 4, sehingga 4 + 3 - 4 = 3"},
+{eq:["x + y + z = 9","2x - y + 3z = 4","x + y - 2z = 6"],ask:"2x - y + 5z",o:["4","5","6","7","8"],a:2,e:"x = 3, y = 5, z = 1, sehingga 6 - 5 + 5 = 6"},
+{eq:["x + y + z = 9","3x - y + z = 5","x + 2y - 2z = 4"],ask:"3x - 2y + 3z",o:["5","6","7","8","9"],a:2,e:"x = 2, y = 4, z = 3, sehingga 6 - 8 + 9 = 7"},
+{eq:["x + y + z = 9","x - y + 3z = 5","2x + y - 4z = 9"],ask:"x - 2y + 6z",o:["3","4","5","6","7"],a:2,e:"x = 5, y = 3, z = 1, sehingga 5 - 6 + 6 = 5"},
+{eq:["x + y + z = 9","x - 3y + z = 5","2x + y - z = 5"],ask:"2x + 5y - 2z",o:["3","5","7","9","11"],a:1,e:"x = 4, y = 1, z = 4, sehingga 8 + 5 - 8 = 5"},
+{eq:["x + y + z = 9","x - 2y + z = 6","2x - y - 3z = 5"],ask:"x + 4y - 2z",o:["4","5","6","7","8"],a:2,e:"x = 6, y = 1, z = 2, sehingga 6 + 4 - 4 = 6"},
+{eq:["x + y + z = 9","4x + y - 2z = 6","2x - y + 3z = 2"],ask:"5x - y + 3z",o:["3","5","7","9","11"],a:1,e:"x = 1, y = 6, z = 2, sehingga 5 - 6 + 6 = 5"},
+{eq:["x + y + z = 9","2x + 3y - z = 5","3x - y + z = 9"],ask:"3x + 3y - z",o:["5","6","7","8","9"],a:2,e:"x = 2, y = 2, z = 5, sehingga 6 + 6 - 5 = 7"},
+{eq:["x + y + z = 10","2x - y + z = 7","x + 3y - 2z = 4"],ask:"2x + 2y - z",o:["6","7","8","9","10"],a:2,e:"x = 3, y = 3, z = 4, sehingga 6 + 6 - 4 = 8"},
+{eq:["x + y + z = 10","x - y + 3z = 6","2x + y - 4z = 4"],ask:"x + 2y - 3z",o:["4","5","6","7","8"],a:2,e:"x = 4, y = 4, z = 2, sehingga 4 + 8 - 6 = 6"},
+{eq:["x + y + z = 10","x - 3y - z = 2","2x - y - 4z = 5"],ask:"2x - 3y + z",o:["11","12","13","14","15"],a:2,e:"x = 7, y = 1, z = 2, sehingga 14 - 3 + 2 = 13"},
+{eq:["x + y + z = 11","3x + y - 2z = 6","2x - y + 3z = 7"],ask:"4x - y + 2z",o:["6","8","10","12","14"],a:1,e:"x = 2, y = 6, z = 3, sehingga 8 - 6 + 6 = 8"},
+{eq:["x + y + z = 11","x - y + 2z = 5","2x + y - 5z = 4"],ask:"2x - y + 3z",o:["10","12","14","16","18"],a:1,e:"x = 5, y = 4, z = 2, sehingga 10 - 4 + 6 = 12"},
+{eq:["x + y + z = 11","2x + 3y - z = 6","3x - y + z = 13"],ask:"3x + 2y - z",o:["5","6","7","8","9"],a:2,e:"x = 3, y = 2, z = 6, sehingga 9 + 4 - 6 = 7"},
+{eq:["x + y + z = 11","x - y - z = 1","2x - 2y + z = 8"],ask:"x + 2y - 4z",o:["2","4","6","8","10"],a:1,e:"x = 6, y = 3, z = 2, sehingga 6 + 6 - 8 = 4"},
+{eq:["x + y + z = 12","2x - y + z = 6","x + 2y - 3z = 5"],ask:"2x + y - 2z",o:["5","7","9","11","13"],a:1,e:"x = 4, y = 5, z = 3, sehingga 8 + 5 - 6 = 7"},
+{eq:["x + y + z = 12","x - 2y - z = 2","2x - 3y - 2z = 6"],ask:"x - 2y + 3z",o:["8","9","10","11","12"],a:2,e:"x = 8, y = 2, z = 2, sehingga 8 - 4 + 6 = 10"},
+{eq:["x + y + z = 12","2x - y + 2z = 6","3x + y - 3z = 6"],ask:"3x - y + 2z",o:["7","8","9","10","11"],a:2,e:"x = 3, y = 6, z = 3, sehingga 9 - 6 + 6 = 9"},
+{eq:["x + y + z = 12","x + 3y - z = 6","2x - 2y + z = 11"],ask:"2x + 3y - 2z",o:["4","5","6","7","8"],a:2,e:"x = 5, y = 2, z = 5, sehingga 10 + 6 - 10 = 6"},
+{eq:["x + y + z = 12","3x + y - 2z = 7","4x - y + z = 4"],ask:"5x - y + 2z",o:["7","8","9","10","11"],a:2,e:"x = 2, y = 7, z = 3, sehingga 10 - 7 + 6 = 9"},
+{eq:["x + y + z = 12","2x + 2y - z = 6","x - 3y + z = 4"],ask:"3x + 2y - 2z",o:["2","4","6","8","10"],a:1,e:"x = 4, y = 2, z = 6, sehingga 12 + 4 - 12 = 4"},
+{eq:["x + y + z = 12","x - y - z = 2","2x - 2y + z = 10"],ask:"x + 2y - 3z",o:["5","6","7","8","9"],a:2,e:"x = 7, y = 3, z = 2, sehingga 7 + 6 - 6 = 7"},
+{eq:["x + y + z = 13","x - y + 2z = 8","2x + y - 4z = 4"],ask:"2x - 2y + 3z",o:["11","13","15","17","19"],a:1,e:"x = 6, y = 4, z = 3, sehingga 12 - 8 + 9 = 13"},
+{eq:["x + y + z = 13","2x - y + z = 8","x + 2y - 4z = 3"],ask:"3x - 2y + 2z",o:["9","10","11","12","13"],a:2,e:"x = 5, y = 5, z = 3, sehingga 15 - 10 + 6 = 11"},
+{eq:["x + y + z = 15","2x + y - 2z = 4","x - y + z = 3"],ask:"3x - y + z",o:["9","10","11","12","13"],a:2,e:"x = 4, y = 6, z = 5, sehingga 12 - 6 + 5 = 11"}
+];
+(function(){
+"use strict";
+/* ================= PETA TANGGA & ULAR ================= */
+var LADDERS={3:22,8:30,15:34,28:55,38:59,57:76,66:85,79:98};
+var SNAKES={24:5,36:16,44:26,61:40,69:50,81:63,89:70,95:72};
+/* 16 kotak khusus (dasar tangga + kepala ular) -> soal HOTS (qi 83-98) */
+var SPECIALQ={3:83,8:84,15:85,24:86,28:87,36:88,38:89,44:90,57:91,61:92,66:93,69:94,79:95,81:96,89:97,95:98};
+var cellQ=new Array(101);
+(function(){
+  var i,k;
+  for(i=0;i<=100;i++)cellQ[i]=-1;
+  /* Kotak depan (1-50, 42 kotak): qi 0-24 = SPLDV mudah, 25-41 = SPLDV sedang */
+  var front=[1,2,4,5,6,7,9,10,11,12,13,14,16,17,18,19,20,21,22,23,25,26,27,29,30,31,32,33,34,35,37,39,40,41,42,43,45,46,47,48,49,50];
+  for(i=0;i<front.length;i++)cellQ[front[i]]=i;
+  /* Kotak belakang (51-99, 41 kotak): 8 pertama qi 42-49 (SPLDV sedang), sisanya qi 50-82 (SPLTV sulit) */
+  var back=[51,52,53,54,55,56,58,59,60,62,63,64,65,67,68,70,71,72,73,74,75,76,77,78,80,82,83,84,85,86,87,88,90,91,92,93,94,96,97,98,99];
+  for(i=0;i<back.length;i++)cellQ[back[i]]=(i<8)?(42+i):(50+(i-8));
+  /* Kotak tangga & ular: HOTS */
+  for(k in SPECIALQ)cellQ[parseInt(k,10)]=SPECIALQ[k];
+})();
+
+/* ================= UTIL ================= */
+function el(id){return document.getElementById(id);}
+function on(id,ev,fn){var e=el(id);if(e){e.addEventListener(ev,fn);}else{if(window.console)console.warn("ID tidak ditemukan: "+id);}}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+
+var PCOLORS=["#ef4444","#3b82f6","#22c55e","#f97316","#a855f7"];
+var PIPS={1:[4],2:[2,6],3:[2,4,6],4:[0,2,6,8],5:[0,2,4,6,8],6:[0,2,3,5,6,8]};
+var KEY="ultranggaSPL_";
+var S={players:[],cur:0,busy:false,over:false,count:2};
+
+function badgeOf(qi){
+  if(qi>=83)return{t:"HOTS",c:"hots"};
+  if(qi>=50)return{t:"SULIT",c:"sulit"};
+  if(qi>=25)return{t:"SEDANG",c:"sedang"};
+  return{t:"MUDAH",c:"mudah"};
+}
+function rc(n){var i=n-1,row=Math.floor(i/10),col=i%10;if(row%2===1)col=9-col;return{row:row,col:col};}
+function cc(n){
+  if(n<=0)return{x:5,y:95};
+  var r=rc(n);return{x:(r.col+0.5)*10,y:(9-r.row+0.5)*10};
+}
+function setStatus(html){var s=el("status");if(s)s.innerHTML=html;}
+function buildSteps(from,n){
+  var steps=[],t=from,dir=1,i;
+  for(i=0;i<n;i++){if(t+dir>100)dir=-1;t+=dir;steps.push(t);}
+  return steps;
+}
+function inVal(obj,v){for(var k in obj){if(obj[k]===v)return parseInt(k,10);}return 0;}
+
+/* ================= SIMPAN PERMAINAN (localStorage, aman) ================= */
+function saveGame(){
+  try{
+    if(!S.players.length)return;
+    var data={v:1,n:[],p:[],t:S.cur,ts:Date.now()};
+    for(var i=0;i<S.players.length;i++){data.n.push(S.players[i].name);data.p.push(S.players[i].pos);}
+    var raw=JSON.stringify(data);
+    for(var j=0;j<S.players.length;j++){localStorage.setItem(KEY+S.players[j].name.toLowerCase(),raw);}
+  }catch(e){/* penyimpanan tidak tersedia — permainan tetap jalan */}
+}
+function loadSave(name){
+  try{
+    var raw=localStorage.getItem(KEY+String(name).toLowerCase().trim());
+    if(!raw)return null;
+    var d=JSON.parse(raw);
+    if(d&&d.n&&d.p&&d.n.length===d.p.length&&d.n.length>=2)return d;
+  }catch(e){}
+  return null;
+}
+function saveClear(){
+  try{for(var i=0;i<S.players.length;i++){localStorage.removeItem(KEY+S.players[i].name.toLowerCase());}}catch(e){}
+}
+
+/* ================= PAPAN ================= */
+var NS="http://www.w3.org/2000/svg";
+var snakeBody={};
+function svgEl(tag,attrs){
+  var e=document.createElementNS(NS,tag);
+  for(var k in attrs)e.setAttribute(k,attrs[k]);
+  return e;
+}
+function drawLadder(b,t){
+  var svg=el("overlay"),a=cc(b),c=cc(t);
+  var dx=c.x-a.x,dy=c.y-a.y,L=Math.hypot(dx,dy)||1;
+  var ox=-dy/L*1.7,oy=dx/L*1.7;
+  svg.appendChild(svgEl("line",{x1:a.x+ox,y1:a.y+oy,x2:c.x+ox,y2:c.y+oy,stroke:"#a16207","stroke-width":1.15,"stroke-linecap":"round"}));
+  svg.appendChild(svgEl("line",{x1:a.x-ox,y1:a.y-oy,x2:c.x-ox,y2:c.y-oy,stroke:"#a16207","stroke-width":1.15,"stroke-linecap":"round"}));
+  var rungs=Math.max(3,Math.round(L/6.5)),i;
+  for(i=1;i<rungs;i++){
+    var f=i/rungs,mx=a.x+dx*f,my=a.y+dy*f;
+    svg.appendChild(svgEl("line",{x1:mx+ox,y1:my+oy,x2:mx-ox,y2:my-oy,stroke:"#ca8a04","stroke-width":0.95,"stroke-linecap":"round"}));
+  }
+}
+function drawSnake(h,t){
+  var svg=el("overlay"),a=cc(h),b=cc(t);
+  var dx=b.x-a.x,dy=b.y-a.y,L=Math.hypot(dx,dy)||1;
+  var nx=-dy/L,ny=dx/L;
+  var waves=Math.max(2,Math.min(4,Math.round(L/24))),i;
+  var d="M "+a.x+" "+a.y,firstCx=a.x+dx*0.5,firstCy=a.y+dy*0.5;
+  for(i=1;i<=waves;i++){
+    var t1=i/waves,t0=(i-1)/waves;
+    var amp=(i===waves?5:9)*(i%2===1?1:-1);
+    var cx=a.x+dx*((t0+t1)/2)+nx*amp,cy=a.y+dy*((t0+t1)/2)+ny*amp;
+    if(i===1){firstCx=cx;firstCy=cy;}
+    d+=" Q "+cx.toFixed(2)+" "+cy.toFixed(2)+" "+(a.x+dx*t1).toFixed(2)+" "+(a.y+dy*t1).toFixed(2);
+  }
+  var base=svgEl("path",{d:d,fill:"none",stroke:"#15803d","stroke-width":3.8,"stroke-linecap":"round","stroke-linejoin":"round"});
+  svg.appendChild(base);
+  svg.appendChild(svgEl("path",{d:d,fill:"none",stroke:"#4ade80","stroke-width":2.1,"stroke-linecap":"round"}));
+  svg.appendChild(svgEl("path",{d:d,fill:"none",stroke:"#fde047","stroke-width":0.8,"stroke-dasharray":"1.4 2.4","stroke-linecap":"round"}));
+  snakeBody[h]=base;
+  var ux=a.x-firstCx,uy=a.y-firstCy,ul=Math.hypot(ux,uy)||1;ux/=ul;uy/=ul;
+  var px=-uy,py=ux;
+  svg.appendChild(svgEl("path",{d:"M "+(a.x+ux*1.8)+" "+(a.y+uy*1.8)+" L "+(a.x+ux*4.4)+" "+(a.y+uy*4.4),stroke:"#dc2626","stroke-width":0.7,"stroke-linecap":"round",fill:"none"}));
+  svg.appendChild(svgEl("circle",{cx:a.x,cy:a.y,r:2.5,fill:"#15803d"}));
+  svg.appendChild(svgEl("circle",{cx:(a.x+ux*1.1+px*0.95).toFixed(2),cy:(a.y+uy*1.1+py*0.95).toFixed(2),r:0.55,fill:"#fff"}));
+  svg.appendChild(svgEl("circle",{cx:(a.x+ux*1.1-px*0.95).toFixed(2),cy:(a.y+uy*1.1-py*0.95).toFixed(2),r:0.55,fill:"#fff"}));
+  svg.appendChild(svgEl("circle",{cx:(a.x+ux*1.25+px*0.95).toFixed(2),cy:(a.y+uy*1.25+py*0.95).toFixed(2),r:0.24,fill:"#0f172a"}));
+  svg.appendChild(svgEl("circle",{cx:(a.x+ux*1.25-px*0.95).toFixed(2),cy:(a.y+uy*1.25-py*0.95).toFixed(2),r:0.24,fill:"#0f172a"}));
+}
+function buildBoard(){
+  var cells=el("cells");cells.innerHTML="";
+  el("overlay").innerHTML="";snakeBody={};
+  el("tokens").innerHTML="";
+  /* Isi grid baris-demi-baris (atas ke bawah, kiri ke kanan) dengan nomor
+     ular-tangga yang benar: kotak 1 kiri-bawah, kotak 100 kiri-atas. */
+  var rr,ccol;
+  for(rr=9;rr>=0;rr--){
+    for(ccol=0;ccol<10;ccol++){
+      var n=(rr%2===0)?(rr*10+ccol+1):(rr*10+(10-ccol));
+      var d=document.createElement("div");
+      d.className="cell"+(((rr+ccol)%2===0)?" alt":"");
+      var inner='<span class="num">'+n+'</span>';
+      if(n===100){d.className+=" gt";inner+='<span class="ic">🏆</span>';}
+      else if(LADDERS[n]){d.className+=" lb";inner+='<span class="ic">🪜</span>';}
+      else if(SNAKES[n]){d.className+=" sh";inner+='<span class="ic">🐍</span>';}
+      else if(inVal(LADDERS,n)){d.className+=" lt";inner+='<span class="ic">⭐</span>';}
+      else if(inVal(SNAKES,n)){d.className+=" st";inner+='<span class="ic">🎯</span>';}
+      d.innerHTML=inner;
+      cells.appendChild(d);
+    }
+  }
+  var k;
+  for(k in LADDERS)drawLadder(parseInt(k,10),LADDERS[k]);
+  for(k in SNAKES)drawSnake(parseInt(k,10),SNAKES[k]);
+  S.players.forEach(function(p,i){
+    var t=document.createElement("div");
+    t.className="token";t.id="tok"+i;
+    t.style.background=S.players[i].color;
+    t.textContent=S.players[i].name.charAt(0).toUpperCase();
+    t.style.transition="none";
+    el("tokens").appendChild(t);
+  });
+  updateAllTokens();
+  requestAnimationFrame(function(){requestAnimationFrame(function(){
+    for(var i=0;i<S.players.length;i++){var t=el("tok"+i);if(t)t.style.transition="";}
+  });});
+}
+var OFFS=[[0,0],[-2.6,-2.3],[2.6,-2.3],[-2.6,2.4],[2.6,2.4]];
+function updateAllTokens(){
+  var map={},i;
+  for(i=0;i<S.players.length;i++){var k=S.players[i].pos;(map[k]=map[k]||[]).push(i);}
+  for(i=0;i<S.players.length;i++){
+    var grp=map[S.players[i].pos],slot=grp.indexOf(i);
+    var x,y;
+    if(S.players[i].pos===0){x=3.4+slot*2.4;y=104;}
+    else{
+      var c=cc(S.players[i].pos);
+      var o=(grp.length>1)?OFFS[slot%OFFS.length]:[0,0];
+      x=c.x+o[0]*0.85;y=c.y+o[1]*0.85;
+    }
+    var t=el("tok"+i);
+    if(t){t.style.left=x+"%";t.style.top=y+"%";}
+  }
+}
+function renderPlayers(){
+  var box=el("players");box.innerHTML="";
+  S.players.forEach(function(p,i){
+    var d=document.createElement("div");
+    d.className="pcard"+(i===S.cur?" active":"");
+    d.innerHTML='<span class="dot" style="background:'+p.color+'">'+esc(p.name.charAt(0).toUpperCase())+'</span>'+
+      '<span class="pinfo"><b>'+esc(p.name)+'</b><small>Kotak '+p.pos+'</small></span>';
+    box.appendChild(d);
+  });
+}
+
+/* ================= DADU ================= */
+function setDiceFace(n){
+  var g=el("diceGrid");if(!g)return;
+  var cs=g.children,nums=PIPS[n]||PIPS[1];
+  for(var i=0;i<9;i++){cs[i].className="pip"+(nums.indexOf(i)>=0?" on":"");}
+}
+function rollDice(){
+  if(S.busy||S.over)return;
+  S.busy=true;
+  el("btnRoll").disabled=true;
+  setStatus("🎲 Dadu sedang dilempar…");
+  var d=el("dice"),ticks=0;
+  d.classList.add("rolling");
+  var iv=setInterval(function(){
+    setDiceFace(1+Math.floor(Math.random()*6));
+    if(++ticks>=10){
+      clearInterval(iv);
+      d.classList.remove("rolling");
+      var n=1+Math.floor(Math.random()*6);
+      setDiceFace(n);
+      setTimeout(function(){askMove(n);},420);
+    }
+  },85);
+}
+
+/* ================= SOAL PILIHAN GANDA (MODAL) ================= */
+var Q={attempts:2,cb:null,idx:-1,ok:false};
+var LETTERS=["A","B","C","D","E"];
+function openQuestion(cellNo,qi,cb){
+  if(qi<0||!QBANK[qi]){if(cb)cb(true);return;}
+  Q.attempts=2;Q.cb=cb;Q.idx=qi;Q.ok=false;
+  var q=QBANK[qi],bd=badgeOf(qi);
+  el("qCell").textContent="Kotak "+cellNo;
+  var b=el("qBadge");b.textContent=bd.t;b.className="qbadge "+bd.c;
+  var eqb=el("qEq");eqb.innerHTML="";
+  for(var i=0;i<q.eq.length;i++){
+    var ln=document.createElement("div");ln.textContent=q.eq[i];eqb.appendChild(ln);
+  }
+  el("qAsk").textContent="Berapakah nilai "+q.ask+" ?";
+  var opts=el("qOpts");opts.innerHTML="";
+  var fb=el("qFeedback");fb.className="qfeedback hidden";fb.innerHTML="";
+  el("qNext").classList.add("hidden");
+  for(i=0;i<q.o.length;i++){
+    (function(idx){
+      var btn=document.createElement("button");
+      btn.type="button";btn.className="opt";
+      btn.innerHTML="<b>"+LETTERS[idx]+"</b> "+esc(q.o[idx]);
+      btn.addEventListener("click",function(){pickAnswer(idx,btn);});
+      opts.appendChild(btn);
+    })(i);
+  }
+  el("qmodal").classList.remove("hidden");
+}
+function pickAnswer(idx,btn){
+  if(Q.idx<0||!Q.cb)return;
+  var q=QBANK[Q.idx];
+  var kids=el("qOpts").children,k;
+  var fb=el("qFeedback");
+  if(idx===q.a){
+    btn.classList.add("correct");
+    for(k=0;k<kids.length;k++)kids[k].disabled=true;
+    Q.ok=true;
+    fb.className="qfeedback good";
+    fb.innerHTML="✅ <b>Benar sekali!</b><span class='exp'>💡 "+esc(q.e)+"</span>";
+    el("qNext").classList.remove("hidden");
+  }else{
+    Q.attempts--;
+    if(Q.attempts>0){
+      btn.classList.add("wrong");btn.disabled=true;
+      fb.className="qfeedback bad";
+      fb.innerHTML="❌ <b>Belum tepat!</b> Sisa <b>"+Q.attempts+"</b> kesempatan. Ayo coba lagi!";
+      btn.classList.add("shake");
+      setTimeout(function(){btn.classList.remove("shake");},350);
+    }else{
+      for(k=0;k<kids.length;k++){kids[k].disabled=true;if(k===q.a)kids[k].classList.add("correct");}
+      btn.classList.add("wrong");
+      fb.className="qfeedback bad";
+      fb.innerHTML="❌ <b>Salah.</b> Jawaban yang benar: <b>"+esc(q.o[q.a])+"</b><span class='exp'>💡 "+esc(q.e)+"</span>";
+      el("qNext").classList.remove("hidden");
+    }
+  }
+}
+function nextStep(){
+  if(!Q.cb)return;
+  el("qmodal").classList.add("hidden");
+  var cb=Q.cb;Q.cb=null;Q.idx=-1;
+  cb(Q.ok);
+}
+
+/* ================= GERAK, TANGGA & ULAR ================= */
+function animateMove(pi,steps,done){
+  var tok=el("tok"+pi),i=0;
+  (function step(){
+    if(i>=steps.length){
+      S.players[pi].pos=steps[steps.length-1];
+      renderPlayers();updateAllTokens();
+      setTimeout(done,160);
+      return;
+    }
+    var c=steps[i++];
+    S.players[pi].pos=c;
+    renderPlayers();
+    if(tok){tok.style.left=cc(c).x+"%";tok.style.top=cc(c).y+"%";}
+    setTimeout(step,270);
+  })();
+}
+function climb(bot,top,tok,done){
+  if(!tok){done();return;}
+  var a=cc(bot),b=cc(top),t0=performance.now(),dur=950;
+  tok.style.transition="none";
+  (function fr(now){
+    var f=Math.min(1,(now-t0)/dur);
+    tok.style.left=(a.x+(b.x-a.x)*f)+"%";
+    tok.style.top=(a.y+(b.y-a.y)*f)+"%";
+    if(f<1)requestAnimationFrame(fr);
+    else{tok.style.transition="";done();}
+  })(t0);
+}
+function slide(head,tok,done){
+  var path=snakeBody[head];
+  if(!path||!tok){done();return;}
+  var L=path.getTotalLength(),t0=performance.now(),dur=1300;
+  tok.style.transition="none";
+  (function fr(now){
+    var f=Math.min(1,(now-t0)/dur);
+    var e=f<0.5?(2*f*f):(1-Math.pow(-2*f+2,2)/2);
+    var pt=path.getPointAtLength(L*e);
+    tok.style.left=pt.x+"%";
+    tok.style.top=pt.y+"%";
+    if(f<1)requestAnimationFrame(fr);
+    else{tok.style.transition="";done();}
+  })(t0);
+}
+function askMove(n){
+  var pi=S.cur,p=S.players[pi];
+  var steps=buildSteps(p.pos,n),dest=steps[steps.length-1];
+  setStatus("🎯 <b>"+esc(p.name)+"</b> melempar angka <b>"+n+"</b>! Jawab soal <b>Kotak "+dest+"</b> untuk bergerak.");
+  openQuestion(dest,cellQ[dest],function(ok){
+    if(ok){
+      animateMove(pi,steps,function(){
+        if(dest===100){win();return;}
+        if(LADDERS[dest]){
+          var top=LADDERS[dest];
+          setStatus("🪜 Hebat! <b>"+esc(p.name)+"</b> naik tangga dari kotak "+dest+" ke kotak "+top+"!");
+          climb(dest,top,el("tok"+pi),function(){
+            S.players[pi].pos=top;renderPlayers();updateAllTokens();endTurn();
+          });
+        }else if(SNAKES[dest]){
+          setStatus("🐍 Aman! <b>"+esc(p.name)+"</b> menjawab benar di kepala ular kotak "+dest+".");
+          endTurn();
+        }else{endTurn();}
+      });
+    }else{
+      if(SNAKES[dest]){
+        animateMove(pi,steps,function(){
+          setStatus("🐍 <b>"+esc(p.name)+"</b> gagal menjawab… tergelincir ke ekor ular!");
+          slide(dest,el("tok"+pi),function(){
+            S.players[pi].pos=SNAKES[dest];renderPlayers();updateAllTokens();endTurn();
+          });
+        });
+      }else{
+        setStatus("❌ <b>"+esc(p.name)+"</b> gagal menjawab. Tetap di kotak "+p.pos+".");
+        endTurn();
+      }
+    }
+  });
+}
+function endTurn(){
+  if(S.over)return;
+  renderPlayers();saveGame();
+  S.cur=(S.cur+1)%S.players.length;
+  renderPlayers();
+  S.busy=false;
+  el("btnRoll").disabled=false;
+  setStatus("🎲 Giliran <b>"+esc(S.players[S.cur].name)+"</b> — lempar dadu!");
+}
+function win(){
+  S.over=true;S.busy=true;
+  el("btnRoll").disabled=true;
+  var w=S.players[S.cur];
+  saveClear();
+  setStatus("🏆 <b>"+esc(w.name)+"</b> mencapai kotak 100 — MENANG!");
+  el("winTitle").textContent="SELAMAT, "+w.name.toUpperCase()+"!";
+  el("winSub").textContent=w.name+" mencapai kotak 100 dengan tepat dan memenangkan permainan!";
+  var box=el("confetti");box.innerHTML="";
+  var cols=["#ef4444","#f59e0b","#22c55e","#3b82f6","#a855f7","#ec4899"];
+  for(var i=0;i<60;i++){
+    var s=document.createElement("span");
+    s.className="cf";
+    s.style.left=(Math.random()*100)+"%";
+    s.style.background=cols[i%cols.length];
+    s.style.animationDelay=(Math.random()*1.4)+"s";
+    s.style.animationDuration=(2+Math.random()*2.2)+"s";
+    box.appendChild(s);
+  }
+  setTimeout(function(){el("winOverlay").classList.remove("hidden");},500);
+}
+
+/* ================= SETUP & RESUME ================= */
+function dedupe(arr){
+  var seen={},out=[];
+  for(var i=0;i<arr.length;i++){
+    var n=String(arr[i]||"").replace(/[<>&"]/g,"").trim().slice(0,14);
+    if(!n)n="Pemain "+(i+1);
+    if(seen[n.toLowerCase()]){var k=2;while(seen[(n+" "+k).toLowerCase()])k++;n=n+" "+k;}
+    seen[n.toLowerCase()]=1;out.push(n);
+  }
+  return out;
+}
+function renderCount(){
+  var box=el("countChips");box.innerHTML="";
+  for(var i=2;i<=5;i++){
+    (function(v){
+      var b=document.createElement("button");
+      b.type="button";
+      b.className="chip"+(S.count===v?" sel":"");
+      b.textContent=v+" pemain";
+      b.onclick=function(){S.count=v;renderCount();renderNames(false);};
+      box.appendChild(b);
+    })(i);
+  }
+}
+function renderNames(prefill){
+  var box=el("nameInputs");box.innerHTML="";
+  for(var i=0;i<S.count;i++){
+    var d=document.createElement("div");
+    d.className="nrow";
+    var val=(prefill&&S.players[i])?S.players[i].name:"";
+    d.innerHTML='<span class="dot" style="background:'+PCOLORS[i]+'">'+(i+1)+'</span>'+
+      '<input id="pname'+i+'" maxlength="14" placeholder="Nama Pemain '+(i+1)+'" value="'+esc(val)+'">';
+    box.appendChild(d);
+  }
+  var f0=el("pname0");
+  if(f0)f0.addEventListener("input",checkResume);
+}
+var resumeTimer=null;
+function checkResume(){
+  var box=el("resumeBox");
+  if(resumeTimer){clearTimeout(resumeTimer);resumeTimer=null;}
+  var nm="";
+  try{nm=(el("pname0").value||"").trim();}catch(e){}
+  if(nm.length<2||!loadSave(nm)){box.className="resume hidden";box.innerHTML="";return;}
+  var d=loadSave(nm);
+  var tags="";
+  for(var i=0;i<d.n.length;i++){tags+='<span class="rtag">'+esc(d.n[i])+': kotak '+d.p[i]+'</span>';}
+  box.className="resume";
+  box.innerHTML="<div>💾 Permainan tersimpan untuk <b>"+esc(nm)+"</b> ditemukan:</div>"+
+    '<div class="rpos">'+tags+'</div>'+
+    '<div><button id="btnResume" class="btn-resume" type="button">▶ Lanjutkan Permainan</button> '+
+    '<button id="btnIgnore" class="chip" type="button" style="margin-left:6px">Mulai yang baru</button></div>';
+  el("btnResume").onclick=function(){startGame(d);};
+  el("btnIgnore").onclick=function(){box.className="resume hidden";box.innerHTML="";};
+  resumeTimer=setTimeout(function(){startGame(d);},3000);
+}
+function startGame(resume){
+  var names,i;
+  if(resume){names=resume.n.slice();}
+  else{
+    names=[];
+    for(i=0;i<S.count;i++){var f=el("pname"+i);names.push(f?f.value:"");}
+    names=dedupe(names);
+  }
+  S.players=[];
+  for(i=0;i<names.length;i++){
+    S.players.push({name:names[i],color:PCOLORS[i],pos:resume?resume.p[i]:0});
+  }
+  S.cur=resume?(resume.t%S.players.length):0;
+  S.over=false;S.busy=false;
+  el("screen-setup").classList.add("hidden");
+  el("screen-game").classList.remove("hidden");
+  el("btnRoll").disabled=false;
+  buildBoard();
+  renderPlayers();
+  setDiceFace(1);
+  setStatus("🎲 Giliran <b>"+esc(S.players[S.cur].name)+"</b> — lempar dadu!");
+  saveGame();
+}
+function showSetup(){
+  el("screen-game").classList.add("hidden");
+  el("winOverlay").classList.add("hidden");
+  el("screen-setup").classList.remove("hidden");
+  renderNames(true);
+}
+
+/* ================= INISIALISASI ================= */
+function init(){
+  try{
+    if(!QBANK||QBANK.length!==100)throw new Error("Bank soal tidak lengkap: "+(QBANK?QBANK.length:0)+"/100");
+  }catch(e){if(window.console)console.error(e);}
+  renderCount();
+  renderNames(false);
+  setDiceFace(1);
+  on("btnStart","click",function(){startGame(null);});
+  on("btnRoll","click",rollDice);
+  on("btnExit","click",function(){
+    if(window.confirm("Kembali ke menu utama?\nProgres permainan sudah tersimpan otomatis.")){showSetup();}
+  });
+  on("btnAgain","click",showSetup);
+  on("qNext","click",nextStep);
+}
+if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",init);}
+else{init();}
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,1675 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SPLTV — Presentasi Interaktif | Sistem Persamaan Linear Tiga Variabel</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ============ RESET & ROOT ============ */
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#eef1fb; --ink:#232052; --muted:#6b6a8f; --card:#ffffff; --line:#e3e6f7;
+  --pri:#4f46e5; --pri2:#7c3aed; --acc:#06b6d4;
+  --green:#10b981; --amber:#f59e0b; --rose:#f43f5e;
+  --grad:linear-gradient(135deg,#4f46e5 0%,#7c3aed 55%,#06b6d4 120%);
+  --grad-dark:linear-gradient(140deg,#1e1b4b 0%,#312e81 55%,#0e7490 130%);
+  --shadow:0 10px 30px rgba(30,27,75,.09);
+  --shadow-lg:0 18px 50px rgba(30,27,75,.16);
+  --head:'Poppins',system-ui,sans-serif;
+  --body:'Nunito','Segoe UI',system-ui,sans-serif;
+}
+html,body{height:100%}
+body{font-family:var(--body);background:var(--bg);color:var(--ink);overflow:hidden;font-size:16px}
+#app{position:fixed;inset:0;display:flex;flex-direction:column}
+
+/* ============ TOPBAR ============ */
+#topbar{height:58px;flex:0 0 58px;display:flex;align-items:center;gap:14px;padding:0 16px;background:rgba(255,255,255,.9);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);position:relative;z-index:40}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--head);font-weight:700;font-size:15px;white-space:nowrap}
+.brand-logo{width:34px;height:34px;border-radius:10px;background:var(--grad);display:grid;place-items:center;font-size:17px;color:#fff;box-shadow:0 4px 12px rgba(79,70,229,.35)}
+#progressTrack{flex:1;height:6px;background:#e5e8f8;border-radius:99px;overflow:hidden}
+#progressBar{height:100%;width:0%;background:var(--grad);border-radius:99px;transition:width .4s ease}
+.top-right{display:flex;align-items:center;gap:10px}
+#slideCounter{font-family:var(--head);font-weight:600;font-size:13px;color:var(--muted);background:#f1f2fc;padding:5px 12px;border-radius:99px;white-space:nowrap}
+.icon-btn{border:1px solid var(--line);background:#fff;width:36px;height:36px;border-radius:10px;font-size:17px;cursor:pointer;transition:.2s;display:grid;place-items:center}
+.icon-btn:hover{background:var(--pri);color:#fff;border-color:var(--pri);transform:translateY(-1px)}
+
+/* ============ NAVBAR BAWAH ============ */
+#navbar{height:58px;flex:0 0 58px;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;background:rgba(255,255,255,.92);backdrop-filter:blur(10px);border-top:1px solid var(--line);position:relative;z-index:40}
+.nav-btn{font-family:var(--head);font-weight:600;font-size:13.5px;padding:10px 18px;border-radius:12px;border:none;cursor:pointer;transition:.2s;background:#f1f2fc;color:var(--ink);white-space:nowrap}
+.nav-btn:hover{background:#e6e8fa;transform:translateY(-1px)}
+.nav-btn.primary{background:var(--grad);color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.3)}
+.nav-btn.primary:hover{box-shadow:0 9px 22px rgba(79,70,229,.42)}
+.nav-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+#dots{display:flex;gap:5px;flex-wrap:nowrap;overflow:hidden;flex:1;justify-content:center;padding:0 8px}
+.dot{width:9px;height:9px;border-radius:50%;background:#d4d8f0;cursor:pointer;transition:.2s;flex:0 0 auto}
+.dot:hover{background:var(--pri2)}
+.dot.on{background:var(--pri);transform:scale(1.35);box-shadow:0 0 0 3px rgba(79,70,229,.18)}
+
+/* ============ DECK & SLIDE ============ */
+#deck{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;opacity:0;visibility:hidden;transform:translateY(26px);transition:opacity .45s ease,transform .45s ease,visibility .45s;background:var(--bg)}
+.slide.active{opacity:1;visibility:visible;transform:translateY(0)}
+.slide-inner{max-width:1120px;margin:0 auto;padding:34px 30px 60px}
+.slide.divider,.slide.cover-slide{background:var(--grad-dark)}
+.slide.divider::before,.slide.cover-slide::before{content:"";position:absolute;inset:0;background:radial-gradient(circle at 85% 15%,rgba(6,182,212,.25),transparent 45%),radial-gradient(circle at 10% 90%,rgba(124,58,237,.3),transparent 50%);pointer-events:none}
+
+/* ============ TIPOGRAFI ============ */
+h1,h2,h3{font-family:var(--head);line-height:1.25}
+h2{font-size:clamp(1.35rem,2.6vw,1.9rem);margin-bottom:8px}
+.lead{font-size:16px;color:var(--muted);line-height:1.65}
+.muted{color:var(--muted)} .small{font-size:13px} .center{text-align:center}
+.grad{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.mono{font-family:'Courier New',monospace;font-weight:700}
+
+/* ============ KOMPONEN UMUM ============ */
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:22px 24px;box-shadow:var(--shadow)}
+.btn{font-family:var(--head);font-weight:600;font-size:14px;padding:11px 20px;border-radius:12px;border:none;cursor:pointer;transition:.2s;display:inline-flex;align-items:center;gap:8px;line-height:1.2}
+.btn:hover{transform:translateY(-2px)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.32)}
+.btn-primary:hover{box-shadow:0 10px 24px rgba(79,70,229,.45)}
+.btn-ghost{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--pri);color:var(--pri)}
+.btn-green{background:linear-gradient(135deg,#10b981,#059669);color:#fff;box-shadow:0 6px 16px rgba(16,185,129,.32)}
+.btn-amber{background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;box-shadow:0 6px 16px rgba(245,158,11,.32)}
+.btn-light{background:#fff;color:var(--pri);box-shadow:0 8px 22px rgba(0,0,0,.22)}
+.btn.pulse{animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(79,70,229,.45)}50%{box-shadow:0 0 0 12px rgba(79,70,229,0)}}
+.pill{font-family:var(--head);font-weight:600;font-size:12px;letter-spacing:.4px;background:#eceafd;color:var(--pri);padding:6px 14px;border-radius:99px;white-space:nowrap}
+.badge-level{font-family:var(--head);font-weight:700;font-size:12px;letter-spacing:.5px;padding:6px 14px;border-radius:99px;color:#fff;white-space:nowrap}
+.badge-level.mudah{background:linear-gradient(135deg,#10b981,#059669)}
+.badge-level.sedang{background:linear-gradient(135deg,#f59e0b,#d97706)}
+.badge-level.sulit{background:linear-gradient(135deg,#f43f5e,#be123c)}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1.5px solid var(--line);border-radius:99px;padding:6px 14px;font-size:13px;font-weight:700;font-family:var(--head);white-space:nowrap}
+.chip-dark{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25);color:#fff;font-weight:600}
+.hidden{display:none !important}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+
+/* ============ COVER ============ */
+.cover-slide .slide-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;text-align:center;position:relative;z-index:2;padding-top:24px}
+.cover-badge{font-family:var(--head);font-weight:700;font-size:12.5px;letter-spacing:2.5px;color:#a5f3fc;border:1.5px solid rgba(165,243,252,.4);padding:8px 22px;border-radius:99px;margin-bottom:22px;background:rgba(6,182,212,.12)}
+.cover-title{color:#fff;font-size:clamp(1.9rem,4.6vw,3.3rem);font-weight:800;text-shadow:0 4px 30px rgba(0,0,0,.3)}
+.cover-sub{color:#c7d2fe;font-size:clamp(.9rem,1.6vw,1.05rem);margin:14px auto 6px;max-width:640px;line-height:1.7}
+.cover-rule{width:70px;height:4px;border-radius:99px;background:linear-gradient(90deg,#06b6d4,#a78bfa);margin:16px 0 26px}
+.name-grid{display:grid;grid-template-columns:repeat(4,minmax(140px,190px));gap:14px;margin-bottom:22px}
+.name-box{background:rgba(255,255,255,.97);border-radius:16px;padding:12px 14px;text-align:left;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.name-box label{display:block;font-family:var(--head);font-weight:700;font-size:11.5px;color:var(--pri);letter-spacing:.6px;margin-bottom:6px}
+.name-input{width:100%;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;font-family:var(--body);font-weight:700;font-size:14px;color:var(--ink);outline:none;transition:.2s;background:#f8f9ff}
+.name-input:focus{border-color:var(--pri);background:#fff;box-shadow:0 0 0 4px rgba(79,70,229,.12)}
+.cover-actions{display:flex;flex-direction:column;align-items:center;gap:14px}
+#greetMsg{color:#a7f3d0;font-family:var(--head);font-weight:600;font-size:14.5px;min-height:22px}
+.cover-hint{color:#8b93c9;font-size:12.5px;margin-top:26px}
+.float-emoji{position:absolute;font-size:34px;opacity:.16;animation:floaty 7s ease-in-out infinite;pointer-events:none;z-index:1}
+@keyframes floaty{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-22px) rotate(8deg)}}
+
+/* ============ TOAST ============ */
+#toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%) translateY(20px);background:#1e1b4b;color:#fff;font-family:var(--head);font-weight:600;font-size:13.5px;padding:12px 22px;border-radius:14px;box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:.3s;z-index:99;max-width:86vw;text-align:center}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+<style>
+/* ============ TUJUAN ============ */
+.tj-list{display:grid;gap:13px;margin-top:20px}
+.tj-item{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 20px;box-shadow:var(--shadow);transition:.2s}
+.tj-item:hover{transform:translateX(6px);border-color:#c7cbf5}
+.tj-num{flex:0 0 40px;height:40px;border-radius:12px;background:var(--grad);color:#fff;display:grid;place-items:center;font-family:var(--head);font-weight:700;font-size:16px}
+.tj-item p{font-size:15px;line-height:1.6;font-weight:600}
+
+/* ============ METODE ============ */
+.def-card{background:linear-gradient(135deg,#eef2ff,#ecfeff);border:1.5px solid #c7d2fe;border-radius:18px;padding:20px 24px;margin:18px 0 22px}
+.def-card .formula{font-family:var(--head);font-weight:700;font-size:17px;color:var(--pri);background:#fff;border-radius:12px;padding:10px 18px;display:inline-block;margin-top:10px;box-shadow:var(--shadow)}
+.method-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-bottom:24px}
+.method-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow);border-top:5px solid var(--pri);transition:.2s}
+.method-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg)}
+.method-card.m2{border-top-color:var(--pri2)} .method-card.m3{border-top-color:var(--acc)}
+.method-ico{font-size:30px;margin-bottom:8px}
+.method-card h3{font-size:16.5px;margin-bottom:8px}
+.method-card p{font-size:13.5px;color:var(--muted);line-height:1.65}
+.method-card .fit{margin-top:10px;font-size:12.5px;font-weight:700;color:var(--pri);background:#eef2ff;border-radius:10px;padding:8px 12px;line-height:1.5}
+.stepper{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow)}
+.stepper h3{font-size:15px;margin-bottom:14px;color:var(--pri)}
+.step-flow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.step-chip{background:linear-gradient(135deg,#eef2ff,#f5f3ff);border:1.5px solid #dfe3ff;border-radius:12px;padding:9px 14px;font-family:var(--head);font-weight:600;font-size:12.5px;line-height:1.45}
+.step-arrow{color:var(--pri2);font-weight:800;font-size:16px}
+
+/* ============ PETA MATERI ============ */
+.peta-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:22px}
+.peta-card{background:#fff;border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:var(--shadow);cursor:pointer;transition:.22s;position:relative;overflow:hidden}
+.peta-card::after{content:"";position:absolute;top:0;left:0;right:0;height:5px;background:var(--grad)}
+.peta-card:hover{transform:translateY(-6px);box-shadow:var(--shadow-lg)}
+.peta-ico{font-size:38px;margin-bottom:10px}
+.peta-card h3{font-size:16.5px;margin-bottom:6px}
+.peta-card p{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.peta-meta{font-family:var(--head);font-weight:700;font-size:12px;color:var(--pri);background:#eef2ff;display:inline-block;padding:5px 12px;border-radius:99px}
+
+/* ============ DIVIDER TOPIK ============ */
+.divider .slide-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;text-align:center;position:relative;z-index:2}
+.div-emoji{font-size:64px;margin-bottom:14px;filter:drop-shadow(0 8px 24px rgba(0,0,0,.35))}
+.div-kicker{font-family:var(--head);font-weight:700;letter-spacing:2.5px;font-size:12px;color:#a5f3fc;margin-bottom:10px}
+.div-title{color:#fff;font-size:clamp(1.7rem,3.6vw,2.6rem);font-weight:800;max-width:800px}
+.div-text{color:#c7d2fe;max-width:680px;line-height:1.75;margin:16px 0 22px;font-size:15.5px}
+.div-chips{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:26px}
+
+/* ============ CONTOH ============ */
+.contoh-head{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+.contoh-title{margin-bottom:16px}
+.soal-card{background:linear-gradient(135deg,#eef2ff,#fdf4ff);border:1.5px solid #ddd6fe;border-radius:18px;padding:20px 24px;box-shadow:var(--shadow);margin-bottom:20px}
+.soal-label{font-family:var(--head);font-weight:800;font-size:12px;letter-spacing:1.5px;color:var(--pri);margin-bottom:8px}
+.soal-card p{font-size:15.5px;line-height:1.8;font-weight:600}
+.legend{margin-top:12px;background:#fff;border:1.5px dashed #c4b5fd;border-radius:12px;padding:10px 16px;font-size:13.5px;font-weight:700;color:var(--pri2);line-height:1.6}
+.steps-label{font-family:var(--head);font-weight:700;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.step-count{background:var(--grad);color:#fff;font-size:11.5px;padding:3px 12px;border-radius:99px}
+.steps{display:grid;gap:12px}
+.step{display:flex;gap:14px;background:#fff;border:1px solid var(--line);border-left:5px solid var(--pri);border-radius:14px;padding:15px 18px;box-shadow:var(--shadow);display:none}
+.step.show{display:flex;animation:pop .4s ease}
+.step-no{flex:0 0 30px;height:30px;border-radius:10px;background:var(--grad);color:#fff;display:grid;place-items:center;font-family:var(--head);font-weight:700;font-size:14px}
+.step div{font-size:14px;line-height:1.85;font-weight:600}
+.step b{color:var(--pri)}
+@keyframes pop{0%{opacity:0;transform:translateY(14px) scale(.98)}100%{opacity:1;transform:none}}
+.step-controls{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+/* ============ LATIHAN ============ */
+.lh-flow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;background:#fff;border:1px solid var(--line);border-radius:14px;padding:10px 16px;margin-bottom:18px;box-shadow:var(--shadow);font-family:var(--head);font-weight:600;font-size:12px;color:var(--muted)}
+.lh-flow b{color:var(--pri)}
+.lh-grid{display:grid;grid-template-columns:1fr 290px;gap:18px;align-items:start}
+.lh-main{display:grid;gap:14px}
+.student-bar{background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.order-chips{display:flex;gap:6px;flex-wrap:wrap;flex:1}
+.order-chips .chip{font-size:12px;padding:5px 11px;background:#f6f7ff}
+.turn-chip{font-family:var(--head);font-weight:600;font-size:13px;color:var(--muted);white-space:nowrap}
+.turn-chip b{display:inline-block;background:linear-gradient(135deg,#f59e0b,#d97706);color:#fff;padding:4px 14px;border-radius:99px;font-size:13px;margin-left:4px}
+.q-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 24px;box-shadow:var(--shadow)}
+.q-top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.q-top .qnum{font-family:var(--head);font-weight:700;font-size:13px;color:var(--muted);background:#f1f2fc;padding:5px 13px;border-radius:99px}
+.q-card .qtext{font-size:15px;line-height:1.8;font-weight:600}
+.q-dots{display:flex;gap:7px;margin-top:16px;flex-wrap:wrap}
+.qd{width:30px;height:30px;border-radius:10px;background:#eef0fb;border:1.5px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:800;font-family:var(--head);color:var(--muted);cursor:pointer;transition:.2s}
+.qd.cur{background:var(--grad);color:#fff;border-color:transparent;transform:scale(1.1)}
+.qd.done{background:#d1fae5;border-color:#6ee7b7;color:#059669}
+.timer-row{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px 18px;box-shadow:var(--shadow);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.ring-wrap{position:relative;width:74px;height:74px;flex:0 0 74px}
+.ring-wrap svg{width:74px;height:74px;transform:rotate(-90deg)}
+.ring-bg{fill:none;stroke:#e9ebfa;stroke-width:7}
+.ring-fg{fill:none;stroke:url(#ringGrad);stroke-width:7;stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .3s}
+.ring-wrap.danger .ring-fg{stroke:var(--rose)}
+.ring-wrap.danger .js-timetext{color:var(--rose)}
+.ring-wrap .js-timetext{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--head);font-weight:800;font-size:16px;color:var(--pri)}
+.timer-btns{display:flex;gap:8px;flex-wrap:wrap}
+.timer-btns .btn{padding:9px 15px;font-size:13px}
+.timer-status{flex:1;min-width:200px;font-size:13px;font-weight:700;color:var(--muted);line-height:1.55}
+.timer-status.go{color:var(--rose)}
+.answer-row{display:flex;gap:10px;flex-wrap:wrap}
+.ans-input{flex:1;min-width:220px;border:1.5px solid var(--line);border-radius:12px;padding:13px 16px;font-family:var(--body);font-weight:700;font-size:15px;outline:none;transition:.2s;background:#fff}
+.ans-input:focus{border-color:var(--green);box-shadow:0 0 0 4px rgba(16,185,129,.12)}
+.hint-line{font-size:12.5px;color:var(--muted);font-weight:600;margin-top:-6px;padding-left:4px}
+.verdict{border-radius:14px;padding:13px 18px;font-size:14px;font-weight:700;line-height:1.6;animation:pop .35s ease}
+.verdict.ok{background:#d1fae5;border:1.5px solid #6ee7b7;color:#065f46}
+.verdict.no{background:#ffe4e6;border:1.5px solid #fda4af;color:#9f1239}
+.bah-card{background:#fff;border:1.5px solid #c7d2fe;border-radius:16px;padding:18px 22px;box-shadow:var(--shadow);animation:pop .35s ease}
+.bah-title{font-family:var(--head);font-weight:800;font-size:14.5px;color:var(--pri);margin-bottom:8px}
+.bah-ans{background:#ecfdf5;border:1.5px solid #6ee7b7;color:#065f46;border-radius:12px;padding:10px 15px;font-weight:700;font-size:13.5px;margin-bottom:12px;line-height:1.6}
+.bah-list{list-style:none;display:grid;gap:8px}
+.bah-list li{position:relative;padding-left:24px;font-size:13.5px;line-height:1.75;font-weight:600}
+.bah-list li::before{content:"➜";position:absolute;left:0;color:var(--pri);font-weight:800}
+.lh-nav{display:flex;justify-content:space-between;gap:10px}
+.lh-side{display:grid;gap:14px}
+.score-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 18px;box-shadow:var(--shadow)}
+.score-title{font-family:var(--head);font-weight:800;font-size:14px;margin-bottom:12px}
+.score-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:12px;font-weight:700;font-size:13.5px}
+.score-row:nth-child(odd){background:#f6f7ff}
+.score-row .medal{width:26px;text-align:center;font-size:15px}
+.score-row .sc{margin-left:auto;background:var(--grad);color:#fff;font-family:var(--head);font-weight:800;font-size:12.5px;min-width:30px;text-align:center;padding:3px 9px;border-radius:99px}
+.score-card.tip{font-size:12.5px;line-height:1.7;color:var(--muted);background:linear-gradient(135deg,#fffbeb,#fef3c7);border-color:#fde68a}
+.score-card.tip b{color:#92400e}
+.done-panel{margin-top:18px;background:linear-gradient(135deg,#eef2ff,#ecfeff);border:1.5px solid #c7d2fe;border-radius:20px;padding:26px;text-align:center;animation:pop .4s ease}
+.done-panel .dp-emoji{font-size:46px;margin-bottom:8px}
+.done-panel h3{font-size:20px;margin-bottom:6px}
+.done-panel p{color:var(--muted);font-weight:600;font-size:14px;margin-bottom:16px;line-height:1.7}
+.dp-btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+
+/* ============ GAME / KESIMPULAN / REFLEKSI / THANKS ============ */
+.game-card{background:linear-gradient(140deg,#1e1b4b,#312e81 60%,#155e75);border-radius:26px;padding:44px 36px;text-align:center;color:#fff;box-shadow:var(--shadow-lg);position:relative;overflow:hidden}
+.game-card::before{content:"🐍";position:absolute;font-size:120px;opacity:.08;right:-10px;top:-18px;transform:rotate(-15deg)}
+.game-emoji{font-size:58px;margin-bottom:14px}
+.game-card h2{color:#fff;font-size:clamp(1.4rem,3vw,2rem)}
+.game-card p{color:#c7d2fe;max-width:600px;margin:12px auto 24px;line-height:1.75;font-size:14.5px;font-weight:600}
+.game-btn{font-family:var(--head);font-weight:700;font-size:16px;background:linear-gradient(135deg,#f59e0b,#f43f5e);color:#fff;padding:16px 34px;border-radius:16px;text-decoration:none;display:inline-flex;align-items:center;gap:10px;box-shadow:0 12px 30px rgba(244,63,94,.4);transition:.2s}
+.game-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 16px 40px rgba(244,63,94,.5)}
+.kes-list{display:grid;gap:13px;margin-top:20px}
+.kes-item{display:flex;gap:16px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:16px;padding:17px 20px;box-shadow:var(--shadow)}
+.kes-num{flex:0 0 42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:20px;background:#eef2ff}
+.kes-item p{font-size:14.5px;line-height:1.7;font-weight:600}
+.kes-item b{color:var(--pri)}
+.ref-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:20px 0}
+.emoji-btn{background:#fff;border:2px solid var(--line);border-radius:18px;padding:18px 10px;text-align:center;cursor:pointer;transition:.2s;box-shadow:var(--shadow)}
+.emoji-btn:hover{transform:translateY(-4px)}
+.emoji-btn .e{font-size:34px;display:block;margin-bottom:8px}
+.emoji-btn .t{font-family:var(--head);font-weight:700;font-size:12.5px;color:var(--muted);line-height:1.4;display:block}
+.emoji-btn.sel{border-color:var(--pri);background:linear-gradient(135deg,#eef2ff,#f5f3ff);transform:translateY(-4px)}
+.emoji-btn.sel .t{color:var(--pri)}
+.ref-msg{background:#ecfdf5;border:1.5px solid #6ee7b7;color:#065f46;border-radius:14px;padding:14px 18px;font-weight:700;font-size:14px;margin-bottom:18px;min-height:20px}
+.ref-area{width:100%;border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;font-family:var(--body);font-weight:600;font-size:14px;min-height:74px;outline:none;resize:vertical;background:#fff}
+.ref-area:focus{border-color:var(--pri);box-shadow:0 0 0 4px rgba(79,70,229,.1)}
+.ref-block{margin-bottom:16px}
+.ref-block label{display:block;font-family:var(--head);font-weight:700;font-size:13.5px;margin-bottom:8px}
+.thanks .slide-inner{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100%;text-align:center;position:relative;z-index:2}
+.thanks-emoji{font-size:70px;margin-bottom:16px;filter:drop-shadow(0 10px 30px rgba(0,0,0,.4))}
+.thanks-title{color:#fff;font-size:clamp(2rem,4.5vw,3.1rem);font-weight:800}
+.thanks-text{color:#c7d2fe;max-width:640px;line-height:1.8;margin:16px 0 24px;font-size:15.5px;font-weight:600}
+.names-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:28px}
+
+/* ============ MENU DRAWER ============ */
+#menu{position:fixed;top:0;right:-380px;width:min(360px,88vw);height:100%;background:#fff;z-index:80;box-shadow:-18px 0 60px rgba(30,27,75,.25);transition:right .35s ease;display:flex;flex-direction:column}
+#menu.open{right:0}
+.menu-head{display:flex;align-items:center;justify-content:space-between;padding:16px 18px;border-bottom:1px solid var(--line)}
+.menu-head b{font-family:var(--head);font-size:15px}
+.menu-body{flex:1;overflow-y:auto;padding:12px 14px 30px}
+.menu-group{font-family:var(--head);font-weight:800;font-size:11px;letter-spacing:1.5px;color:var(--muted);margin:16px 4px 8px;text-transform:uppercase}
+.menu-item{display:block;width:100%;text-align:left;background:none;border:none;font-family:var(--body);font-weight:700;font-size:13.5px;color:var(--ink);padding:9px 12px;border-radius:10px;cursor:pointer;transition:.15s;line-height:1.45}
+.menu-item:hover{background:#f1f2fc}
+.menu-item.cur{background:var(--grad);color:#fff}
+#menuBackdrop{position:fixed;inset:0;background:rgba(30,27,75,.45);z-index:75;opacity:0;pointer-events:none;transition:.3s}
+#menuBackdrop.open{opacity:1;pointer-events:auto}
+
+/* ============ RESPONSIVE ============ */
+@media (max-width:960px){
+  .lh-grid{grid-template-columns:1fr}
+  .method-grid{grid-template-columns:1fr}
+  .peta-grid{grid-template-columns:1fr 1fr}
+  .name-grid{grid-template-columns:1fr 1fr}
+  .ref-grid{grid-template-columns:1fr 1fr}
+  #dots{display:none}
+  .slide-inner{padding:26px 18px 50px}
+}
+@media (max-width:560px){
+  .peta-grid{grid-template-columns:1fr}
+  .name-grid{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+  .ref-grid{grid-template-columns:1fr 1fr}
+  .timer-row{gap:10px}
+}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4f46e5"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
+
+<div id="app">
+<header id="topbar">
+  <div class="brand"><span class="brand-logo">📐</span> SPLTV Interaktif</div>
+  <div id="progressTrack"><div id="progressBar"></div></div>
+  <div class="top-right">
+    <span id="slideCounter">1 / 33</span>
+    <button class="icon-btn" id="menuBtn" title="Daftar slide">☰</button>
+  </div>
+</header>
+
+<main id="deck">
+
+<!-- ============ 1. COVER ============ -->
+<section class="slide cover-slide active" data-group="Pembuka" data-title="Cover — Input Nama Siswa">
+  <span class="float-emoji" style="top:12%;left:7%">➕</span>
+  <span class="float-emoji" style="top:22%;right:9%;animation-delay:1.2s">𝑥</span>
+  <span class="float-emoji" style="bottom:18%;left:12%;animation-delay:2.1s">𝑦</span>
+  <span class="float-emoji" style="bottom:26%;right:14%;animation-delay:.6s">𝑧</span>
+  <span class="float-emoji" style="top:55%;left:4%;animation-delay:3s">🧮</span>
+  <div class="slide-inner">
+    <div class="cover-badge">MATEMATIKA &bull; SISTEM PERSAMAAN LINEAR TIGA VARIABEL</div>
+    <h1 class="cover-title">SELAMAT DATANG DI DUNIA <span class="grad" style="background:linear-gradient(90deg,#67e8f9,#a78bfa);-webkit-background-clip:text;background-clip:text">SPLTV</span> 🚀</h1>
+    <p class="cover-sub">Dari harga barang, fungsi, umur, bilangan tiga digit, sampai pecahan — kita selesaikan bersama secara bergilir, interaktif, dan seru!</p>
+    <div class="cover-rule"></div>
+    <div class="name-grid">
+      <div class="name-box"><label>👤 SISWA 1</label><input class="name-input" id="name1" maxlength="22" placeholder="Tulis nama…"></div>
+      <div class="name-box"><label>👤 SISWA 2</label><input class="name-input" id="name2" maxlength="22" placeholder="Tulis nama…"></div>
+      <div class="name-box"><label>👤 SISWA 3</label><input class="name-input" id="name3" maxlength="22" placeholder="Tulis nama…"></div>
+      <div class="name-box"><label>👤 SISWA 4</label><input class="name-input" id="name4" maxlength="22" placeholder="Tulis nama…"></div>
+    </div>
+    <div class="cover-actions">
+      <button class="btn btn-light" id="saveNames" style="padding:14px 30px;font-size:15px">🚀 Simpan Nama &amp; Mulai Belajar</button>
+      <div id="greetMsg"></div>
+    </div>
+    <div class="cover-hint">💡 Gunakan tombol <b>← →</b> pada keyboard atau tombol navigasi di bawah untuk berpindah slide</div>
+  </div>
+</section>
+
+<!-- ============ 2. TUJUAN ============ -->
+<section class="slide" data-group="Pembuka" data-title="Tujuan Pembelajaran">
+  <div class="slide-inner">
+    <span class="pill">🎯 TUJUAN PEMBELAJARAN</span>
+    <h2 style="margin-top:12px">Setelah sesi ini, kalian mampu…</h2>
+    <p class="lead">Enam target yang akan kita raih bersama hari ini. Bacalah perlahan, karena setiap latihan dirancang untuk mencapai target-target ini.</p>
+    <div class="tj-list">
+      <div class="tj-item"><span class="tj-num">1</span><p>🧠 <b>Memahami konsep SPLTV</b> — tiga persamaan linear, tiga variabel, dan satu tripel penyelesaian (x, y, z) yang memenuhi semuanya.</p></div>
+      <div class="tj-item"><span class="tj-num">2</span><p>🛠️ <b>Menguasai tiga metode penyelesaian</b> — substitusi, eliminasi, dan gabungan — serta memilih metode paling efisien untuk tiap soal.</p></div>
+      <div class="tj-item"><span class="tj-num">3</span><p>📖 <b>Menerapkan SPLTV pada lima konteks</b> — harga barang, fungsi, umur, bilangan tiga digit, dan bentuk pecahan.</p></div>
+      <div class="tj-item"><span class="tj-num">4</span><p>✍️ <b>Menyusun model matematika</b> dari soal cerita: dari kalimat panjang menjadi sistem tiga persamaan yang rapi.</p></div>
+      <div class="tj-item"><span class="tj-num">5</span><p>🎤 <b>Berani menjelaskan langkah penyelesaian</b> kepada tutor secara bergilir dengan percaya diri dan runtut.</p></div>
+      <div class="tj-item"><span class="tj-num">6</span><p>🎮 <b>Menikmati proses belajar</b> hingga game ular tangga di akhir sesi sebagai hadiah perjuangan kalian!</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 3. METODE ============ -->
+<section class="slide" data-group="Pembuka" data-title="Ingat Kembali: Metode SPLTV">
+  <div class="slide-inner">
+    <span class="pill">🔁 PENGINGAT MATERI</span>
+    <h2 style="margin-top:12px">Metode Mencari Nilai Variabel dari SPLTV</h2>
+    <div class="def-card">
+      <b style="font-family:var(--head)">Apa itu SPLTV?</b>
+      <p style="font-size:14px;line-height:1.7;margin-top:6px;color:#3f3d75;font-weight:600">SPLTV adalah kumpulan <b>tiga persamaan linear</b> yang memuat <b>tiga variabel</b> (misal x, y, z) dan memiliki penyelesaian yang sama. Syaratnya: derajat tiap variabel = 1 dan tidak ada variabel yang saling dikalikan. Bentuk umumnya:</p>
+      <span class="formula">ax + by + cz = d &nbsp;&nbsp;(a, b, c tidak nol sekaligus)</span>
+    </div>
+    <div class="method-grid">
+      <div class="method-card m1">
+        <div class="method-ico">🔧</div>
+        <h3>1. Metode Substitusi</h3>
+        <p>Ubah salah satu persamaan menjadi bentuk <b>x = …</b>, lalu <b>masukkan (gantikan)</b> ke persamaan lain sehingga jumlah variabel berkurang satu per satu.</p>
+        <div class="fit">✨ Cocok saat ada persamaan sederhana seperti x = 2z + 3</div>
+      </div>
+      <div class="method-card m2">
+        <div class="method-ico">⚖️</div>
+        <h3>2. Metode Eliminasi</h3>
+        <p>Kalikan persamaan dengan bilangan tertentu agar koefisien satu variabel menjadi sama, lalu <b>jumlah/kurangkan</b> untuk <b>menghilangkan</b> variabel tersebut.</p>
+        <div class="fit">✨ Cocok saat koefisien dua variabel sudah sejenis</div>
+      </div>
+      <div class="method-card m3">
+        <div class="method-ico">⭐</div>
+        <h3>3. Metode Gabungan</h3>
+        <p><b>Eliminasi dulu</b> untuk mengurangi variabel, lalu <b>substitusi</b> untuk menemukan nilainya. Kombinasi ini adalah senjata utama untuk SPLTV!</p>
+        <div class="fit">✨ Paling sering dipakai di soal cerita &amp; ujian</div>
+      </div>
+    </div>
+    <div class="stepper">
+      <h3>🗺️ Resep 6 Langkah Menaklukkan Soal Cerita</h3>
+      <div class="step-flow">
+        <span class="step-chip">1️⃣ <b>Pahami</b><br>masalah &amp; data</span><span class="step-arrow">→</span>
+        <span class="step-chip">2️⃣ <b>Misalkan</b><br>x = …, y = …, z = …</span><span class="step-arrow">→</span>
+        <span class="step-chip">3️⃣ <b>Modelkan</b><br>3 persamaan</span><span class="step-arrow">→</span>
+        <span class="step-chip">4️⃣ <b>Selesaikan</b><br>eliminasi/substitusi</span><span class="step-arrow">→</span>
+        <span class="step-chip">5️⃣ <b>Cek</b><br>ke semua persamaan</span><span class="step-arrow">→</span>
+        <span class="step-chip">6️⃣ <b>Simpulkan</b><br>dengan satuan</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ 4. PETA MATERI ============ -->
+<section class="slide" data-group="Pembuka" data-title="Peta Materi — 5 Topik">
+  <div class="slide-inner">
+    <span class="pill">🗺️ PETA MATERI</span>
+    <h2 style="margin-top:12px">5 Topik Seru Menanti Kalian!</h2>
+    <p class="lead">Setiap topik berisi <b>3 contoh soal</b> (mudah → sedang → sulit) dengan langkah penyelesaian interaktif, dilanjutkan <b>10 latihan soal</b> yang dikerjakan siswa secara bergilir. Klik kartu untuk langsung menuju topiknya!</p>
+    <div class="peta-grid">
+      <div class="peta-card js-goto-topic" data-topic="0"><div class="peta-ico">🛒</div><h3>Topik 1 — Harga Barang</h3><p>Buku, telur, tiket, dan menu kantin: tiga barang, tiga harga, satu sistem!</p><span class="peta-meta">3 Contoh + 10 Latihan</span></div>
+      <div class="peta-card js-goto-topic" data-topic="1"><div class="peta-ico">📈</div><h3>Topik 2 — Fungsi</h3><p>Dari nilai f(0), f(1), f(2)… kita memburu koefisien a, b, dan c!</p><span class="peta-meta">3 Contoh + 10 Latihan</span></div>
+      <div class="peta-card js-goto-topic" data-topic="2"><div class="peta-ico">🎂</div><h3>Topik 3 — Umur</h3><p>Membongkar umur ayah, ibu, dan anak dari petunjuk jumlah &amp; perbandingan.</p><span class="peta-meta">3 Contoh + 10 Latihan</span></div>
+      <div class="peta-card js-goto-topic" data-topic="3"><div class="peta-ico">🔢</div><h3>Topik 4 — Bilangan 3 Digit</h3><p>Trio angka ratusan-puluhan-satuan plus trik "bilangan terbalik".</p><span class="peta-meta">3 Contoh + 10 Latihan</span></div>
+      <div class="peta-card js-goto-topic" data-topic="4"><div class="peta-ico">🍩</div><h3>Topik 5 — Aljabar Pecahan</h3><p>Kali KPK penyebut, lalu naik level: variabel di penyebut dengan trik 1/x!</p><span class="peta-meta">3 Contoh + 10 Latihan</span></div>
+      <div class="peta-card js-goto-game"><div class="peta-ico">🐍</div><h3>Bonus — Game Ular Tangga</h3><p>Petualangan penutup: ular tangga aljabar untuk merayakan usaha kalian!</p><span class="peta-meta" style="background:#fef3c7;color:#b45309">Mainkan di Akhir Sesi</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ GAME ============ -->
+<section class="slide" id="s-game" data-group="Penutup" data-title="🎮 Game: Ular Tangga Aljabar">
+  <div class="slide-inner" style="display:flex;align-items:center;justify-content:center;min-height:88%">
+    <div class="game-card" style="max-width:760px;width:100%">
+      <div class="game-emoji">🐍🎲</div>
+      <h2>Game Time: Ular Tangga Aljabar!</h2>
+      <p>Sudah menaklukkan contoh dan latihan? Saatnya bersantai sejenak sambil tetap berlatih! Klik tombol di bawah untuk membuka <b>Game Ular Tangga Aljabar</b> di tab baru. Gunakan ilmu aljabarmu untuk melaju pesat — hati-hati dipangsa ular! 😄</p>
+      <a class="game-btn" href="https://nandarizky0407-bot.github.io/Persamaan/ular-tangga-spldv-spltv.html" target="_blank" rel="noopener">🎮 Mainkan Ular Tangga Aljabar →</a>
+      <p style="margin-top:22px;font-size:12.5px">💡 Rekomendasi tutor: mainkan setelah <b>minimal satu topik latihan selesai</b>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KESIMPULAN ============ -->
+<section class="slide" data-group="Penutup" data-title="Kesimpulan">
+  <div class="slide-inner">
+    <span class="pill">📌 KESIMPULAN</span>
+    <h2 style="margin-top:12px">Lima Bekal Penting dari Sesi Hari Ini</h2>
+    <div class="kes-list">
+      <div class="kes-item"><span class="kes-num">1️⃣</span><p><b>SPLTV = 3 persamaan, 3 variabel.</b> Penyelesaiannya adalah satu tripel nilai (x, y, z) yang memenuhi <b>semua</b> persamaan sekaligus — bukan hanya satu.</p></div>
+      <div class="kes-item"><span class="kes-num">2️⃣</span><p><b>Tiga senjata utama:</b> <b>substitusi</b> (ganti variabel), <b>eliminasi</b> (hilangkan variabel), dan <b>gabungan</b> (kombinasi keduanya). Pilih yang paling efisien — biasanya gabungan untuk SPLTV.</p></div>
+      <div class="kes-item"><span class="kes-num">3️⃣</span><p><b>Kunci soal cerita adalah penerjemahan.</b> Misalkan variabel dengan jelas, ubah setiap kalimat menjadi persamaan, lalu selesaikan dengan resep 6 langkah.</p></div>
+      <div class="kes-item"><span class="kes-num">4️⃣</span><p><b>Pecahan &amp; desimal bukan penghalang.</b> Kalikan KPK penyebut agar koefisien menjadi bulat; untuk variabel di penyebut (1/x), gunakan substitusi misal u = 1/x.</p></div>
+      <div class="kes-item"><span class="kes-num">5️⃣</span><p><b>Selalu cek jawabanmu!</b> Substitusikan kembali hasil ke semua persamaan — 10 detik pemeriksaan bisa menyelamatkan 10 poin. ✅</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REFLEKSI ============ -->
+<section class="slide" data-group="Penutup" data-title="Refleksi Diri">
+  <div class="slide-inner">
+    <span class="pill">🪞 REFLEKSI</span>
+    <h2 style="margin-top:12px">Bagaimana Perasaanmu Hari Ini?</h2>
+    <p class="lead">Tidak ada jawaban yang salah — refleksi membantu kita tahu langkah berikutnya. Klik emoji yang paling menggambarkan perasaanmu, lalu tulis refleksimu.</p>
+    <div class="ref-grid">
+      <button class="emoji-btn" data-msg="Luar biasa! 🎉 Kamu siap menantang soal sulit. Bagikan pemahamanmu kepada teman yang lain, ya!"><span class="e">😄</span><span class="t">Saya paham &amp; siap ujian!</span></button>
+      <button class="emoji-btn" data-msg="Bagus! 🙂 Pemahamanmu sudah terbentuk. Perbanyak latihan agar makin lancar — practice makes progress!"><span class="e">🙂</span><span class="t">Cukup paham, perlu latihan</span></button>
+      <button class="emoji-btn" data-msg="Tidak apa-apa! 😊 Coba ulangi contoh soal mudah-sedang di tiap topik, lalu tanyakan bagian yang membingungkan kepada tutor."><span class="e">😐</span><span class="t">Masih bingung di beberapa bagian</span></button>
+      <button class="emoji-btn" data-msg="Semangat! 💪 Setiap ahli matematika pernah bingung. Mulailah lagi dari pengingat metode, pelan-pelan pasti bisa!"><span class="e">😅</span><span class="t">Butuh bimbingan lagi</span></button>
+    </div>
+    <div class="ref-msg" id="refMsg"></div>
+    <div class="ref-block">
+      <label>✨ Satu hal baru yang saya pelajari hari ini…</label>
+      <textarea class="ref-area" id="ref1" placeholder="Contoh: Saya baru tahu trik 99(r − s) pada soal bilangan tiga digit terbalik…"></textarea>
+    </div>
+    <div class="ref-block">
+      <label>❓ Hal yang masih ingin saya tanyakan kepada tutor…</label>
+      <textarea class="ref-area" id="ref2" placeholder="Contoh: Kapan sebaiknya pakai eliminasi, kapan pakai substitusi?"></textarea>
+    </div>
+    <button class="btn btn-primary" id="saveRef">💾 Simpan Refleksi Saya</button>
+  </div>
+</section>
+
+<!-- ============ THANKS ============ -->
+<section class="slide thanks" data-group="Penutup" data-title="Thank You for Today!">
+  <span class="float-emoji" style="top:14%;left:10%">🌟</span>
+  <span class="float-emoji" style="top:24%;right:10%;animation-delay:1s">🎉</span>
+  <span class="float-emoji" style="bottom:20%;left:14%;animation-delay:2s">👏</span>
+  <span class="float-emoji" style="bottom:30%;right:12%;animation-delay:.5s">💯</span>
+  <div class="slide-inner">
+    <div class="thanks-emoji">🌟</div>
+    <h1 class="thanks-title">Thank You for Today!</h1>
+    <p class="thanks-text">Kalian sudah luar biasa hari ini — dari contoh soal, latihan bergilir dengan timer, sampai game ular tangga. Ingat: <b style="color:#a5f3fc">matematika adalah keterampilan yang tumbuh dengan latihan</b>, bukan bakat semata. Sampai jumpa di petualangan berikutnya! 🚀</p>
+    <div class="names-row" id="thanksNames"></div>
+    <div style="color:#8b93c9;font-size:12.5px;font-family:var(--head);font-weight:600">Presentasi Interaktif SPLTV &bull; Matematika &bull; Kelas X</div>
+  </div>
+</section>
+
+</main>
+
+<footer id="navbar">
+  <button class="nav-btn" id="prevBtn">← Sebelumnya</button>
+  <div id="dots"></div>
+  <button class="nav-btn primary" id="nextBtn">Berikutnya →</button>
+</footer>
+</div>
+
+<aside id="menu">
+  <div class="menu-head"><b>📑 Daftar Slide</b><button class="icon-btn" id="menuClose">✕</button></div>
+  <div class="menu-body" id="menuBody"></div>
+</aside>
+<div id="menuBackdrop"></div>
+<div id="toast"></div>
+
+<script>
+/* ================= DATA TOPIK ================= */
+const TOPICS = [
+{
+  icon:'🛒', short:'Harga Barang', title:'Soal Cerita: Harga Barang',
+  intro:`Belanja di pasar, toko, dan kantin — tiga barang, tiga harga, satu sistem! Topik ini adalah konteks SPLTV yang paling sering muncul di ujian. Kita mulai dari yang mudah, lalu naik tangga sampai soal level sulit.`,
+  examples:[
+    { lv:'Mudah',
+      soal:`Dita membeli 1 buku, 1 pensil, dan 1 penghapus dengan harga total Rp10.000. Harga sebuah buku Rp3.000 lebih mahal daripada sebuah penghapus, dan harga sebuah pensil Rp1.000 lebih mahal daripada sebuah penghapus. Tentukan harga masing-masing barang!`,
+      legend:`Misalkan: x = harga sebuah buku, y = harga sebuah pensil, z = harga sebuah penghapus.`,
+      steps:[
+        `Terjemahkan setiap kalimat menjadi persamaan:<br>x + y + z = 10.000 …(1)<br>x − z = 3.000 …(2)<br>y − z = 1.000 …(3)`,
+        `Dari (2) dan (3), nyatakan x dan y dalam z:<br><b>x = z + 3.000</b> dan <b>y = z + 1.000</b>.<br>Strategi ini disebut <b>substitusi terarah</b> — semua variabel diarahkan ke satu variabel.`,
+        `Substitusikan ke (1):<br>(z + 3.000) + (z + 1.000) + z = 10.000<br>3z + 4.000 = 10.000`,
+        `Selesaikan:<br>3z = 6.000 → <b>z = 2.000</b><br>x = 2.000 + 3.000 = <b>5.000</b> dan y = 2.000 + 1.000 = <b>3.000</b>`,
+        `<b>Kesimpulan:</b> buku = Rp5.000, pensil = Rp3.000, penghapus = Rp2.000.<br><b>Cek:</b> 5.000 + 3.000 + 2.000 = 10.000 ✓ memenuhi persamaan (1).`
+      ]},
+    { lv:'Sedang',
+      soal:`Ibu berbelanja di pasar. Harga 2 kg telur, 1 liter minyak goreng, dan 1 kg gula adalah Rp105.000. Harga 1 kg telur, 2 liter minyak goreng, dan 1 kg gula adalah Rp90.000. Harga 1 kg telur, 1 liter minyak goreng, dan 2 kg gula adalah Rp85.000. Tentukan harga 1 kg telur, 1 liter minyak goreng, dan 1 kg gula!`,
+      legend:`Misalkan: t = harga 1 kg telur, m = harga 1 liter minyak, g = harga 1 kg gula.`,
+      steps:[
+        `Susun model:<br>2t + m + g = 105.000 …(1)<br>t + 2m + g = 90.000 …(2)<br>t + m + 2g = 85.000 …(3)`,
+        `Perhatikan polanya: total koefisien tiap persamaan sama-sama 3! Jumlahkan (1)+(2)+(3):<br>4t + 4m + 4g = 280.000 → <b>t + m + g = 70.000 …(4)</b>`,
+        `(1) − (4): t = 105.000 − 70.000 = <b>35.000</b>`,
+        `(2) − (4): m = 90.000 − 70.000 = <b>20.000</b><br>(3) − (4): g = 85.000 − 70.000 = <b>15.000</b>`,
+        `<b>Kesimpulan:</b> telur Rp35.000/kg, minyak Rp20.000/liter, gula Rp15.000/kg.<br><b>Cek (1):</b> 70.000 + 20.000 + 15.000 = 105.000 ✓ <i>Trik "jumlahkan semua" menghemat banyak waktu!</i>`
+      ]},
+    { lv:'Sulit',
+      soal:`Ibu membeli 2 kg bawang merah, 3 kg bawang putih, dan 1 kg cabai seharga Rp175.000. Pembelian 1 kg bawang merah, 2 kg bawang putih, dan 2 kg cabai seharga Rp160.000. Pembelian 3 kg bawang merah, 1 kg bawang putih, dan 1 kg cabai seharga Rp155.000. Tentukan harga 1 kg setiap bahan!`,
+      legend:`Misalkan: a = bawang merah/kg, b = bawang putih/kg, c = cabai/kg.`,
+      steps:[
+        `Susun model:<br>2a + 3b + c = 175.000 …(1)<br>a + 2b + 2c = 160.000 …(2)<br>3a + b + c = 155.000 …(3)`,
+        `(1) − (3): −a + 2b = 20.000 → <b>a = 2b − 20.000</b>`,
+        `(2) − (3): −2a + b + c = 5.000 → <b>c = 5.000 + 2a − b</b>`,
+        `Substitusi c ke (3):<br>3a + b + (5.000 + 2a − b) = 155.000<br>5a + 5.000 = 155.000 → <b>a = 30.000</b>`,
+        `a = 2b − 20.000 → 30.000 = 2b − 20.000 → <b>b = 25.000</b><br>c = 5.000 + 2(30.000) − 25.000 = <b>40.000</b>`,
+        `<b>Kesimpulan:</b> bawang merah Rp30.000/kg, bawang putih Rp25.000/kg, cabai Rp40.000/kg.<br><b>Cek (1):</b> 60.000 + 75.000 + 40.000 = 175.000 ✓`
+      ]}
+  ],
+  latihan:[
+    { lv:'Mudah', hint:'tulis ketiga harga (buku, pensil, penghapus) — contoh: 5000, 3000, 2000',
+      q:`Di toko alat tulis, harga 1 pensil, 1 buku, dan 1 penghapus adalah Rp5.000. Harga sebuah pensil sama dengan harga sebuah penghapus, dan harga sebuah buku tiga kali harga sebuah penghapus. Tentukan harga sebuah buku, sebuah pensil, dan sebuah penghapus!`,
+      key:[3000,1000,1000], ans:`Buku = Rp3.000, pensil = Rp1.000, penghapus = Rp1.000`,
+      bah:[
+        `Misalkan p = pensil, b = buku, e = penghapus. Diketahui p = e dan b = 3e.`,
+        `p + b + e = 5.000 → e + 3e + e = 5.000 → 5e = 5.000 → e = 1.000.`,
+        `Jadi penghapus = Rp1.000, pensil = Rp1.000, buku = Rp3.000. ✓ Cek: 1.000 + 3.000 + 1.000 = 5.000`
+      ]},
+    { lv:'Mudah', hint:'tulis ketiga harga (roti, susu, donat) tanpa titik ribuan — contoh: 5000, 8000, 5000',
+      q:`Dina membeli 2 roti, 1 kotak susu, dan 1 donat seharga Rp23.000. Harga 1 roti dan 2 kotak susu adalah Rp21.000. Harga 1 kotak susu dan 2 donat adalah Rp18.000. Tentukan harga 1 roti, 1 kotak susu, dan 1 donat!`,
+      key:[5000,8000,5000], ans:`Roti = Rp5.000, susu = Rp8.000, donat = Rp5.000`,
+      bah:[
+        `Model: r + 2s = 21.000 …(1); 2r + s + d = 23.000 …(2); s + 2d = 18.000 …(3)`,
+        `(1) × 2: 2r + 4s = 42.000. Kurangi (2): 3s − d = 19.000 → d = 3s − 19.000.`,
+        `Substitusi ke (3): s + 2(3s − 19.000) = 18.000 → 7s = 56.000 → s = 8.000.`,
+        `r = 21.000 − 2(8.000) = 5.000 dan d = 24.000 − 19.000 = 5.000. ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis harga apel, jeruk, mangga (per kg) — contoh: 30000, 10000, 20000',
+      q:`Bu Ani membeli 2 kg apel, 1 kg jeruk, dan 2 kg mangga seharga Rp110.000. Harga 1 kg apel, 1 kg jeruk, dan 1 kg mangga adalah Rp60.000. Harga 2 kg apel dan 1 kg jeruk adalah Rp70.000. Tentukan harga 1 kg setiap buah!`,
+      key:[30000,10000,20000], ans:`Apel = Rp30.000/kg, jeruk = Rp10.000/kg, mangga = Rp20.000/kg`,
+      bah:[
+        `Model: 2a + j + 2m = 110.000 …(1); a + j + m = 60.000 …(2); 2a + j = 70.000 …(3)`,
+        `(1) − (2): a + m = 50.000 → m = 50.000 − a.`,
+        `Dari (3): j = 70.000 − 2a. Substitusi ke (2): a + (70.000 − 2a) + (50.000 − a) = 60.000 → −2a = −60.000 → a = 30.000.`,
+        `j = 70.000 − 60.000 = 10.000 dan m = 50.000 − 30.000 = 20.000. ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis harga buku tulis, penggaris, pensil — contoh: 6000, 4000, 2000',
+      q:`Rina membeli 2 buku tulis, 1 penggaris, dan 3 pensil seharga Rp22.000. Sinta membeli 1 buku tulis, 2 penggaris, dan 1 pensil seharga Rp16.000. Tika membeli 1 buku tulis, 1 penggaris, dan 2 pensil seharga Rp14.000. Tentukan harga 1 buku tulis, 1 penggaris, dan 1 pensil!`,
+      key:[6000,4000,2000], ans:`Buku tulis = Rp6.000, penggaris = Rp4.000, pensil = Rp2.000`,
+      bah:[
+        `Model: 2b + g + 3p = 22.000 …(1); b + 2g + p = 16.000 …(2); b + g + 2p = 14.000 …(3)`,
+        `(1) − (3): b + p = 8.000. (2) − (3): g − p = 2.000 → g = p + 2.000.`,
+        `Substitusi ke (3): b + (p + 2.000) + 2p = 14.000 → b + 3p = 12.000. Dengan b = 8.000 − p: 8.000 + 2p = 12.000 → p = 2.000.`,
+        `g = 4.000 dan b = 8.000 − 2.000 = 6.000. ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis harga beras, gula, minyak — contoh: 12000, 15000, 17000',
+      q:`Di toko sembako, 3 kg beras, 2 kg gula, dan 1 liter minyak goreng dijual Rp83.000. Kombinasi 2 kg beras, 3 kg gula, dan 2 liter minyak dijual Rp103.000. Kombinasi 1 kg beras, 1 kg gula, dan 1 liter minyak dijual Rp44.000. Tentukan harga 1 kg beras, 1 kg gula, dan 1 liter minyak!`,
+      key:[12000,15000,17000], ans:`Beras = Rp12.000/kg, gula = Rp15.000/kg, minyak = Rp17.000/liter`,
+      bah:[
+        `Model: 3b + 2g + m = 83.000 …(1); 2b + 3g + 2m = 103.000 …(2); b + g + m = 44.000 …(3)`,
+        `(2) − (3): b + 2g + m = 59.000. Kurangi (3): g = 15.000.`,
+        `(1) − (3): 2b + g = 39.000 → 2b = 24.000 → b = 12.000.`,
+        `m = 44.000 − 12.000 − 15.000 = 17.000. ✓ Cek (1): 36.000 + 30.000 + 17.000 = 83.000`
+      ]},
+    { lv:'Sulit', hint:'tulis harga tiket dewasa, remaja, anak — contoh: 45000, 30000, 25000',
+      q:`Harga 2 tiket dewasa, 1 tiket remaja, dan 3 tiket anak-anak adalah Rp195.000. Harga 1 tiket dewasa, 3 tiket remaja, dan 2 tiket anak-anak adalah Rp185.000. Harga 3 tiket dewasa, 2 tiket remaja, dan 1 tiket anak adalah Rp220.000. Tentukan harga masing-masing tiket!`,
+      key:[45000,30000,25000], ans:`Dewasa = Rp45.000, remaja = Rp30.000, anak = Rp25.000`,
+      bah:[
+        `Model: 2d + r + 3a = 195.000 …(1); d + 3r + 2a = 185.000 …(2); 3d + 2r + a = 220.000 …(3)`,
+        `(1) − (2): d − 2r + a = 10.000. (3) − (2): 2d − r − a = 35.000. Jumlahkan: 3d − 3r = 45.000 → d = r + 15.000.`,
+        `(1) − (3): −d − r + 2a = −25.000 → d + r − 2a = 25.000 → 2r + 15.000 − 2a = 25.000 → r = a + 5.000.`,
+        `Substitusi ke (2): (a + 20.000) + 3(a + 5.000) + 2a = 185.000 → 6a = 150.000 → a = 25.000. Maka r = 30.000 dan d = 45.000. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis harga daging, ayam, telur (per kg) — contoh: 140000, 35000, 28000',
+      q:`Ibu membeli 1 kg daging sapi, 1 kg ayam, dan 1 kg telur seharga Rp203.000. Harga 1 kg daging sapi 4 kali harga 1 kg ayam, dan harga 1 kg ayam Rp7.000 lebih mahal daripada harga 1 kg telur. Tentukan harga 1 kg setiap bahan!`,
+      key:[140000,35000,28000], ans:`Daging = Rp140.000/kg, ayam = Rp35.000/kg, telur = Rp28.000/kg`,
+      bah:[
+        `Model: d = 4a; a = t + 7.000 → t = a − 7.000; d + a + t = 203.000.`,
+        `Substitusi: 4a + a + (a − 7.000) = 203.000 → 6a = 210.000 → a = 35.000.`,
+        `d = 4(35.000) = 140.000 dan t = 28.000. ✓ Cek: 140.000 + 35.000 + 28.000 = 203.000`
+      ]},
+    { lv:'Sedang', hint:'tulis harga es teh, es jeruk, es susu per gelas — contoh: 5000, 6000, 8000',
+      q:`Di kantin sekolah, 2 gelas es teh, 2 gelas es jeruk, dan 1 gelas es susu dijual Rp30.000. Kombinasi 1 gelas es teh, 3 gelas es jeruk, dan 2 gelas es susu dijual Rp39.000. Kombinasi 3 gelas es teh, 1 gelas es jeruk, dan 1 gelas es susu dijual Rp29.000. Tentukan harga setiap gelas minuman!`,
+      key:[5000,6000,8000], ans:`Es teh = Rp5.000, es jeruk = Rp6.000, es susu = Rp8.000`,
+      bah:[
+        `Model: 2t + 2j + s = 30.000 …(1); t + 3j + 2s = 39.000 …(2); 3t + j + s = 29.000 …(3)`,
+        `(2) − (1): −t + j + s = 9.000 …(4)`,
+        `(3) − (4): 4t = 20.000 → t = 5.000. Maka j + s = 14.000 …(5)`,
+        `Dari (1): 10.000 + 2j + s = 30.000 → 2j + s = 20.000. Bandingkan dengan (5): j = 6.000, s = 8.000. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis banyak lembar Rp2.000, Rp5.000, Rp10.000 — contoh: 10, 6, 9',
+      q:`Sejumlah uang terdiri atas lembar Rp2.000, Rp5.000, dan Rp10.000. Banyak lembar seluruhnya 25 lembar dengan total nilai Rp140.000. Banyak lembar Rp10.000 tiga lebihnya dari banyak lembar Rp5.000. Tentukan banyak lembar masing-masing (urutan: Rp2.000, Rp5.000, Rp10.000)!`,
+      key:[10,6,9], ans:`10 lembar Rp2.000, 6 lembar Rp5.000, 9 lembar Rp10.000`,
+      bah:[
+        `Model: x + y + z = 25 …(1); z = y + 3 …(2); 2x + 5y + 10z = 140.000 …(3) (dalam satuan ribuan: 2x + 5y + 10z = 140).`,
+        `Dari (1) dan (2): x = 25 − y − (y + 3) = 22 − 2y.`,
+        `Substitusi ke (3): 2(22 − 2y) + 5y + 10(y + 3) = 140 → 44 + 11y + 30 = 140 → 11y = 66 → y = 6.`,
+        `z = 9 dan x = 22 − 12 = 10. ✓ Cek: 20.000 + 30.000 + 90.000 = 140.000`
+      ]},
+    { lv:'Sulit', hint:'tulis harga nasi goreng, mie ayam, bakso — contoh: 15000, 12000, 13000',
+      q:`Sebuah kantin menjual nasi goreng, mie ayam, dan bakso. Harga 2 porsi nasi goreng, 1 mie ayam, dan 1 bakso adalah Rp55.000. Harga 1 porsi nasi goreng, 2 mie ayam, dan 1 bakso adalah Rp52.000. Harga 1 porsi nasi goreng, 1 mie ayam, dan 3 bakso adalah Rp66.000. Tentukan harga setiap menu!`,
+      key:[15000,12000,13000], ans:`Nasi goreng = Rp15.000, mie ayam = Rp12.000, bakso = Rp13.000`,
+      bah:[
+        `Model: 2n + m + b = 55.000 …(1); n + 2m + b = 52.000 …(2); n + m + 3b = 66.000 …(3)`,
+        `(1) − (2): n − m = 3.000 → n = m + 3.000. (3) − (2): −m + 2b = 14.000 → m = 2b − 14.000.`,
+        `Substitusi ke (2): (2b − 14.000) + 3.000 + 2(2b − 14.000) + b = 52.000 → 7b − 39.000 = 52.000 → b = 13.000.`,
+        `m = 12.000 dan n = 15.000. ✓ Cek (1): 30.000 + 12.000 + 13.000 = 55.000`
+      ]}
+  ]
+},
+{
+  icon:'📈', short:'Fungsi', title:'SPLTV dan Fungsi Kuadrat',
+  intro:`Nilai fungsi adalah "petunjuk" untuk menemukan koefisiennya! Dari f(0), f(1), f(2), dan kawan-kawan, kita bisa memburu a, b, dan c. Topik ini melatih kepekaanmu membaca pola dan menyusun SPLTV dari tabel nilai fungsi.`,
+  examples:[
+    { lv:'Mudah',
+      soal:`Fungsi kuadrat f(x) = ax² + bx + c diketahui f(0) = 3, f(1) = 6, dan f(2) = 13. Tentukan rumus f(x)!`,
+      legend:`Substitusikan nilai x satu per satu, lalu selesaikan SPLTV pada a, b, c.`,
+      steps:[
+        `Substitusikan:<br>f(0) = c = <b>3</b> (langsung ketemu!)<br>f(1): a + b + c = 6 → a + b = 3 …(1)<br>f(2): 4a + 2b + c = 13 → 4a + 2b = 10 → 2a + b = 5 …(2)`,
+        `Eliminasi (1) dan (2):<br>(2a + b) − (a + b) = 5 − 3 → <b>a = 2</b>`,
+        `Substitusi ke (1): 2 + b = 3 → <b>b = 1</b>`,
+        `<b>Kesimpulan:</b> f(x) = 2x² + x + 3.<br><b>Cek:</b> f(2) = 8 + 2 + 3 = 13 ✓`
+      ]},
+    { lv:'Sedang',
+      soal:`Fungsi kuadrat f(x) = ax² + bx + c memenuhi f(−1) = 6, f(1) = 2, dan f(2) = 3. Tentukan rumus f(x), kemudian hitung f(3)!`,
+      legend:`Hati-hati dengan tanda negatif: f(−1) = a(−1)² + b(−1) + c = a − b + c.`,
+      steps:[
+        `Model:<br>f(−1): a − b + c = 6 …(1)<br>f(1): a + b + c = 2 …(2)<br>f(2): 4a + 2b + c = 3 …(3)`,
+        `(1) − (2): −2b = 4 → <b>b = −2</b>`,
+        `(2): a + c = 2 − b = 4 …(4)<br>(3): 4a + c = 3 − 2b = 7 …(5)`,
+        `(5) − (4): 3a = 3 → <b>a = 1</b>, sehingga c = 3`,
+        `<b>Kesimpulan:</b> f(x) = x² − 2x + 3 dan f(3) = 9 − 6 + 3 = <b>6</b>.<br><b>Cek:</b> f(−1) = 1 + 2 + 3 = 6 ✓`
+      ]},
+    { lv:'Sulit',
+      soal:`Fungsi kuadrat f(x) = ax² + bx + c memenuhi f(1) = f(−3) = 4 dan f(0) = −5. Tentukan rumus f(x) dan nilai f(2)!`,
+      legend:`Petunjuk: dua titik yang sama tinggi berada simetris terhadap sumbu simetri parabola.`,
+      steps:[
+        `f(0) = c = <b>−5</b>. Satu variabel langsung beres!`,
+        `f(1) = f(−3) = 4 berarti titik (1, 4) dan (−3, 4) sama tinggi → sumbu simetri tepat di tengahnya:<br>x = (1 + (−3))/2 = <b>−1</b>`,
+        `Sumbu simetri f(x) = ax² + bx + c adalah x = −b/(2a):<br>−b/(2a) = −1 → <b>b = 2a</b>`,
+        `f(1) = 4: a + b − 5 = 4 → a + b = 9. Substitusi b = 2a:<br>3a = 9 → <b>a = 3, b = 6</b>`,
+        `<b>Kesimpulan:</b> f(x) = 3x² + 6x − 5 dan f(2) = 12 + 12 − 5 = <b>19</b>.<br><b>Cek:</b> f(−3) = 27 − 18 − 5 = 4 ✓ <i>Trik simetri menghemat satu kali eliminasi!</i>`
+      ]}
+  ],
+  latihan:[
+    { lv:'Mudah', hint:'tulis nilai a, b, c berurutan — contoh: 2, 1, 3',
+      q:`Fungsi kuadrat f(x) = ax² + bx + c diketahui f(0) = 2, f(1) = 5, dan f(2) = 12. Tentukan nilai a, b, dan c!`,
+      key:[2,1,2], ans:`a = 2, b = 1, c = 2 → f(x) = 2x² + x + 2`,
+      bah:[
+        `f(0) = c = 2. f(1): a + b = 3 …(1). f(2): 4a + 2b = 10 → 2a + b = 5 …(2)`,
+        `(2) − (1): a = 2, sehingga b = 1.`,
+        `f(x) = 2x² + x + 2. ✓ Cek: f(2) = 8 + 2 + 2 = 12`
+      ]},
+    { lv:'Mudah', hint:'tulis nilai a, b, c — contoh: 1, -2, 3 (tanda minus menempel angka)',
+      q:`Fungsi kuadrat g(x) = ax² + bx + c memenuhi g(−1) = 8, g(0) = 3, dan g(1) = 2. Tentukan nilai a, b, dan c!`,
+      key:[2,-3,3], ans:`a = 2, b = −3, c = 3 → g(x) = 2x² − 3x + 3`,
+      bah:[
+        `g(0) = c = 3. g(−1): a − b = 5 …(1). g(1): a + b = −1 …(2)`,
+        `(1) + (2): 2a = 4 → a = 2, maka b = −1 − 2 = −3.`,
+        `g(x) = 2x² − 3x + 3. ✓ Cek: g(−1) = 2 + 3 + 3 = 8`
+      ]},
+    { lv:'Mudah', hint:'tulis nilai a, b, c — contoh: 1, 2, 1',
+      q:`Sebuah fungsi kuadrat f(x) = ax² + bx + c melalui titik (1, 4), (2, 9), dan (3, 16). Tentukan nilai a, b, dan c!`,
+      key:[1,2,1], ans:`a = 1, b = 2, c = 1 → f(x) = x² + 2x + 1 = (x + 1)²`,
+      bah:[
+        `a + b + c = 4 …(1); 4a + 2b + c = 9 …(2); 9a + 3b + c = 16 …(3)`,
+        `(2) − (1): 3a + b = 5 …(4). (3) − (2): 5a + b = 7 …(5)`,
+        `(5) − (4): 2a = 2 → a = 1, b = 2, c = 1.`,
+        `f(x) = x² + 2x + 1 = (x + 1)² — pola titik (1,4), (2,9), (3,16) adalah kuadrat sempurna! ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis nilai a, b, c — contoh: 1, 2, -3',
+      q:`Fungsi kuadrat f(x) = ax² + bx + c memenuhi f(2) = 5, f(4) = 21, dan f(6) = 45. Tentukan nilai a, b, c, lalu hitung f(−4)!`,
+      key:[1,2,-3], ans:`a = 1, b = 2, c = −3 → f(−4) = 5`,
+      bah:[
+        `4a + 2b + c = 5 …(1); 16a + 4b + c = 21 …(2); 36a + 6b + c = 45 …(3)`,
+        `(2) − (1): 12a + 2b = 16 → 6a + b = 8 …(4). (3) − (2): 20a + 2b = 24 → 10a + b = 12 …(5)`,
+        `(5) − (4): 4a = 4 → a = 1, b = 2, c = 5 − 4 − 4 = −3.`,
+        `f(−4) = 16 − 8 − 3 = 5. ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis nilai a, b, c — contoh: -5, 20, 1',
+      q:`Sebuah bola dilempar ke atas dari ketinggian 1 meter. Ketinggian bola h(t) = at² + bt + c (meter) setelah t detik. Diketahui h(1) = 16 dan h(2) = 21. Tentukan nilai a, b, c dan tinggi maksimum bola!`,
+      key:[-5,20,1], ans:`a = −5, b = 20, c = 1; tinggi maksimum 21 meter pada t = 2 detik`,
+      bah:[
+        `Dari ketinggian awal: h(0) = c = 1.`,
+        `h(1): a + b = 15 …(1). h(2): 4a + 2b = 20 → 2a + b = 10 …(2)`,
+        `(2) − (1): a = −5, b = 20. (a negatif = parabola terbuka ke bawah, wajar untuk lintasan lemparan!)`,
+        `Tinggi maksimum di puncak: t = −b/(2a) = 2 → h(2) = −20 + 40 + 1 = 21 meter. ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis nilai a, b, c — contoh: 1, -2, -3',
+      q:`Fungsi kuadrat f(x) = ax² + bx + c mencapai nilai minimum −4 saat x = 1, dan melalui titik (3, 0). Tentukan nilai a, b, c dan titik potong grafik dengan sumbu-x!`,
+      key:[1,-2,-3], ans:`a = 1, b = −2, c = −3; memotong sumbu-x di (3, 0) dan (−1, 0)`,
+      bah:[
+        `Minimum di x = 1 → sumbu simetri x = 1 → −b/(2a) = 1 → b = −2a.`,
+        `f(1) = a − 2a + c = −4 → c − a = −4 …(1). f(3) = 9a − 6a + c = 0 → 3a + c = 0 …(2)`,
+        `(2) − (1): 4a = 4 → a = 1, b = −2, c = −3.`,
+        `f(x) = (x − 1)² − 4 = x² − 2x − 3 = (x − 3)(x + 1) → memotong sumbu-x di x = 3 dan x = −1. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis nilai a, b, c — contoh: 3, 6, -4',
+      q:`Fungsi kuadrat f(x) = ax² + bx + c memenuhi f(1) = f(−3) = 5 dan f(0) = −4. Tentukan nilai a, b, dan c!`,
+      key:[3,6,-4], ans:`a = 3, b = 6, c = −4`,
+      bah:[
+        `f(0) = c = −4.`,
+        `f(1) = f(−3) → sumbu simetri x = (1 + (−3))/2 = −1 → −b/(2a) = −1 → b = 2a.`,
+        `f(1): a + b − 4 = 5 → a + b = 9. Substitusi: 3a = 9 → a = 3, b = 6.`,
+        `f(x) = 3x² + 6x − 4. ✓ Cek: f(−3) = 27 − 18 − 4 = 5`
+      ]},
+    { lv:'Sulit', hint:'tulis nilai a, b, c — contoh: 1, 20, 100',
+      q:`Biaya produksi sebuah pabrik (dalam ribuan rupiah) untuk x unit barang dinyatakan B(x) = ax² + bx + c. Diketahui B(0) = 100, B(10) = 400, dan B(20) = 900. Tentukan nilai a, b, c dan biaya produksi 30 unit!`,
+      key:[1,20,100], ans:`a = 1, b = 20, c = 100; B(x) = (x + 10)², B(30) = 1.600 ribu = Rp1.600.000`,
+      bah:[
+        `B(0) = c = 100 (ini biaya tetap!).`,
+        `B(10): 100a + 10b = 300 → 10a + b = 30 …(1). B(20): 400a + 20b = 800 → 20a + b = 40 …(2)`,
+        `(2) − (1): 10a = 10 → a = 1, b = 20.`,
+        `B(x) = x² + 20x + 100 = (x + 10)². B(30) = 40² = 1.600 ribu = Rp1.600.000. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis nilai a, b, c — contoh: 2, 0, 5',
+      q:`Fungsi f(x) = ax² + bx + c memenuhi sifat f(x+1) − f(x) = 4x + 2 untuk setiap bilangan x, dan f(0) = 5. Tentukan nilai a, b, c dan nilai f(3)!`,
+      key:[2,0,5], ans:`a = 2, b = 0, c = 5 → f(x) = 2x² + 5, f(3) = 23`,
+      bah:[
+        `f(x+1) − f(x) = a(x+1)² + b(x+1) + c − (ax² + bx + c) = a(2x + 1) + b = 2ax + (a + b).`,
+        `Samakan dengan 4x + 2: 2a = 4 → a = 2; a + b = 2 → b = 0.`,
+        `f(0) = c = 5.`,
+        `f(x) = 2x² + 5. f(3) = 18 + 5 = 23. ✓ <i>Teknik "selisih fungsi" sering muncul di soal olimpiade!</i>`
+      ]},
+    { lv:'Sedang', hint:'tulis nilai a, b, c — contoh: 2, -8, 6',
+      q:`Fungsi kuadrat f(x) = ax² + bx + c memenuhi f(1) = 0, f(3) = 0, dan f(0) = 6. Tentukan nilai a, b, c dan nilai minimum f!`,
+      key:[2,-8,6], ans:`a = 2, b = −8, c = 6; nilai minimum = −2 (dicapai di x = 2)`,
+      bah:[
+        `f(0) = c = 6. f(1): a + b = −6 …(1). f(3): 9a + 3b = −6 → 3a + b = −2 …(2)`,
+        `(2) − (1): 2a = 4 → a = 2, b = −8.`,
+        `f(x) = 2x² − 8x + 6. Sumbu simetri x = 2 → f(2) = 8 − 16 + 6 = −2 (minimum).`,
+        `Cara pintas: akar-akarnya 1 dan 3 → f(x) = a(x−1)(x−3); f(0) = 3a = 6 → a = 2. ✓`
+      ]}
+  ]
+},
+{
+  icon:'🎂', short:'Umur', title:'SPLTV dan Umur',
+  intro:`Siapa tidak penasaran dengan umur? Dengan SPLTV, kita bisa membongkar umur ayah, ibu, dan anak hanya dari beberapa petunjuk jumlah dan perbandingan. Hati-hati dengan jebakan "beberapa tahun yang lalu" — umur semua orang ikut berkurang!`,
+  examples:[
+    { lv:'Mudah',
+      soal:`Jumlah umur ayah, ibu, dan anak adalah 70 tahun. Umur ayah 10 tahun lebih tua daripada umur ibu, dan umur anak 24 tahun lebih muda daripada umur ibu. Tentukan umur masing-masing!`,
+      legend:`Misalkan: a = umur ayah, i = umur ibu, k = umur anak (dalam tahun).`,
+      steps:[
+        `Susun model:<br>a + i + k = 70 …(1)<br>a = i + 10 …(2)<br>k = i − 24 …(3)`,
+        `Arahkan semua variabel ke i (substitusi):<br>(i + 10) + i + (i − 24) = 70`,
+        `Sederhanakan:<br>3i − 14 = 70 → 3i = 84 → <b>i = 28</b>`,
+        `a = 28 + 10 = <b>38</b> dan k = 28 − 24 = <b>4</b>.<br><b>Kesimpulan:</b> ayah 38 tahun, ibu 28 tahun, anak 4 tahun.<br><b>Cek:</b> 38 + 28 + 4 = 70 ✓`
+      ]},
+    { lv:'Sedang',
+      soal:`Jumlah umur Andi, Budi, dan Cica adalah 45 tahun. Umur Budi 5 tahun lebih tua dari umur Andi. Umur Cica 16 tahun kurangnya dari dua kali umur Andi. Tentukan umur ketiganya!`,
+      legend:`"16 tahun kurangnya dari dua kali umur Andi" berarti c = 2a − 16.`,
+      steps:[
+        `Susun model:<br>a + b + c = 45 …(1)<br>b = a + 5 …(2)<br>c = 2a − 16 …(3)`,
+        `Substitusi (2) dan (3) ke (1):<br>a + (a + 5) + (2a − 16) = 45`,
+        `Sederhanakan:<br>4a − 11 = 45 → 4a = 56 → <b>a = 14</b>`,
+        `b = 14 + 5 = <b>19</b> dan c = 2(14) − 16 = <b>12</b>.<br><b>Cek:</b> 14 + 19 + 12 = 45 ✓ dan 2(14) − 16 = 12 ✓`
+      ]},
+    { lv:'Sulit',
+      soal:`Jumlah umur ayah, ibu, dan anak saat ini 80 tahun. Umur ibu 10 tahun lebih muda daripada umur ayah. Lima tahun yang lalu, umur ayah 7 kali umur anaknya. Tentukan umur ketiganya saat ini, lalu umur mereka 5 tahun yang akan datang!`,
+      legend:`Kunci: "5 tahun yang lalu" berarti SEMUA umur berkurang 5. Umur ayah dulu (a − 5), umur anak dulu (k − 5).`,
+      steps:[
+        `Susun model:<br>a + i + k = 80 …(1)<br>i = a − 10 …(2)<br>5 tahun lalu: a − 5 = 7(k − 5) → a = 7k − 30 …(3)`,
+        `Substitusi (2) dan (3) ke (1):<br>(7k − 30) + (7k − 40) + k = 80`,
+        `Sederhanakan:<br>15k − 70 = 80 → 15k = 150 → <b>k = 10</b>`,
+        `a = 7(10) − 30 = <b>40</b> dan i = <b>30</b>.<br><b>Cek:</b> 5 tahun lalu ayah 35 = 7 × 5 (umur anak dulu) ✓`,
+        `Lima tahun yang akan datang: ayah <b>45 tahun</b>, ibu <b>35 tahun</b>, anak <b>15 tahun</b>.`
+      ]}
+  ],
+  latihan:[
+    { lv:'Mudah', hint:'tulis umur ayah, ibu, anak — contoh: 38, 28, 4',
+      q:`Jumlah umur ayah, ibu, dan anak adalah 65 tahun. Umur ayah 5 tahun lebih tua daripada umur ibu. Umur anak 24 tahun lebih muda daripada umur ibu. Tentukan umur ayah, ibu, dan anak!`,
+      key:[33,28,4], ans:`Ayah = 33 tahun, ibu = 28 tahun, anak = 4 tahun`,
+      bah:[
+        `Model: a = i + 5; k = i − 24; a + i + k = 65.`,
+        `Substitusi: (i + 5) + i + (i − 24) = 65 → 3i − 19 = 65 → 3i = 84 → i = 28.`,
+        `a = 33 dan k = 4. ✓ Cek: 33 + 28 + 4 = 65`
+      ]},
+    { lv:'Mudah', hint:'tulis umur Andi, Budi, Cika — contoh: 13, 16, 11',
+      q:`Jumlah umur Andi, Budi, dan Cika adalah 40 tahun. Umur Budi 3 tahun lebih tua dari umur Andi. Umur Cika 2 tahun lebih muda dari umur Andi. Tentukan umur ketiganya!`,
+      key:[13,16,11], ans:`Andi = 13 tahun, Budi = 16 tahun, Cika = 11 tahun`,
+      bah:[
+        `Model: b = a + 3; c = a − 2; a + b + c = 40.`,
+        `Substitusi: a + (a + 3) + (a − 2) = 40 → 3a + 1 = 40 → a = 13.`,
+        `b = 16 dan c = 11. ✓ Cek: 13 + 16 + 11 = 40`
+      ]},
+    { lv:'Sedang', hint:'tulis umur kakek, ayah, cucu — contoh: 60, 32, 10',
+      q:`Jumlah umur kakek, ayah, dan cucu adalah 102 tahun. Umur kakek 6 kali umur cucu. Umur ayah 12 tahun lebihnya dari dua kali umur cucu. Tentukan umur ketiganya!`,
+      key:[60,32,10], ans:`Kakek = 60 tahun, ayah = 32 tahun, cucu = 10 tahun`,
+      bah:[
+        `Model: k = 6c; a = 2c + 12; k + a + c = 102.`,
+        `Substitusi: 6c + (2c + 12) + c = 102 → 9c + 12 = 102 → 9c = 90 → c = 10.`,
+        `k = 60 dan a = 32. ✓ Cek: 60 + 32 + 10 = 102`
+      ]},
+    { lv:'Sedang', hint:'tulis umur Ani, Budi, Cita sekarang — contoh: 14, 19, 17',
+      q:`Saat ini jumlah umur Ani, Budi, dan Cita adalah 50 tahun. Tiga tahun yang lalu jumlah umur mereka 41 tahun. Umur Budi 5 tahun lebih tua dari umur Ani. Umur Cita 2 tahun lebih muda dari umur Budi. Tentukan umur ketiganya sekarang!`,
+      key:[14,19,17], ans:`Ani = 14 tahun, Budi = 19 tahun, Cita = 17 tahun`,
+      bah:[
+        `Cek konsistensi: setiap orang berkurang 3 tahun, jadi jumlah berkurang 9: 50 − 9 = 41 ✓ (cocok!).`,
+        `Model: b = a + 5; c = b − 2 = a + 3; a + b + c = 50.`,
+        `Substitusi: a + (a + 5) + (a + 3) = 50 → 3a + 8 = 50 → a = 14.`,
+        `b = 19 dan c = 17. ✓ Cek: 14 + 19 + 17 = 50`
+      ]},
+    { lv:'Sedang', hint:'tulis umur ayah, ibu, anak — contoh: 30, 25, 10',
+      q:`Jumlah umur ayah, ibu, dan anak adalah 65 tahun. Umur ayah 3 kali umur anak. Umur ibu 5 tahun lebihnya dari dua kali umur anak. Tentukan umur ketiganya!`,
+      key:[30,25,10], ans:`Ayah = 30 tahun, ibu = 25 tahun, anak = 10 tahun`,
+      bah:[
+        `Model: a = 3k; i = 2k + 5; a + i + k = 65.`,
+        `Substitusi: 3k + (2k + 5) + k = 65 → 6k + 5 = 65 → k = 10.`,
+        `a = 30 dan i = 25. ✓ Cek: 30 + 25 + 10 = 65`
+      ]},
+    { lv:'Sedang', hint:'tulis umur ayah, ibu, anak — contoh: 60, 54, 12',
+      q:`Jumlah umur ayah, ibu, dan anak saat ini 126 tahun. Umur ayah 6 tahun lebih tua daripada umur ibu. Enam tahun yang lalu, umur ayah 9 kali umur anak. Tentukan umur ketiganya sekarang!`,
+      key:[60,54,12], ans:`Ayah = 60 tahun, ibu = 54 tahun, anak = 12 tahun`,
+      bah:[
+        `Model: a = i + 6; 6 tahun lalu: a − 6 = 9(k − 6) → a = 9k − 48.`,
+        `Maka i = a − 6 = 9k − 54.`,
+        `Jumlah: (9k − 48) + (9k − 54) + k = 126 → 19k = 228 → k = 12.`,
+        `a = 60 dan i = 54. ✓ Cek: 6 tahun lalu ayah 54 = 9 × 6 (umur anak dulu) ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis umur kakek, ayah, cucu — contoh: 65, 40, 15',
+      q:`Sepuluh tahun lagi, umur kakek akan menjadi tiga kali umur cucunya. Umur ayah sama dengan setengah dari jumlah umur kakek dan cucu. Jumlah umur kakek, ayah, dan cucu saat ini 120 tahun. Tentukan umur ketiganya!`,
+      key:[65,40,15], ans:`Kakek = 65 tahun, ayah = 40 tahun, cucu = 15 tahun`,
+      bah:[
+        `Model: k + 10 = 3(c + 10) → k = 3c + 20 …(1); a = (k + c)/2 …(2); k + a + c = 120 …(3)`,
+        `Substitusi (2) ke (3): k + c + (k + c)/2 = 120 → (3/2)(k + c) = 120 → k + c = 80.`,
+        `Dari (1): 3c + 20 + c = 80 → 4c = 60 → c = 15. Maka k = 65 dan a = 40.`,
+        `✓ Cek: 10 tahun lagi kakek 75 = 3 × 25 (umur cucu nanti) ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis umur Ibu, Bima, Rara — contoh: 36, 8, 16',
+      q:`Jumlah umur Ibu, Bima, dan Rara adalah 60 tahun. Umur Rara 2 kali umur Bima. Umur Ibu 4 tahun lebihnya dari empat kali umur Bima. Tentukan umur ketiganya!`,
+      key:[36,8,16], ans:`Ibu = 36 tahun, Bima = 8 tahun, Rara = 16 tahun`,
+      bah:[
+        `Model: r = 2b; i = 4b + 4; i + b + r = 60.`,
+        `Substitusi: (4b + 4) + b + 2b = 60 → 7b + 4 = 60 → b = 8.`,
+        `r = 16 dan i = 36. ✓ Cek: 36 + 8 + 16 = 60`
+      ]},
+    { lv:'Sulit', hint:'tulis umur ayah, ibu, anak — contoh: 38, 34, 8',
+      q:`Jumlah umur ayah, ibu, dan anak saat ini 80 tahun. Tiga tahun yang lalu, umur ayah 7 kali umur anak. Umur ibu 4 tahun lebih muda daripada umur ayah. Tentukan umur ketiganya sekarang!`,
+      key:[38,34,8], ans:`Ayah = 38 tahun, ibu = 34 tahun, anak = 8 tahun`,
+      bah:[
+        `Model: 3 tahun lalu: a − 3 = 7(k − 3) → a = 7k − 18; i = a − 4 = 7k − 22.`,
+        `Jumlah: (7k − 18) + (7k − 22) + k = 80 → 15k − 40 = 80 → k = 8.`,
+        `a = 38 dan i = 34. ✓ Cek: 3 tahun lalu ayah 35 = 7 × 5 (umur anak dulu) ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis umur kakek, ayah, Cika — contoh: 66, 36, 11',
+      q:`Jumlah umur kakek, ayah, dan Cika adalah 113 tahun. Umur Cika 1/6 kali umur kakek. Umur ayah 30 tahun lebih muda daripada umur kakek. Tentukan umur ketiganya!`,
+      key:[66,36,11], ans:`Kakek = 66 tahun, ayah = 36 tahun, Cika = 11 tahun`,
+      bah:[
+        `Model: c = k/6; a = k − 30; k + a + c = 113.`,
+        `Substitusi: k + (k − 30) + k/6 = 113 → (13/6)k = 143 → k = 143 × 6/13 = 66.`,
+        `a = 36 dan c = 66/6 = 11. ✓ Cek: 66 + 36 + 11 = 113`
+      ]}
+  ]
+},
+{
+  icon:'🔢', short:'Bilangan 3 Digit', title:'SPLTV dan Bilangan Tiga Digit',
+  intro:`Bilangan ratusan–puluhan–satuan adalah trio sempurna untuk tiga variabel: r, p, dan s! Bonus: nilai bilangan = 100r + 10p + s. Ditambah trik "angka terbalik" dengan selisih 99, soal-topik ini terasa seperti olimpiade mini.`,
+  examples:[
+    { lv:'Mudah',
+      soal:`Sebuah bilangan terdiri atas tiga angka. Jumlah ketiga angkanya 15. Angka puluhan 1 kurangnya dari angka satuan, dan angka ratusan 1 kurangnya dari angka puluhan. Tentukan bilangan tersebut!`,
+      legend:`Misalkan: r = angka ratusan, p = angka puluhan, s = angka satuan. Nilai bilangan = 100r + 10p + s.`,
+      steps:[
+        `Susun model:<br>r + p + s = 15 …(1)<br>p = s − 1 …(2)<br>r = p − 1 = s − 2 …(3)`,
+        `Substitusi (2) dan (3) ke (1):<br>(s − 2) + (s − 1) + s = 15`,
+        `Sederhanakan:<br>3s − 3 = 15 → 3s = 18 → <b>s = 6</b>`,
+        `p = 6 − 1 = <b>5</b> dan r = 6 − 2 = <b>4</b>.<br><b>Kesimpulan:</b> bilangannya <b>456</b>.<br><b>Cek:</b> 4 + 5 + 6 = 15 ✓`
+      ]},
+    { lv:'Sedang',
+      soal:`Jumlah ketiga angka suatu bilangan tiga angka adalah 14. Angka puluhan sama dengan jumlah angka ratusan dan angka satuannya. Angka satuan 1 lebihnya dari angka ratusan. Tentukan bilangan tersebut!`,
+      legend:`"Angka puluhan sama dengan jumlah ratusan dan satuan" berarti p = r + s.`,
+      steps:[
+        `Susun model:<br>r + p + s = 14 …(1)<br>p = r + s …(2)<br>s = r + 1 …(3)`,
+        `Substitusi (2) ke (1):<br>r + (r + s) + s = 14 → 2r + 2s = 14 → r + s = 7 …(4)`,
+        `Substitusi (3) ke (4): r + r + 1 = 7 → 2r = 6 → <b>r = 3</b>`,
+        `s = 4 dan p = 3 + 4 = <b>7</b>.<br><b>Kesimpulan:</b> bilangannya <b>374</b>.<br><b>Cek:</b> 3 + 7 + 4 = 14 ✓ dan 7 = 3 + 4 ✓`
+      ]},
+    { lv:'Sulit',
+      soal:`Sebuah bilangan tiga angka memiliki jumlah angka 11. Angka puluhan 2 kali angka satuannya. Jika urutan angkanya ditulis terbalik, bilangan tersebut berkurang 297. Tentukan bilangan semula!`,
+      legend:`Bilangan asli = 100r + 10p + s. Bilangan terbalik (satuan jadi ratusan) = 100s + 10p + r.`,
+      steps:[
+        `Susun model:<br>r + p + s = 11 …(1)<br>p = 2s …(2)`,
+        `Trik bilangan terbalik:<br>(100r + 10p + s) − (100s + 10p + r) = 297<br>99r − 99s = 297 → <b>r − s = 3 …(3)</b> <i>(ini trik khas 99!)</i>`,
+        `Dari (3): r = s + 3. Substitusi ke (1):<br>(s + 3) + 2s + s = 11 → 4s + 3 = 11 → <b>s = 2</b>`,
+        `p = 2(2) = <b>4</b> dan r = 2 + 3 = <b>5</b>.`,
+        `<b>Kesimpulan:</b> bilangannya <b>542</b>.<br><b>Cek:</b> terbalik = 245, selisih 542 − 245 = 297 ✓`
+      ]}
+  ],
+  latihan:[
+    { lv:'Mudah', hint:'tulis bilangannya — contoh: 135',
+      q:`Jumlah ketiga angka suatu bilangan tiga angka adalah 9. Angka puluhan 2 lebihnya dari angka ratusan. Angka satuan 2 lebihnya dari angka puluhan. Tentukan bilangan tersebut!`,
+      key:[135], ans:`135 (r = 1, p = 3, s = 5)`,
+      bah:[
+        `Model: p = r + 2; s = p + 2 = r + 4; r + p + s = 9.`,
+        `Substitusi: r + (r + 2) + (r + 4) = 9 → 3r + 6 = 9 → r = 1.`,
+        `p = 3, s = 5 → bilangan 135. ✓`
+      ]},
+    { lv:'Mudah', hint:'tulis bilangannya — contoh: 135',
+      q:`Sebuah bilangan tiga angka memiliki angka ratusan 4. Angka puluhan 2 kali angka ratusan. Jumlah ketiga angkanya 15. Tentukan bilangan tersebut!`,
+      key:[483], ans:`483 (r = 4, p = 8, s = 3)`,
+      bah:[
+        `r = 4 dan p = 2r = 8.`,
+        `r + p + s = 15 → 4 + 8 + s = 15 → s = 3.`,
+        `Bilangan = 483. ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis bilangannya — contoh: 135',
+      q:`Jumlah ketiga angka suatu bilangan adalah 15. Angka puluhan 2 lebihnya dari angka ratusan, dan angka satuan 1 lebihnya dari angka ratusan. Jika urutan angkanya ditulis terbalik, bilangan bertambah 99. Tentukan bilangan semula!`,
+      key:[465], ans:`465 (r = 4, p = 6, s = 5)`,
+      bah:[
+        `Model: p = r + 2; s = r + 1; r + p + s = 15.`,
+        `Substitusi: 3r + 3 = 15 → r = 4 → p = 6, s = 5 → 465.`,
+        `Cek terbalik: 564 − 465 = 99 ✓ (sesuai 99(s − r) = 99(1) = 99).`
+      ]},
+    { lv:'Sedang', hint:'tulis bilangannya — contoh: 135',
+      q:`Jumlah ketiga angka suatu bilangan tiga angka adalah 12. Angka puluhan 2 lebihnya dari angka ratusan. Jika urutan angkanya ditulis terbalik, bilangan berkurang 198. Tentukan bilangan tersebut!`,
+      key:[462], ans:`462 (r = 4, p = 6, s = 2)`,
+      bah:[
+        `Trik terbalik: 99(r − s) = 198 → r − s = 2.`,
+        `Model: p = r + 2; r + p + s = 12 → r + (r + 2) + (r − 2) = 12 → 3r = 12 → r = 4.`,
+        `p = 6, s = 2 → bilangan 462. ✓ Cek: terbalik 264, 462 − 264 = 198`
+      ]},
+    { lv:'Sedang', hint:'tulis bilangannya — contoh: 135',
+      q:`Angka ratusan suatu bilangan tiga angka 2 kali angka satuannya. Angka puluhan sama dengan jumlah angka ratusan dan satuannya. Jumlah ketiga angka 18. Tentukan bilangan tersebut!`,
+      key:[693], ans:`693 (r = 6, p = 9, s = 3)`,
+      bah:[
+        `Model: r = 2s; p = r + s = 3s; r + p + s = 18.`,
+        `Substitusi: 2s + 3s + s = 18 → 6s = 18 → s = 3.`,
+        `r = 6, p = 9 → bilangan 693. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis bilangannya — contoh: 135',
+      q:`Angka puluhan suatu bilangan tiga angka 3 kali angka satuannya. Jumlah ketiga angka 12. Jika ditulis terbalik, bilangan berkurang 693. Tentukan bilangan tersebut!`,
+      key:[831], ans:`831 (r = 8, p = 3, s = 1)`,
+      bah:[
+        `Trik terbalik: 99(r − s) = 693 → r − s = 7 → r = s + 7.`,
+        `Model: p = 3s; r + p + s = 12 → (s + 7) + 3s + s = 12 → 5s = 5 → s = 1.`,
+        `r = 8, p = 3 → bilangan 831. ✓ Cek: terbalik 138, 831 − 138 = 693`
+      ]},
+    { lv:'Sulit', hint:'tulis bilangannya — contoh: 135',
+      q:`Jumlah ketiga angka suatu bilangan tiga angka adalah 12. Angka puluhan 3 kali angka ratusan. Bilangan tersebut 22 kali jumlah angka-angkanya. Tentukan bilangan tersebut!`,
+      key:[264], ans:`264 (r = 2, p = 6, s = 4)`,
+      bah:[
+        `Model: p = 3r; r + p + s = 12 → s = 12 − 4r.`,
+        `Nilai bilangan = 22 × 12 = 264 → 100r + 10p + s = 264.`,
+        `Substitusi: 100r + 30r + 12 − 4r = 264 → 126r = 252 → r = 2.`,
+        `p = 6, s = 4 → bilangan 264. ✓ Cek: 2 + 6 + 4 = 12 dan 264 = 22 × 12`
+      ]},
+    { lv:'Sedang', hint:'tulis bilangannya — contoh: 135',
+      q:`Tiga angka suatu bilangan membentuk urutan naik: angka puluhan 1 lebihnya dari angka ratusan, dan angka satuan 1 lebihnya dari angka puluhan. Jumlah ketiga angka 12. Tentukan bilangan tersebut!`,
+      key:[345], ans:`345 (r = 3, p = 4, s = 5)`,
+      bah:[
+        `Model: p = r + 1; s = r + 2; r + p + s = 12.`,
+        `Substitusi: 3r + 3 = 12 → r = 3.`,
+        `p = 4, s = 5 → bilangan 345. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis bilangannya — contoh: 135',
+      q:`Selisih suatu bilangan tiga angka dengan bilangan yang angkanya ditulis terbalik adalah 792. Jumlah ketiga angkanya 18. Tentukan bilangan tersebut!`,
+      key:[981], ans:`981 (r = 9, p = 8, s = 1)`,
+      bah:[
+        `Trik terbalik: 99(r − s) = 792 → r − s = 8 → r = s + 8.`,
+        `Karena r ≤ 9, maka s ≤ 1. Jumlah: (s + 8) + p + s = 18 → p = 10 − 2s.`,
+        `Agar p angka tunggal (0–9): s = 1 → p = 8, r = 9. (s = 0 memberi p = 10, tidak sah.)`,
+        `Bilangan = 981. ✓ Cek: terbalik 189, 981 − 189 = 792 dan 9 + 8 + 1 = 18`
+      ]},
+    { lv:'Sulit', hint:'tulis bilangannya — contoh: 135',
+      q:`Jika angka ratusan dan angka satuan suatu bilangan ditukar tempatnya, bilangan bertambah 297. Angka puluhan 4 kurangnya dari jumlah angka ratusan dan satuan. Jumlah ketiga angka 14. Tentukan bilangan semula!`,
+      key:[356], ans:`356 (r = 3, p = 5, s = 6)`,
+      bah:[
+        `Tukar ratusan-satuan: bilangan baru − lama = 99(s − r) = 297 → s − r = 3 → s = r + 3.`,
+        `Model: p = (r + s) − 4 = 2r − 1; r + p + s = 14.`,
+        `Substitusi: r + (2r − 1) + (r + 3) = 14 → 4r + 2 = 14 → r = 3.`,
+        `p = 5, s = 6 → bilangan 356. ✓ Cek: 653 − 356 = 297`
+      ]}
+  ]
+},
+{
+  icon:'🍩', short:'Pecahan', title:'SPLTV dalam Bentuk Pecahan',
+  intro:`Pecahan bukan penghalang! Senjata utamanya: kalikan setiap persamaan dengan KPK penyebut, maka SPLTV berubah rapi seperti semula. Level tertingginya: variabel berada di penyebut (1/x) — taklukkan dengan trik substitusi u = 1/x!`,
+  examples:[
+    { lv:'Mudah',
+      soal:`Tentukan nilai x, y, dan z dari sistem berikut:<br>x/2 + y/2 + z/2 = 9<br>x/4 + y/4 + z/2 = 6<br>x/2 + y/4 + z/2 = 7`,
+      legend:`Langkah pertama selalu sama: hilangkan pecahan dengan mengalikan KPK penyebut.`,
+      steps:[
+        `Hilangkan pecahan:<br>(1) × 2 → x + y + z = 18<br>(2) × 4 → x + y + 2z = 24<br>(3) × 4 → 2x + y + 2z = 28`,
+        `(2) − (1): z = 6. Satu variabel langsung beres!`,
+        `(3) − (1): x + z = 10 → x = 4`,
+        `Dari (1): y = 18 − 4 − 6 = 8`,
+        `<b>Kesimpulan:</b> x = 4, y = 8, z = 6.<br><b>Cek pers. asli:</b> 4/2 + 8/2 + 6/2 = 2 + 4 + 3 = 9 ✓`
+      ]},
+    { lv:'Sedang',
+      soal:`Tentukan x, y, z dari sistem berikut:<br>x/2 + y/3 + z/4 = 16<br>x/3 + y/4 + z/2 = 19<br>x/6 + y/2 + z/3 = 16`,
+      legend:`KPK dari 2, 3, 4, dan 6 adalah 12 — kalikan setiap persamaan dengan 12.`,
+      steps:[
+        `Kalikan 12:<br>6x + 4y + 3z = 192 …(1)<br>4x + 3y + 6z = 228 …(2)<br>2x + 6y + 4z = 192 …(3)`,
+        `(2) − 2×(3): −9y − 2z = −156 → <b>9y + 2z = 156 …(4)</b>`,
+        `(1) − 3×(3): −14y − 9z = −384 → <b>14y + 9z = 384 …(5)</b>`,
+        `Dari (4): z = (156 − 9y)/2. Substitusi ke (5):<br>14y + (1.404 − 81y)/2 = 384 → 28y + 1.404 − 81y = 768 → −53y = −636 → <b>y = 12</b>`,
+        `z = (156 − 108)/2 = 24 dan x = (192 − 48 − 72)/6 = 12.<br><b>Kesimpulan:</b> x = 12, y = 12, z = 24.<br><b>Cek (1):</b> 72 + 48 + 72 = 192 ✓`
+      ]},
+    { lv:'Sulit',
+      soal:`Tentukan x, y, z (semua tidak nol) dari sistem berikut:<br>1/x + 1/y + 1/z = 1<br>2/x + 3/y + 2/z = 7/3<br>4/x − 1/y + 2/z = 2`,
+      legend:`Variabel ada di penyebut! Trik jitu: misalkan u = 1/x, v = 1/y, w = 1/z — sistem menjadi SPLTV biasa.`,
+      steps:[
+        `Substitusi u = 1/x, v = 1/y, w = 1/z:<br>u + v + w = 1 …(1)<br>2u + 3v + 2w = 7/3 …(2)<br>4u − v + 2w = 2 …(3)`,
+        `(2) − 2×(1): v = 7/3 − 2 = <b>1/3</b>`,
+        `(3) − 4×(1): −5v − 2w = −2 → −5/3 − 2w = −2 → 2w = 1/3 → <b>w = 1/6</b>`,
+        `Dari (1): u = 1 − 1/3 − 1/6 = <b>1/2</b>`,
+        `Kembalikan ke variabel asli:<br>x = 1/u = <b>2</b>, y = 1/v = <b>3</b>, z = 1/w = <b>6</b>.<br><b>Cek:</b> 1/2 + 1/3 + 1/6 = 1 ✓`
+      ]}
+  ],
+  latihan:[
+    { lv:'Mudah', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Tentukan x, y, z dari:<br>x/2 + y/3 + z/6 = 11<br>x/3 + y/2 + z/6 = 12<br>x/6 + y/6 + z/2 = 15`,
+      key:[6,12,24], ans:`x = 6, y = 12, z = 24`,
+      bah:[
+        `Kalikan 6: 3x + 2y + z = 66 …(1); 2x + 3y + z = 72 …(2); x + y + 3z = 90 …(3)`,
+        `(1) − (2): x − y = −6 → x = y − 6.`,
+        `(1) × 3 − (3): 8x + 5y = 108. Substitusi: 8(y − 6) + 5y = 108 → 13y = 156 → y = 12.`,
+        `x = 6 dan z = (90 − 18)/3 = 24. ✓ Cek (1): 18 + 24 + 24 = 66`
+      ]},
+    { lv:'Mudah', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Tentukan x, y, z dari:<br>x/3 + y/3 + z/3 = 6<br>x/6 + y/3 + z/6 = 4<br>x/2 + y/6 + z/6 = 4`,
+      key:[3,6,9], ans:`x = 3, y = 6, z = 9`,
+      bah:[
+        `Kalikan 3, 6, 6: x + y + z = 18 …(1); x + 2y + z = 24 …(2); 3x + y + z = 24 …(3)`,
+        `(2) − (1): y = 6. (3) − (1): 2x = 6 → x = 3.`,
+        `z = 18 − 3 − 6 = 9. ✓ Cek pers. asli: 3/3 + 6/3 + 9/3 = 1 + 2 + 3 = 6`
+      ]},
+    { lv:'Sedang', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Tentukan x, y, z dari:<br>x/2 + y/3 + z/4 = 23<br>x/3 + y/4 + z/2 = 28<br>x/4 + y/2 + z/3 = 27`,
+      key:[12,24,36], ans:`x = 12, y = 24, z = 36`,
+      bah:[
+        `Kalikan 12: 6x + 4y + 3z = 276 …(1); 4x + 3y + 6z = 336 …(2); 3x + 6y + 4z = 324 …(3)`,
+        `Jumlahkan semua: 13(x + y + z) = 936 → x + y + z = 72 …(4)`,
+        `(1) − 3×(4): 3x + y = 60 …(5). (2) − 6×(4): −2x − 3y = −96 → 2x + 3y = 96 …(6)`,
+        `Dari (5): y = 60 − 3x. Substitusi ke (6): 2x + 180 − 9x = 96 → x = 12, y = 24, z = 36. ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Tentukan x, y, z dari:<br>x/2 − y/3 + z/6 = 2<br>x/3 + y/2 − z/6 = 4<br>x/6 + y/6 + z/3 = 4`,
+      key:[6,6,6], ans:`x = 6, y = 6, z = 6`,
+      bah:[
+        `Kalikan 6: 3x − 2y + z = 12 …(1); 2x + 3y − z = 24 …(2); x + y + 2z = 24 …(3)`,
+        `(1) + (2): 5x + y = 36 …(4)`,
+        `(2) × 2 + (3): 5x + 7y = 72 …(5)`,
+        `(5) − (4): 6y = 36 → y = 6 → x = 6 → z = (24 − 6 − 6)/2 = 6. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Dengan trik substitusi u = 1/x, v = 1/y, w = 1/z, tentukan x, y, z dari:<br>1/x + 1/y + 1/z = 1<br>2/x + 1/y + 3/z = 7/3<br>1/x − 1/y + 2/z = 7/6`,
+      key:[3,6,2], ans:`x = 3, y = 6, z = 2`,
+      bah:[
+        `Sistem baru: u + v + w = 1 …(1); 2u + v + 3w = 7/3 …(2); u − v + 2w = 7/6 …(3)`,
+        `(2) − (1): u + 2w = 4/3 …(4). (1) + (3): 2u + 3w = 13/6 …(5)`,
+        `Dari (4): u = 4/3 − 2w. Substitusi ke (5): 8/3 − 4w + 3w = 13/6 → w = 1/2.`,
+        `u = 1/3 dan v = 1 − 1/3 − 1/2 = 1/6. Kembalikan: x = 3, y = 6, z = 2. ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Tentukan x, y, z dari:<br>x/5 + y/2 + z/10 = 15<br>x/2 + y/5 + z/10 = 12<br>x/10 + y/10 + z/2 = 18`,
+      key:[10,20,30], ans:`x = 10, y = 20, z = 30`,
+      bah:[
+        `Kalikan 10: 2x + 5y + z = 150 …(1); 5x + 2y + z = 120 …(2); x + y + 5z = 180 …(3)`,
+        `(1) − (2): −3x + 3y = 30 → y = x + 10.`,
+        `(1): 2x + 5(x + 10) + z = 150 → 7x + z = 100 → z = 100 − 7x.`,
+        `Substitusi ke (3): x + (x + 10) + 5(100 − 7x) = 180 → −33x = −330 → x = 10. Maka y = 20, z = 30. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Perbandingan x : y : z = 2 : 3 : 4 dan x + y + z = 45. Nyatakan sebagai SPLTV (3x = 2y; 4y = 3z; x + y + z = 45), lalu tentukan x, y, z!`,
+      key:[10,15,20], ans:`x = 10, y = 15, z = 20`,
+      bah:[
+        `Dari x/2 = y/3: y = (3/2)x. Dari y/3 = z/4: z = (4/3)y = 2x.`,
+        `Substitusi ke jumlah: x + (3/2)x + 2x = 45 → (9/2)x = 45 → x = 10.`,
+        `y = 15 dan z = 20. ✓ Cek: 10 : 15 : 20 = 2 : 3 : 4 ✓`
+      ]},
+    { lv:'Sedang', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Tentukan x, y, z dari:<br>x/2 + y/3 − z/6 = 5<br>x/3 − y/6 + z/2 = 6<br>x/6 + y/2 + z/3 = 11`,
+      key:[6,12,12], ans:`x = 6, y = 12, z = 12`,
+      bah:[
+        `Kalikan 6: 3x + 2y − z = 30 …(1); 2x − y + 3z = 36 …(2); x + 3y + 2z = 66 …(3)`,
+        `Dari (1): z = 3x + 2y − 30.`,
+        `Substitusi ke (2): 11x + 5y = 126 …(4). Substitusi ke (3): 7x + 7y = 126 → x + y = 18 …(5)`,
+        `Dari (4) dan (5): 11x + 5(18 − x) = 126 → 6x = 36 → x = 6, y = 12, z = 12. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Ubah dulu desimal menjadi pecahan, lalu tentukan x, y, z:<br>0,5x + 0,25y + 0,125z = 10<br>0,25x + 0,5y + 0,25z = 14<br>0,125x + 0,25y + 0,5z = 13`,
+      key:[8,16,16], ans:`x = 8, y = 16, z = 16`,
+      bah:[
+        `0,5 = 1/2, 0,25 = 1/4, 0,125 = 1/8. Kalikan pers.1 × 8, pers.2 × 4, pers.3 × 8:`,
+        `4x + 2y + z = 80 …(1); x + 2y + z = 56 …(2); x + 2y + 4z = 104 …(3)`,
+        `(1) − (2): 3x = 24 → x = 8. (3) − (2): 3z = 48 → z = 16.`,
+        `Dari (2): 8 + 2y + 16 = 56 → y = 16. ✓`
+      ]},
+    { lv:'Sulit', hint:'tulis x, y, z — contoh: 2, 3, 6',
+      q:`Tentukan x, y, z dari:<br>x/2 + y/4 + z/4 = 12<br>x/4 + y/2 + z/8 = 9<br>x/8 + y/4 + z/2 = 8`,
+      key:[16,8,8], ans:`x = 16, y = 8, z = 8`,
+      bah:[
+        `Kalikan 4, 8, 8: 2x + y + z = 48 …(1); 2x + 4y + z = 72 …(2); x + 2y + 4z = 64 …(3)`,
+        `(2) − (1): 3y = 24 → y = 8.`,
+        `(1): 2x + z = 40 → z = 40 − 2x. Substitusi ke (3): x + 16 + 160 − 8x = 64 → 7x = 112 → x = 16.`,
+        `z = 8. ✓ Cek pers. asli: 8 + 2 + 2 = 12 ✓`
+      ]}
+  ]
+}
+];
+
+const GAME_URL = 'https://nandarizky0407-bot.github.io/Aljabar/ulartanggaaljabar8.html';
+
+/* ================= HELPERS & STATE ================= */
+const $  = (s, el=document) => el.querySelector(s);
+const $$ = (s, el=document) => Array.from(el.querySelectorAll(s));
+
+let names = ['','','',''];
+let scores = {};
+let refText = ['',''];
+try{
+  const saved = JSON.parse(localStorage.getItem('spltv_state') || '{}');
+  if(Array.isArray(saved.names) && saved.names.length===4) names = saved.names;
+  if(saved.scores && typeof saved.scores==='object') scores = saved.scores;
+  if(Array.isArray(saved.refText)) refText = saved.refText;
+}catch(e){}
+function persist(){
+  try{ localStorage.setItem('spltv_state', JSON.stringify({names, scores, refText})); }catch(e){}
+}
+function studentList(){
+  return names.map((n,i)=> (n && n.trim()) ? n.trim() : ('Siswa '+(i+1)));
+}
+let order = studentList();
+
+function showToast(msg){
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(()=> t.classList.remove('show'), 2800);
+}
+function beep(){
+  try{
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    [0,0.22,0.44].forEach(off=>{
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type='sine'; o.frequency.value = 880;
+      const t0 = ctx.currentTime + off;
+      g.gain.setValueAtTime(0.001, t0);
+      g.gain.exponentialRampToValueAtTime(0.18, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.2);
+      o.start(t0); o.stop(t0 + 0.22);
+    });
+  }catch(e){}
+}
+
+/* ================= BUILD SLIDE TOPIK ================= */
+const deck = $('#deck');
+const gameSlide = $('#s-game') || $$('.slide', deck).find(s=>s.dataset.title && s.dataset.title.indexOf('Game')===0);
+
+function slideEl(cls, inner){
+  const s = document.createElement('section');
+  s.className = 'slide' + (cls ? ' '+cls : '');
+  s.innerHTML = '<div class="slide-inner">' + inner + '</div>';
+  return s;
+}
+
+const LEVEL_EMOJI = {Mudah:'🟢', Sedang:'🟡', Sulit:'🔴'};
+const LH = {}; // state widget latihan per topik
+
+function mkDivider(t, ti){
+  const s = slideEl('divider', `
+    <div class="div-emoji">${t.icon}</div>
+    <div class="div-kicker">TOPIK ${ti+1} DARI 5</div>
+    <h2 class="div-title">${t.title}</h2>
+    <p class="div-text">${t.intro}</p>
+    <div class="div-chips">
+      <span class="chip chip-dark">🟢 Contoh Mudah</span>
+      <span class="chip chip-dark">🟡 Contoh Sedang</span>
+      <span class="chip chip-dark">🔴 Contoh Sulit</span>
+      <span class="chip chip-dark">📝 10 Latihan Bergilir</span>
+    </div>
+    <button class="btn btn-light js-start">🚀 Mulai Contoh Soal</button>
+  `);
+  s.dataset.group = 'Topik ' + (ti+1) + ' — ' + t.short;
+  s.dataset.topic = ti;
+  s.dataset.title = 'Topik ' + (ti+1) + ': ' + t.short;
+  $('.js-start', s).addEventListener('click', ()=> goTo(slides.indexOf(s)+1));
+  return s;
+}
+
+function mkContoh(t, ti, ex, ei){
+  const s = slideEl('', `
+    <div class="contoh-head">
+      <span class="pill">TOPIK ${ti+1} &bull; ${t.short}</span>
+      <span class="badge-level ${ex.lv.toLowerCase()}">${LEVEL_EMOJI[ex.lv]} ${ex.lv.toUpperCase()}</span>
+      <span class="muted small" style="font-weight:700">Contoh ${ei+1} dari 3</span>
+    </div>
+    <h2 class="contoh-title">${t.icon} ${t.title}</h2>
+    <div class="soal-card">
+      <div class="soal-label">📋 SOAL</div>
+      <p>${ex.soal}</p>
+      ${ex.legend ? '<div class="legend">💡 ' + ex.legend + '</div>' : ''}
+    </div>
+    <div class="steps-label">🪜 Langkah Penyelesaian <span class="step-count">0/${ex.steps.length}</span></div>
+    <div class="steps">
+      ${ex.steps.map((st,i)=>'<div class="step"><span class="step-no">'+(i+1)+'</span><div>'+st+'</div></div>').join('')}
+    </div>
+    <div class="step-controls">
+      <button class="btn btn-primary js-nextstep">➡️ Tampilkan Langkah Berikutnya</button>
+      <button class="btn btn-ghost js-allsteps">Tampilkan Semua</button>
+      <button class="btn btn-ghost js-hidesteps">Sembunyikan</button>
+    </div>
+  `);
+  s.dataset.group = 'Topik ' + (ti+1) + ' — ' + t.short;
+  s.dataset.title = 'Topik ' + (ti+1) + ' • Contoh ' + (ei+1) + ' (' + ex.lv + ')';
+  let shown = 0;
+  const stepEls = $$('.step', s);
+  const countEl = $('.step-count', s);
+  const nextBtn = $('.js-nextstep', s);
+  function upd(){
+    countEl.textContent = shown + '/' + ex.steps.length;
+    nextBtn.disabled = shown >= ex.steps.length;
+  }
+  nextBtn.addEventListener('click', ()=>{ if(shown < ex.steps.length){ stepEls[shown].classList.add('show'); shown++; upd(); } });
+  $('.js-allsteps', s).addEventListener('click', ()=>{ stepEls.forEach(st=>st.classList.add('show')); shown = ex.steps.length; upd(); });
+  $('.js-hidesteps', s).addEventListener('click', ()=>{ stepEls.forEach(st=>st.classList.remove('show')); shown = 0; upd(); });
+  return s;
+}
+
+function mkLatihan(t, ti){
+  const s = slideEl('', `
+    <div class="contoh-head">
+      <span class="pill">TOPIK ${ti+1} &bull; ${t.short}</span>
+      <span class="badge-level sedang">📝 LATIHAN SOAL</span>
+      <span class="muted small" style="font-weight:700">Dikerjakan siswa secara bergilir</span>
+    </div>
+    <h2 class="contoh-title">📝 Latihan: ${t.title}</h2>
+    <div class="lh-flow">
+      <b>Alur:</b> 1️⃣ Acak urutan siswa → 2️⃣ Baca &amp; pahami (timer 1 menit) → 3️⃣ Jelaskan langkahmu kepada tutor → 4️⃣ Tulis jawaban &amp; <b>Cek Jawaban</b> → 5️⃣ Muncul pembahasan → lanjut soal berikutnya
+    </div>
+    <div class="lh-grid">
+      <div class="lh-main">
+        <div class="student-bar">
+          <button class="btn btn-amber js-shuffle">🎲 Acak Urutan Siswa</button>
+          <div class="order-chips js-order"></div>
+          <div class="turn-chip">Giliran:<b class="js-turn">—</b></div>
+        </div>
+        <div class="q-card">
+          <div class="q-top">
+            <span class="badge-level js-lv">Mudah</span>
+            <span class="qnum js-qnum">Soal 1 / 10</span>
+          </div>
+          <div class="qtext js-qtext"></div>
+          <div class="q-dots js-qdots"></div>
+        </div>
+        <div class="timer-row">
+          <div class="ring-wrap js-ringwrap">
+            <svg viewBox="0 0 72 72"><circle class="ring-bg" cx="36" cy="36" r="30"/><circle class="ring-fg js-ring" cx="36" cy="36" r="30"/></svg>
+            <span class="js-timetext">60s</span>
+          </div>
+          <div class="timer-btns">
+            <button class="btn btn-primary js-starttimer">⏱️ Mulai Timer 1 Menit</button>
+            <button class="btn btn-ghost js-skip hidden">⏭️ Lewati Timer</button>
+            <button class="btn btn-ghost js-restart hidden">🔄 Ulangi Timer</button>
+          </div>
+          <div class="timer-status js-tstatus">Baca &amp; pahami soal — klik tombol "Mulai Timer 1 Menit"!</div>
+        </div>
+        <div class="answer-row">
+          <input class="ans-input js-ans" placeholder="✍️ Tulis jawabanmu di sini…" autocomplete="off">
+          <button class="btn btn-green js-check">✅ Cek Jawaban</button>
+        </div>
+        <div class="hint-line">💡 Format jawaban: <span class="js-hint"></span></div>
+        <div class="verdict js-verdict hidden"></div>
+        <div class="bah-card js-bah hidden"></div>
+        <div class="lh-nav">
+          <button class="btn btn-ghost js-prevq">‹ Sebelumnya</button>
+          <button class="btn btn-primary js-nextq">Soal Berikutnya →</button>
+        </div>
+      </div>
+      <aside class="lh-side">
+        <div class="score-card">
+          <div class="score-title">🏆 Papan Skor</div>
+          <div class="js-scores"></div>
+        </div>
+        <div class="score-card tip">💡 <b>Aturan main:</b> urutan acak dipakai bergilir di setiap soal. Jelaskan langkah penyelesaianmu kepada tutor dengan runtut. Setiap jawaban benar = <b>+1 poin</b> untuk siswa yang mendapat giliran!</div>
+      </aside>
+    </div>
+    <div class="done-panel js-done hidden"></div>
+  `);
+  s.dataset.group = 'Topik ' + (ti+1) + ' — ' + t.short;
+  s.dataset.title = 'Topik ' + (ti+1) + ' • 10 Latihan (' + t.short + ')';
+
+  const el = {
+    order:  $('.js-order', s),
+    turn:   $('.js-turn', s),
+    lv:     $('.js-lv', s),
+    qnum:   $('.js-qnum', s),
+    qtext:  $('.js-qtext', s),
+    qdots:  $('.js-qdots', s),
+    ring:   $('.js-ring', s),
+    ringwrap: $('.js-ringwrap', s),
+    timetext: $('.js-timetext', s),
+    startT: $('.js-starttimer', s),
+    skip:   $('.js-skip', s),
+    restart:$('.js-restart', s),
+    tstatus:$('.js-tstatus', s),
+    ans:    $('.js-ans', s),
+    check:  $('.js-check', s),
+    hint:   $('.js-hint', s),
+    verdict:$('.js-verdict', s),
+    bah:    $('.js-bah', s),
+    prevq:  $('.js-prevq', s),
+    nextq:  $('.js-nextq', s),
+    scores: $('.js-scores', s),
+    done:   $('.js-done', s),
+    shuffle:$('.js-shuffle', s)
+  };
+  const st = LH[ti] = { qi:0, left:60, timer:null, ready:false, checked:false, correct:0, done:Array(10).fill(false), el };
+  const RING_C = 2 * Math.PI * 30;
+  el.ring.style.strokeDasharray = RING_C;
+  el.ring.style.strokeDashoffset = 0;
+
+  function turnName(){ return order.length ? order[st.qi % order.length] : 'Siswa'; }
+  function status(txt, go){
+    el.tstatus.innerHTML = txt;
+    el.tstatus.classList.toggle('go', !!go);
+  }
+  function resetTimer(){
+    clearInterval(st.timer);
+    st.left = 60; st.ready = false;
+    el.ring.style.strokeDashoffset = 0;
+    el.timetext.textContent = '60s';
+    el.ringwrap.classList.remove('danger');
+    el.startT.classList.remove('hidden');
+    el.skip.classList.add('hidden');
+    el.restart.classList.add('hidden');
+    el.check.classList.remove('pulse');
+    status('Baca &amp; pahami soal — klik tombol "Mulai Timer 1 Menit"!');
+  }
+  function startTimer(){
+    clearInterval(st.timer);
+    st.ready = false; st.left = 60;
+    el.startT.classList.add('hidden');
+    el.skip.classList.remove('hidden');
+    el.restart.classList.add('hidden');
+    status('👀 Baca &amp; pahami soal… bayangkan alur penyelesaian di kepalamu.');
+    st.timer = setInterval(()=>{
+      st.left--;
+      el.timetext.textContent = st.left + 's';
+      el.ring.style.strokeDashoffset = RING_C * (1 - st.left/60);
+      if(st.left <= 10) el.ringwrap.classList.add('danger');
+      if(st.left <= 0) finishTimer(false);
+    }, 1000);
+  }
+  function finishTimer(skipped){
+    clearInterval(st.timer);
+    st.ready = true;
+    el.skip.classList.add('hidden');
+    el.restart.classList.remove('hidden');
+    el.startT.classList.add('hidden');
+    el.check.classList.add('pulse');
+    if(skipped){
+      status('⏭️ Timer dilewati. Sekarang <b>jelaskan langkah penyelesaianmu kepada tutor</b>, temukan jawabannya, lalu klik ✅ Cek Jawaban!', true);
+    }else{
+      beep();
+      status('⏰ <b>Waktu habis!</b> Sekarang jelaskan langkah penyelesaianmu kepada tutor, temukan jawabannya, lalu klik ✅ Cek Jawaban!', true);
+    }
+  }
+  function renderQDots(){
+    el.qdots.innerHTML = '';
+    for(let i=0;i<10;i++){
+      const d = document.createElement('span');
+      d.className = 'qd' + (i===st.qi ? ' cur' : '') + (st.done[i] ? ' done' : '');
+      d.textContent = st.done[i] ? '✓' : (i+1);
+      d.addEventListener('click', ()=>{ if(i !== st.qi){ st.qi = i; renderQ(); } });
+      el.qdots.appendChild(d);
+    }
+  }
+  function renderQ(){
+    const q = t.latihan[st.qi];
+    el.lv.textContent = LEVEL_EMOJI[q.lv] + ' ' + q.lv.toUpperCase();
+    el.lv.classList.remove('mudah','sedang','sulit');
+    el.lv.classList.add(q.lv.toLowerCase());
+    el.qnum.textContent = 'Soal ' + (st.qi+1) + ' / 10';
+    el.qtext.innerHTML = q.q;
+    el.hint.textContent = q.hint;
+    el.ans.value = '';
+    el.check.disabled = false;
+    el.verdict.classList.add('hidden');
+    el.bah.classList.add('hidden');
+    el.nextq.textContent = st.qi === 9 ? 'Lihat Hasil 🎉' : 'Soal Berikutnya →';
+    el.nextq.classList.remove('pulse');
+    el.prevq.disabled = st.qi === 0;
+    st.checked = false;
+    updateTurn();
+    renderQDots();
+    resetTimer();
+    el.done.classList.add('hidden');
+  }
+  function updateTurn(){
+    el.turn.textContent = order.length ? turnName() : 'acak dulu!';
+    renderOrderChips();
+  }
+  el.startT.addEventListener('click', startTimer);
+  el.skip.addEventListener('click', ()=> finishTimer(true));
+  el.restart.addEventListener('click', startTimer);
+  el.shuffle.addEventListener('click', ()=> doShuffle(true));
+
+  el.check.addEventListener('click', ()=>{
+    if(!st.ready){
+      showToast('⏳ Gunakan 1 menit ini untuk membaca & memahami soal (atau klik Lewati Timer).');
+      return;
+    }
+    if(st.checked) return;
+    const q = t.latihan[st.qi];
+    const raw = el.ans.value.trim();
+    if(!raw){ showToast('✍️ Tulis jawabanmu terlebih dahulu, ya!'); return; }
+    st.checked = true;
+    el.check.disabled = true;
+    el.check.classList.remove('pulse');
+    st.done[st.qi] = true;
+    const ok = sameSet(extractNums(raw), q.key);
+    if(ok){
+      st.correct++;
+      const n = turnName();
+      scores[n] = (scores[n] || 0) + 1;
+      persist(); renderScoresAll();
+    }
+    el.verdict.classList.remove('ok','no');
+    el.verdict.classList.add(ok ? 'ok' : 'no');
+    el.verdict.innerHTML = ok
+      ? '🎉 <b>Benar! Kerja bagus, ' + turnName() + '!</b> +1 poin untukmu.'
+      : '🤔 <b>Belum tepat.</b> Jawabanmu: <span class="mono">' + escapeHtml(raw) + '</span> — bandingkan dengan pembahasan di bawah, ya. Tidak apa-apa, belajar dari kesalahan itu keren!';
+    el.verdict.classList.remove('hidden');
+    el.bah.innerHTML = '<div class="bah-title">📖 Pembahasan Soal ' + (st.qi+1) + ' (' + q.lv + ')</div>'
+      + '<div class="bah-ans">✔️ Jawaban: ' + q.ans + '</div>'
+      + '<ul class="bah-list">' + q.bah.map(b=>'<li>'+b+'</li>').join('') + '</ul>';
+    el.bah.classList.remove('hidden');
+    renderQDots();
+    el.nextq.textContent = st.qi === 9 ? 'Lihat Hasil 🎉' : 'Soal Berikutnya →';
+    el.nextq.classList.add('pulse');
+  });
+
+  el.nextq.addEventListener('click', ()=>{
+    if(st.qi === 9){ showDone(); return; }
+    st.qi++; renderQ();
+  });
+  el.prevq.addEventListener('click', ()=>{ if(st.qi > 0){ st.qi--; renderQ(); } });
+
+  function showDone(){
+    const em = st.correct >= 9 ? '🏆' : st.correct >= 6 ? '🌟' : '💪';
+    const msg = st.correct >= 9 ? 'Luar biasa! Hampir sempurna!' : st.correct >= 6 ? 'Hebat! Terus asah kemampuanmu!' : 'Semangat! Klik Ulangi Latihan untuk menaklukkan lagi.';
+    let rows = '';
+    const list = studentList().slice().sort((a,b)=>(scores[b]||0)-(scores[a]||0));
+    list.forEach((n,i)=>{
+      const medal = ['🥇','🥈','🥉'][i] || '🎖️';
+      rows += '<div class="score-row"><span class="medal">'+medal+'</span><span>'+escapeHtml(n)+'</span><span class="sc">'+(scores[n]||0)+'</span></div>';
+    });
+    el.done.innerHTML = '<div class="dp-emoji">'+em+'</div><h3>Latihan Topik '+(ti+1)+' Selesai!</h3>'
+      + '<p>Jawaban benar: <b>'+st.correct+' dari 10</b>. '+msg+'<br>Berikut papan skor terkini seluruh kelas:</p>'
+      + '<div style="max-width:360px;margin:0 auto 18px;text-align:left;background:#fff;border-radius:16px;padding:10px;box-shadow:var(--shadow)">'+rows+'</div>'
+      + '<div class="dp-btns"><button class="btn btn-amber js-retry">🔄 Ulangi Latihan</button>'
+      + '<a class="btn btn-primary" href="'+GAME_URL+'" target="_blank" rel="noopener">🐍 Mainkan Ular Tangga</a>'
+      + '<button class="btn btn-ghost js-nextslide">Lanjut Slide Berikutnya →</button></div>';
+    el.done.classList.remove('hidden');
+    el.done.scrollIntoView({behavior:'smooth', block:'nearest'});
+    $('.js-retry', el.done).addEventListener('click', ()=>{
+      st.qi = 0; st.correct = 0; st.done = Array(10).fill(false);
+      renderQ();
+      showToast('🔄 Latihan diulang dari soal 1. Semangat!');
+    });
+    $('.js-nextslide', el.done).addEventListener('click', ()=> goTo(slides.indexOf(s)+1));
+  }
+
+  renderQ();
+  return s;
+}
+
+/* ================= PERAKITAN SLIDE ================= */
+TOPICS.forEach((t, ti)=>{
+  deck.insertBefore(mkDivider(t, ti), gameSlide);
+  t.examples.forEach((ex, ei)=> deck.insertBefore(mkContoh(t, ti, ex, ei), gameSlide));
+  deck.insertBefore(mkLatihan(t, ti), gameSlide);
+});
+
+let slides = $$('#deck .slide');
+
+/* ================= UTILITAS JAWABAN ================= */
+function escapeHtml(str){
+  return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function extractNums(str){
+  let s = String(str).replace(/−/g,'-').replace(/-\s+(?=\d)/g,'-');
+  const m = s.match(/-?\d+(?:[.,]\d+)?/g) || [];
+  return m.map(tok=>{
+    tok = tok.replace(',', '.');
+    if(/^-?\d{1,3}(\.\d{3})+$/.test(tok)) tok = tok.replace(/\./g,'');
+    return parseFloat(tok);
+  });
+}
+function sameSet(a, b){
+  if(a.length !== b.length) return false;
+  const x = a.slice().sort((p,q)=>p-q), y = b.slice().sort((p,q)=>p-q);
+  return x.every((v,i)=> Math.abs(v - y[i]) < 1e-6);
+}
+
+/* ================= ACak & SKOR ================= */
+function doShuffle(announce){
+  order = studentList().slice();
+  for(let i = order.length-1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i+1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  renderOrderChipsAll();
+  updateTurnsAll();
+  if(announce) showToast('🎲 Urutan giliran: ' + order.join(' → '));
+}
+function renderOrderChips(){
+  LH && Object.keys(LH).forEach(k=>{
+    const box = LH[k].el.order;
+    box.innerHTML = order.map((n,i)=>'<span class="chip">'+(i+1)+'. '+escapeHtml(n)+'</span>').join('');
+  });
+}
+function renderOrderChipsAll(){ renderOrderChips(); }
+function updateTurnsAll(){
+  Object.keys(LH).forEach(k=>{
+    const st = LH[k];
+    st.el.turn.textContent = order.length ? order[st.qi % order.length] : 'acak dulu!';
+  });
+}
+function renderScoresAll(){
+  const list = studentList().slice().sort((a,b)=>(scores[b]||0)-(scores[a]||0));
+  Object.keys(LH).forEach(k=>{
+    const box = LH[k].el.scores;
+    box.innerHTML = list.map((n,i)=>{
+      const medal = ['🥇','🥈','🥉'][i] || '🎖️';
+      return '<div class="score-row"><span class="medal">'+medal+'</span><span>'+escapeHtml(n)+'</span><span class="sc">'+(scores[n]||0)+'</span></div>';
+    }).join('');
+  });
+  const tn = $('#thanksNames');
+  if(tn) tn.innerHTML = studentList().map(n=>'<span class="chip chip-dark">'+escapeHtml(n)+'</span>').join('');
+}
+
+/* ================= NAVIGASI ================= */
+let cur = 0;
+function goTo(i){
+  cur = Math.max(0, Math.min(slides.length-1, i));
+  slides.forEach((s,idx)=> s.classList.toggle('active', idx===cur));
+  const s = slides[cur];
+  if(s) s.scrollTop = 0;
+  $('#slideCounter').textContent = (cur+1) + ' / ' + slides.length;
+  $('#progressBar').style.width = ((cur+1)/slides.length*100) + '%';
+  $$('#dots .dot').forEach((d,idx)=> d.classList.toggle('on', idx===cur));
+  $('#prevBtn').disabled = cur===0;
+  $('#nextBtn').disabled = cur===slides.length-1;
+  renderMenuCur();
+}
+function next(){ if(cur < slides.length-1) goTo(cur+1); }
+function prev(){ if(cur > 0) goTo(cur-1); }
+
+$('#nextBtn').addEventListener('click', next);
+$('#prevBtn').addEventListener('click', prev);
+document.addEventListener('keydown', e=>{
+  const tag = (e.target.tagName || '').toUpperCase();
+  if(tag==='INPUT' || tag==='TEXTAREA') return;
+  if(e.key==='ArrowRight' || e.key==='PageDown'){ e.preventDefault(); next(); }
+  if(e.key==='ArrowLeft'  || e.key==='PageUp'){ e.preventDefault(); prev(); }
+  if(e.key===' '){ e.preventDefault(); next(); }
+  if(e.key==='Home'){ e.preventDefault(); goTo(0); }
+  if(e.key==='End'){ e.preventDefault(); goTo(slides.length-1); }
+});
+
+/* dots */
+const dotsBox = $('#dots');
+slides.forEach((s,i)=>{
+  const d = document.createElement('span');
+  d.className = 'dot'; d.title = (i+1)+'. '+(s.dataset.title||'');
+  d.addEventListener('click', ()=> goTo(i));
+  dotsBox.appendChild(d);
+});
+
+/* menu */
+const menu = $('#menu'), backdrop = $('#menuBackdrop');
+function openMenu(){ menu.classList.add('open'); backdrop.classList.add('open'); }
+function closeMenu(){ menu.classList.remove('open'); backdrop.classList.remove('open'); }
+$('#menuBtn').addEventListener('click', openMenu);
+$('#menuClose').addEventListener('click', closeMenu);
+backdrop.addEventListener('click', closeMenu);
+function renderMenu(){
+  const body = $('#menuBody');
+  body.innerHTML = '';
+  let lastGroup = null;
+  slides.forEach((s,i)=>{
+    const g = s.dataset.group || 'Lainnya';
+    if(g !== lastGroup){
+      const h = document.createElement('div');
+      h.className = 'menu-group'; h.textContent = g;
+      body.appendChild(h); lastGroup = g;
+    }
+    const b = document.createElement('button');
+    b.className = 'menu-item';
+    b.textContent = (i+1)+'. '+(s.dataset.title || 'Slide '+(i+1));
+    b.addEventListener('click', ()=>{ goTo(i); closeMenu(); });
+    body.appendChild(b);
+  });
+}
+function renderMenuCur(){
+  $$('#menuBody .menu-item').forEach((b,i)=> b.classList.toggle('cur', i===cur));
+}
+
+/* ================= PETA: LOMPAT TOPIK & GAME ================= */
+$$('.js-goto-topic').forEach(card=>{
+  card.addEventListener('click', ()=>{
+    const ti = parseInt(card.dataset.topic, 10);
+    const target = slides.find(s=> s.dataset.topic === String(ti));
+    if(target) goTo(slides.indexOf(target));
+  });
+});
+const gameCard = $('.js-goto-game');
+if(gameCard) gameCard.addEventListener('click', ()=> goTo(slides.indexOf(gameSlide)));
+
+/* ================= COVER ================= */
+['name1','name2','name3','name4'].forEach((id,i)=>{
+  const inp = document.getElementById(id);
+  inp.value = names[i] || '';
+  inp.addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); saveNames(); } });
+});
+function saveNames(){
+  names = ['name1','name2','name3','name4'].map(id=> document.getElementById(id).value);
+  persist();
+  order = studentList();
+  renderOrderChipsAll(); updateTurnsAll(); renderScoresAll();
+  const g = $('#greetMsg');
+  g.textContent = '👋 Selamat datang, ' + order.join(', ') + '! Perjalanan SPLTV dimulai — tekan Berikutnya →';
+  showToast('✅ Nama tersimpan! Urutan awal: ' + order.join(' → '));
+}
+$('#saveNames').addEventListener('click', saveNames);
+
+/* ================= REFLEKSI ================= */
+$$('#ref1,#ref2').forEach((ta,i)=>{
+  ta.value = refText[i] || '';
+  ta.addEventListener('input', ()=>{ refText[i] = ta.value; });
+});
+$('#saveRef').addEventListener('click', ()=>{
+  refText[0] = $('#ref1').value; refText[1] = $('#ref2').value;
+  persist();
+  showToast('💾 Refleksimu tersimpan. Terima kasih sudah jujur pada diri sendiri! 🌱');
+});
+$$('.emoji-btn').forEach(b=>{
+  b.addEventListener('click', ()=>{
+    $$('.emoji-btn').forEach(x=> x.classList.remove('sel'));
+    b.classList.add('sel');
+    $('#refMsg').textContent = b.dataset.msg;
+  });
+});
+
+/* ================= INIT ================= */
+renderMenu();
+renderScoresAll();
+renderOrderChipsAll();
+updateTurnsAll();
+goTo(0);
+</script>
+</body>
+</html>

@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Persamaan Linear Satu Variabel — Presentasi Interaktif</title>
+<style>
+:root{
+  --pri:#4f46e5; --pri2:#7c3aed; --acc:#f59e0b; --ok:#10b981; --bad:#ef4444;
+  --ink:#0f172a; --mut:#64748b; --line:#e2e8f0;
+  --bg1:#eef2ff; --bg2:#f8fafc; --bg3:#fdf4ff;
+  --rad:18px; --shadow:0 10px 30px rgba(2,6,23,.08);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{
+  font-family:'Segoe UI',system-ui,-apple-system,Roboto,'Helvetica Neue',Arial,sans-serif;
+  color:var(--ink);background:linear-gradient(160deg,var(--bg1) 0%,var(--bg2) 45%,var(--bg3) 100%);
+  line-height:1.6;-webkit-text-size-adjust:100%;
+}
+.app{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+
+/* ===== progress + topbar ===== */
+.progress{position:fixed;top:0;left:0;right:0;height:4px;background:#e0e7ff;z-index:50}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pri),var(--pri2),var(--acc));transition:width .3s}
+.topbar{display:flex;align-items:center;gap:10px;padding:10px clamp(12px,3vw,24px);background:rgba(255,255,255,.82);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:5}
+.brand{font-weight:800;color:var(--pri);font-size:.95rem;white-space:nowrap}
+.spacer{flex:1}
+.counter{font-variant-numeric:tabular-nums;color:var(--mut);font-weight:600;font-size:.9rem}
+.iconbtn{border:1px solid var(--line);background:#fff;border-radius:10px;min-width:38px;height:38px;font-size:1.05rem;cursor:pointer;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;transition:.15s}
+.iconbtn:hover{border-color:var(--pri);color:var(--pri)}
+
+/* ===== deck & slide ===== */
+.deck{flex:1;position:relative;overflow:hidden}
+.slide{position:absolute;inset:0;overflow-y:auto;overflow-x:hidden;padding:clamp(18px,4vw,44px) clamp(16px,4vw,48px) clamp(96px,13vh,130px);opacity:0;transform:translateX(26px) scale(.99);transition:opacity .35s ease,transform .35s ease;pointer-events:none;visibility:hidden}
+.slide.active{opacity:1;transform:none;pointer-events:auto;visibility:visible}
+.wrap{max-width:1060px;margin:0 auto}
+.eyebrow{display:inline-block;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-weight:700;font-size:clamp(.72rem,1.8vw,.85rem);letter-spacing:.08em;text-transform:uppercase;padding:6px 14px;border-radius:999px;margin-bottom:12px}
+h2.title{font-size:clamp(1.45rem,3.6vw,2.1rem);line-height:1.25;margin-bottom:6px}
+.lead{color:var(--mut);font-size:clamp(.95rem,2.4vw,1.05rem);margin-bottom:18px;max-width:70ch}
+
+/* ===== cards & grids ===== */
+.card{background:#fff;border:1px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow);padding:clamp(14px,2.6vw,22px)}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.gap{gap:14px}
+.mt{margin-top:16px}
+.mb{margin-bottom:16px}
+.note{border-left:5px solid var(--acc);background:#fffbeb;border-radius:12px;padding:12px 16px;font-size:.93rem}
+.note.blue{border-left-color:var(--pri);background:#eef2ff}
+.note.green{border-left-color:var(--ok);background:#ecfdf5}
+.note.red{border-left-color:var(--bad);background:#fef2f2}
+.chip{display:inline-flex;align-items:center;gap:6px;background:#fff;border:1px solid var(--line);border-radius:999px;padding:7px 14px;font-weight:600;font-size:.86rem;box-shadow:0 2px 8px rgba(2,6,23,.05)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+
+/* ===== buttons ===== */
+.btn{cursor:pointer;border:0;border-radius:12px;padding:11px 20px;font-weight:700;font-size:clamp(.9rem,2vw,1rem);transition:.18s;display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:inherit;line-height:1.3}
+.btn.primary{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;box-shadow:0 6px 16px rgba(79,70,229,.35)}
+.btn.primary:hover{transform:translateY(-2px);box-shadow:0 10px 22px rgba(79,70,229,.42)}
+.btn.ghost{background:#eef2ff;color:var(--pri)}
+.btn.ghost:hover{background:#e0e7ff}
+.btn.warn{background:#fef3c7;color:#92400e}
+.btn.danger{background:var(--bad);color:#fff}
+.btn.small{padding:8px 14px;font-size:.87rem;border-radius:10px}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.big{padding:14px 28px;font-size:1.05rem}
+
+/* ===== navbar bawah ===== */
+.navbar{display:flex;gap:12px;align-items:center;justify-content:space-between;padding:10px clamp(12px,3vw,24px) max(10px,env(safe-area-inset-bottom));background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-top:1px solid var(--line);z-index:5}
+.navtitle{color:var(--mut);font-weight:600;font-size:.88rem;text-align:center;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* ===== overlay & menu ===== */
+.overlay{position:fixed;inset:0;background:rgba(15,23,42,.55);backdrop-filter:blur(4px);z-index:60;display:flex;align-items:center;justify-content:center;padding:16px}
+.overlay.hidden,.hidden{display:none!important}
+.overlay-card{background:#fff;border-radius:20px;max-width:520px;width:100%;max-height:86vh;overflow-y:auto;box-shadow:0 24px 60px rgba(2,6,23,.35);padding:18px}
+.overlay-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;font-size:1.05rem}
+.menu-list{display:flex;flex-direction:column;gap:6px}
+.menu-item{display:flex;align-items:center;gap:12px;padding:9px 12px;border-radius:12px;cursor:pointer;border:1px solid transparent;background:none;text-align:left;font-family:inherit;font-size:.93rem;font-weight:600;color:var(--ink);width:100%;transition:.15s}
+.menu-item:hover{background:#f1f5f9}
+.menu-item.cur{background:#eef2ff;border-color:#c7d2fe;color:var(--pri)}
+.menu-num{width:30px;height:30px;border-radius:9px;background:#f1f5f9;display:inline-flex;align-items:center;justify-content:center;font-size:.78rem;font-weight:800;color:var(--mut);flex-shrink:0}
+.menu-item.cur .menu-num{background:var(--pri);color:#fff}
+
+/* ===== modal ===== */
+.modal-card{background:#fff;border-radius:20px;max-width:420px;width:100%;padding:22px;text-align:center;box-shadow:0 24px 60px rgba(2,6,23,.35)}
+.modal-card p{margin-bottom:16px;font-weight:600}
+.modal-btns{display:flex;gap:10px;justify-content:center}
+
+/* ===== toast ===== */
+.toastwrap{position:fixed;bottom:76px;left:50%;transform:translateX(-50%);z-index:70;display:flex;flex-direction:column;gap:8px;align-items:center;width:max-content;max-width:92vw}
+.toast{background:#0f172a;color:#fff;padding:10px 18px;border-radius:12px;font-size:.9rem;font-weight:600;box-shadow:0 10px 30px rgba(2,6,23,.3);animation:toastIn .25s ease;max-width:92vw;text-align:center}
+@keyframes toastIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ===== cover ===== */
+.cover{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative}
+.cover-badge{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-weight:700;padding:8px 18px;border-radius:999px;font-size:clamp(.8rem,2vw,.95rem);letter-spacing:.04em;box-shadow:0 8px 20px rgba(79,70,229,.3)}
+.cover h1{font-size:clamp(2.1rem,7.5vw,3.8rem);line-height:1.15;margin:18px 0 10px;background:linear-gradient(120deg,var(--pri),var(--pri2) 55%,var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent}
+.cover .sub{color:var(--mut);font-size:clamp(1rem,2.6vw,1.2rem);max-width:44ch;margin:0 auto 22px}
+.float{position:absolute;font-weight:800;color:#c7d2fe;user-select:none;pointer-events:none;animation:floaty 7s ease-in-out infinite alternate;z-index:-1}
+@keyframes floaty{from{transform:translateY(-12px) rotate(-6deg)}to{transform:translateY(14px) rotate(6deg)}}
+
+/* ===== math ===== */
+.math{font-family:'Cambria Math',Georgia,'Times New Roman',serif;background:#f8faff;border:1px solid #dbe4ff;border-radius:14px;padding:14px 16px;font-size:clamp(1.02rem,2.6vw,1.18rem);line-height:2;overflow-x:auto}
+.eqstep{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 16px;padding:2px 0}
+.eqnote{font-family:'Segoe UI',system-ui,sans-serif;font-size:.8rem;color:var(--mut)}
+.eqresult{background:#ecfdf5;border-radius:8px;padding:1px 10px;display:inline-block}
+.fr{display:inline-flex;flex-direction:column;text-align:center;vertical-align:middle;line-height:1.2;margin:0 .18em;font-size:.92em}
+.fr .frt{border-bottom:1.7px solid currentColor;padding:0 .3em}
+.fr .frb{padding:0 .3em}
+var{font-style:italic;font-family:inherit}
+.answerbox{background:linear-gradient(135deg,#ecfdf5,#eef2ff);border:1.5px solid #a7f3d0;border-radius:12px;padding:10px 16px;font-weight:700;margin-top:8px}
+
+/* ===== reveal details ===== */
+details.sol{background:#fff;border:1.5px dashed #c7d2fe;border-radius:14px;margin-top:12px;overflow:hidden}
+details.sol summary{cursor:pointer;padding:12px 16px;font-weight:700;color:var(--pri);list-style:none;font-size:.92rem}
+details.sol summary::-webkit-details-marker{display:none}
+details.sol summary::before{content:'▸ ';font-size:1.05em}
+details.sol[open] summary::before{content:'▾ '}
+details.sol .solbody{padding:0 16px 14px}
+
+/* ===== latihan ===== */
+.ex{background:#fff;border:1.5px solid var(--line);border-radius:var(--rad);box-shadow:var(--shadow);padding:clamp(14px,2.6vw,20px);margin-bottom:16px}
+.ex.solved{border-color:var(--ok)}
+.ex-head{display:flex;gap:12px;align-items:flex-start;margin-bottom:10px}
+.ex-num{width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;font-weight:800;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.95rem}
+.ex-q{font-weight:600;font-size:clamp(.95rem,2.4vw,1.03rem);padding-top:3px}
+.opts{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.opt{text-align:left;background:#fff;border:2px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;font-size:.95rem;transition:.15s;font-family:inherit;line-height:1.5;color:var(--ink)}
+.opt:hover{border-color:var(--pri)}
+.opt.sel{border-color:var(--pri);background:#eef2ff;font-weight:600}
+.opt.correct{border-color:var(--ok);background:#ecfdf5;font-weight:700}
+.opt.wrong{border-color:var(--bad);background:#fef2f2}
+.ex-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.ans-input{width:100%;max-width:320px;border:2px solid var(--line);border-radius:12px;padding:12px 14px;font-size:1.05rem;font-family:inherit;outline:none;transition:.15s}
+.ans-input:focus{border-color:var(--pri)}
+.feedback{margin-top:12px;padding:12px 16px;border-radius:12px;font-weight:700;display:none}
+.feedback.show{display:block}
+.feedback.ok{background:#ecfdf5;color:#065f46;border:1.5px solid #a7f3d0}
+.feedback.no{background:#fef2f2;color:#991b1b;border:1.5px solid #fecaca}
+.bahas{margin-top:12px;background:#f8faff;border:1px solid #dbe4ff;border-radius:12px;padding:14px 16px;display:none}
+.bahas.show{display:block}
+.bahas h4{color:var(--pri);margin-bottom:6px;font-size:.92rem}
+.bahas p,.bahas li{font-size:.92rem}
+.bahas ol,.bahas ul{margin:4px 0 0 20px}
+.solvedbadge{display:inline-flex;align-items:center;gap:6px;color:var(--ok);font-weight:800;font-size:.85rem}
+.solvedcount{color:var(--mut);font-weight:700;font-size:.9rem}
+
+/* ===== kuis ===== */
+.quiz-top{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:14px}
+.timer{font-variant-numeric:tabular-nums;font-weight:800;background:#0f172a;color:#fff;padding:9px 16px;border-radius:12px;font-size:1.05rem}
+.timer.low{background:var(--bad);animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.quiz-top-btns{display:flex;flex-wrap:wrap;gap:8px;margin-left:auto}
+.qtag{display:inline-block;background:#eef2ff;color:var(--pri);font-weight:700;font-size:.78rem;padding:5px 12px;border-radius:999px;text-transform:uppercase;letter-spacing:.05em}
+.qnum{color:var(--mut);font-weight:700;margin:8px 0 4px;font-size:.92rem}
+.qtext{font-size:clamp(1.05rem,2.8vw,1.25rem);font-weight:600;line-height:1.7;margin-bottom:14px}
+.qopts{margin-bottom:16px}
+.quiz-nav{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:6px;flex-wrap:wrap}
+details.qgridwrap{width:100%;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:4px 14px}
+details.qgridwrap summary{cursor:pointer;font-weight:700;color:var(--pri);font-size:.9rem;padding:8px 0;list-style:none}
+details.qgridwrap summary::-webkit-details-marker{display:none}
+details.qgridwrap summary::before{content:'🗺️ '}
+.qgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(40px,1fr));gap:8px;padding:4px 0 12px}
+.qd{aspect-ratio:1;border-radius:10px;border:2px solid var(--line);background:#fff;font-weight:700;cursor:pointer;font-family:inherit;font-size:.88rem;color:var(--ink);transition:.12s}
+.qd:hover{border-color:var(--pri)}
+.qd.ans{background:var(--pri);color:#fff;border-color:var(--pri)}
+.qd.cur{outline:3px solid var(--acc);outline-offset:1px}
+.qph{padding:60px 20px;text-align:center;color:var(--mut);font-weight:600}
+
+/* ===== hasil ===== */
+.scorewrap{display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:center;margin-bottom:18px}
+.scorecircle{width:clamp(120px,30vw,160px);height:clamp(120px,30vw,160px);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;color:#fff;font-weight:800;box-shadow:var(--shadow)}
+.scorecircle .big{font-size:clamp(1.9rem,6vw,2.6rem);line-height:1.1}
+.scorecircle .small{font-size:.8rem;opacity:.9}
+.statgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;width:100%;max-width:640px}
+.stat{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:clamp(1.15rem,3.4vw,1.5rem)}
+.stat span{color:var(--mut);font-size:.78rem;font-weight:600}
+.topicbar{margin:6px 0 12px}
+.topicbar .lbl{display:flex;justify-content:space-between;font-size:.85rem;font-weight:700;margin-bottom:4px}
+.bar{height:12px;background:#e2e8f0;border-radius:999px;overflow:hidden}
+.bar i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--pri),var(--pri2));transition:width .6s}
+.rev{background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px}
+.rev.good{border-left:5px solid var(--ok)}
+.rev.bad{border-left:5px solid var(--bad)}
+.rev.skip{border-left:5px solid #cbd5e1}
+.rev .rq{font-weight:700;font-size:.93rem;margin-bottom:6px}
+.rev .ra{font-size:.88rem}
+.rev .ra b.ok{color:var(--ok)} .rev .ra b.no{color:var(--bad)}
+.tagpill{display:inline-block;font-size:.72rem;font-weight:800;padding:3px 10px;border-radius:999px;text-transform:uppercase;letter-spacing:.04em}
+.tagpill.g{background:#ecfdf5;color:#065f46}.tagpill.r{background:#fef2f2;color:#991b1b}.tagpill.n{background:#f1f5f9;color:#475569}
+
+/* ===== tabel ===== */
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;background:#fff;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:480px;font-size:.92rem}
+th,td{padding:10px 14px;border-bottom:1px solid #eef2f7;text-align:left;vertical-align:top}
+th{background:#eef2ff;color:var(--pri);font-weight:800;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.okmark{color:var(--ok);font-weight:800}.nomark{color:var(--bad);font-weight:800}
+
+/* ===== refleksi ===== */
+.chk{display:flex;gap:12px;align-items:flex-start;background:#fff;border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;margin-bottom:10px;cursor:pointer;transition:.15s;font-weight:600;font-size:.95rem}
+.chk:hover{border-color:var(--pri)}
+.chk input{width:20px;height:20px;accent-color:var(--pri);margin-top:2px;flex-shrink:0}
+.moods{display:flex;gap:10px;flex-wrap:wrap}
+.mood{border:2px solid var(--line);background:#fff;border-radius:14px;padding:10px 14px;cursor:pointer;font-family:inherit;font-size:.88rem;font-weight:600;color:var(--ink);transition:.15s}
+.mood.sel{border-color:var(--pri);background:#eef2ff}
+textarea{width:100%;min-height:110px;border:2px solid var(--line);border-radius:14px;padding:14px;font-family:inherit;font-size:.98rem;resize:vertical;outline:none}
+textarea:focus{border-color:var(--pri)}
+
+/* ===== penutup ===== */
+.thanks{min-height:70vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+.thanks h2{font-size:clamp(2rem,7vw,3.4rem);background:linear-gradient(120deg,var(--pri),var(--acc));-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:8px}
+
+/* ===== responsive ===== */
+@media (max-width:900px){
+  .grid4{grid-template-columns:repeat(2,1fr)}
+  .grid3{grid-template-columns:repeat(2,1fr)}
+}
+@media (max-width:640px){
+  .grid2,.grid3,.grid4{grid-template-columns:1fr}
+  .opts{grid-template-columns:1fr}
+  .statgrid{grid-template-columns:repeat(2,1fr)}
+  .quiz-top-btns{margin-left:0;width:100%}
+  .navbar .btn{padding:10px 14px;font-size:.86rem}
+  .brand span.brtext{display:none}
+  .float{display:none}
+  .counter.hide-narrow{display:none}
+}
+@media (min-width:641px){ .counter{display:inline} }
+</style>
+</head>
+<body>
+<div class="progress"><i id="progFill"></i></div>
+<div class="app">
+  <header class="topbar">
+    <div class="brand">📐<span class="brtext"> PLSV Interaktif</span></div>
+    <button id="topTimer" class="timer hidden" type="button" title="Lanjutkan ke kuis">⏱ 20:00</button>
+    <div class="spacer"></div>
+    <span id="slideCounter" class="counter hide-narrow">1/20</span>
+    <button id="btnMenu" class="iconbtn" type="button" aria-label="Buka daftar slide">☰</button>
+  </header>
+  <main class="deck" id="deck">
+
+<!-- ============ SLIDE 1: COVER ============ -->
+<section class="slide" data-title="Cover">
+  <span class="float" style="top:8%;left:6%;font-size:clamp(2rem,6vw,4rem)">x =</span>
+  <span class="float" style="top:70%;left:10%;font-size:clamp(1.6rem,5vw,3rem);animation-delay:1s">+</span>
+  <span class="float" style="top:15%;right:8%;font-size:clamp(1.8rem,5.5vw,3.4rem);animation-delay:.5s">2x − 5</span>
+  <span class="float" style="top:72%;right:12%;font-size:clamp(2rem,6vw,3.8rem);animation-delay:1.5s">÷</span>
+  <span class="float" style="top:44%;left:3%;font-size:clamp(1.4rem,4vw,2.6rem);animation-delay:2s">=</span>
+  <div class="wrap cover">
+    <span class="cover-badge">Matematika • Kelas VII SMP/MTs</span>
+    <h1>Persamaan Linear<br>Satu Variabel</h1>
+    <p class="sub">Petualangan interaktif menemukan <b>nilai yang belum diketahui</b> — dari soal mudah sampai level bos! 🚀</p>
+    <div class="chips" style="justify-content:center;margin-bottom:26px">
+      <span class="chip">📚 Materi lengkap bertahap</span>
+      <span class="chip">✏️ 15 latihan terbimbing</span>
+      <span class="chip">🏆 Kuis 30 soal</span>
+      <span class="chip">⏱️ Timer 20 menit + pembahasan</span>
+    </div>
+    <button class="btn primary big" id="btnStart" type="button">Mulai Belajar →</button>
+  </div>
+</section>
+
+<!-- ============ SLIDE 2: APERSEPSI ============ -->
+<section class="slide" data-title="Apersepsi">
+  <div class="wrap">
+    <span class="eyebrow">Apersepsi</span>
+    <h2 class="title">Ayo Berpikir Dulu! 🤔</h2>
+    <p class="lead">Sebelum masuk materi, coba jawab dua teka-teki kecil ini. Diskusikan sebentar dengan teman sebangku (± 2 menit).</p>
+    <div class="grid2">
+      <div class="card">
+        <div style="font-size:2rem">🍬</div>
+        <h3>Teka-teki permen</h3>
+        <p style="margin:8px 0">Kamu punya <b>beberapa permen</b> (tidak diketahui!). Kakaimu memberi <b>5 permen</b> lagi, sekarang jumlahnya <b>12 permen</b>. Berapa permenmu semula?</p>
+        <details class="sol"><summary>Lihat ide penting</summary>
+          <div class="solbody">
+            <p>Jika banyak permen semula kita sebut <var>x</var>, maka cerita itu menjadi kalimat matematika:</p>
+            <div class="math mt"><var>x</var> + 5 = 12 &nbsp;→&nbsp; <var>x</var> = 7</div>
+            <p class="mt">Huruf <var>x</var> itulah <b>variabel</b> (nilai yang belum diketahui), dan kalimat itu adalah <b>persamaan</b>. Inilah ide pusat hari ini!</p>
+          </div>
+        </details>
+      </div>
+      <div class="card">
+        <div style="font-size:2rem">⚖️</div>
+        <h3>Teka-teki timbangan</h3>
+        <p style="margin:8px 0">Timbangan <b>seimbang</b>: ruas kiri berisi kotak misteri + beban 2 kg, ruas kanan berisi beban 6 kg. Berapa berat kotak misteri?</p>
+        <details class="sol"><summary>Lihat ide penting</summary>
+          <div class="solbody">
+            <p>Jika berat kotak = <var>x</var> kg, maka <var>x</var> + 2 = 6, jadi <var>x</var> = 4 kg.</p>
+            <p class="mt">Kunci: timbangan tetap seimbang asal apa yang dilakukan di ruas kiri <b>juga dilakukan di ruas kanan</b>. Prinsip inilah yang kita pakai untuk menyelesaikan semua persamaan.</p>
+          </div>
+        </details>
+      </div>
+    </div>
+    <div class="note mt">💭 <b>Pertanyaan refleksi awal:</b> Di mana lagi kamu menemukan "nilai yang belum diketahui" dalam kehidupan sehari-hari? (Petunjuk: harga jajanan, uang saku, umur, skor game, jarak rumah ke sekolah...)</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 3: TUJUAN PEMBELAJARAN ============ -->
+<section class="slide" data-title="Tujuan Pembelajaran">
+  <div class="wrap">
+    <span class="eyebrow">Tujuan Pembelajaran</span>
+    <h2 class="title">Setelah Belajar Hari Ini, Kamu Akan Mampu... 🎯</h2>
+    <p class="lead">Empat target yang akan kamu capai. Perhatikan baik-baik, karena di akhir presentasi kamu akan menilai dirimu sendiri!</p>
+    <div class="grid2">
+      <div class="card"><b>1️⃣ Menjelaskan konsep</b><p class="mt">Menjelaskan pengertian dan ciri-ciri persamaan linear satu variabel (PLSV) dengan bahasamu sendiri.</p></div>
+      <div class="card"><b>2️⃣ Mengidentifikasi</b><p class="mt">Menentukan apakah sebuah kalimat matematika termasuk PLSV atau bukan, beserta alasannya.</p></div>
+      <div class="card"><b>3️⃣ Menyelesaikan persamaan</b><p class="mt">Menentukan nilai variabel dari PLSV — mulai dari soal mudah hingga soal sangat sulit dengan pecahan dan operasi aljabar bertingkat.</p></div>
+      <div class="card"><b>4️⃣ Membuat model</b><p class="mt">Membentuk PLSV dari masalah cerita kehidupan sehari-hari, lalu menyelesaikannya dengan langkah yang runtut.</p></div>
+    </div>
+    <div class="note blue mt">📖 <b>Kamus istilah penting:</b> <b>Variabel</b> = huruf pengganti nilai yang belum diketahui (mis. <var>x</var>). <b>Koefisien</b> = angka yang menempel pada variabel (pada 3<var>x</var>, koefisiennya 3). <b>Konstanta</b> = suku tanpa variabel. <b>Ruas</b> = bagian kiri/kanan tanda "=". <b>HP</b> = himpunan penyelesaian.</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 4: APA ITU PLSV ============ -->
+<section class="slide" data-title="Apa itu PLSV?">
+  <div class="wrap">
+    <span class="eyebrow">Materi 1</span>
+    <h2 class="title">Apa Itu Persamaan Linear Satu Variabel? 🔍</h2>
+    <div class="card mb">
+      <p style="font-size:clamp(1rem,2.6vw,1.15rem)"><b>PLSV adalah kalimat terbuka</b> yang menyatakan hubungan <b>"sama dengan" (=)</b> dan hanya memuat <b>satu variabel</b> dengan <b>pangkat tertinggi satu</b>.</p>
+      <div class="math mt" style="text-align:center"><b>Bentuk umum:</b>&nbsp; <var>a</var><var>x</var> + <var>b</var> = <var>c</var>, &nbsp; dengan <var>a</var> ≠ 0</div>
+      <div class="chips mt">
+        <span class="chip">🟣 <b>Persamaan</b> → ada tanda " = "</span>
+        <span class="chip">🔵 <b>Linear</b> → pangkat maksimal 1</span>
+        <span class="chip">🟢 <b>Satu variabel</b> → hanya satu huruf (mis. <var>x</var> saja)</span>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card" style="border-top:5px solid var(--ok)">
+        <h3>✅ Ini PLSV</h3>
+        <div class="math mt">2<var>x</var> + 5 = 11</div><p class="eqnote" style="padding-left:4px">satu variabel, pangkat satu</p>
+        <div class="math">3(<var>y</var> − 2) = 15</div><p class="eqnote" style="padding-left:4px">ada kurung, tetap linear satu variabel</p>
+        <div class="math">4<var>p</var> − 7 = 2<var>p</var> + 1</div><p class="eqnote" style="padding-left:4px">variabel boleh muncul di dua ruas — tetap SATU variabel</p>
+      </div>
+      <div class="card" style="border-top:5px solid var(--bad)">
+        <h3>❌ Ini Bukan PLSV</h3>
+        <div class="math"><var>x</var>² + 4 = 9</div><p class="eqnote" style="padding-left:4px">pangkat 2 → kuadrat, bukan linear</p>
+        <div class="math">2<var>a</var> + 3<var>b</var> = 12</div><p class="eqnote" style="padding-left:4px">dua variabel (a dan b)</p>
+        <div class="math">6/<var>x</var> = 2</div><p class="eqnote" style="padding-left:4px">variabel di penyebut → bukan linear</p>
+        <div class="math">8 − 5 = 3</div><p class="eqnote" style="padding-left:4px">tidak ada variabel (bukan kalimat terbuka)</p>
+      </div>
+    </div>
+    <div class="note mt">🧠 <b>Cara cepat memeriksa:</b> (1) ada tanda "="? (2) hanya satu jenis huruf? (3) pangkatnya satu dan tidak ada variabel di penyebut? Kalau tiga-tiganya "ya", itu PLSV!</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 5: KAIDAH TIMBANGAN ============ -->
+<section class="slide" data-title="Kaidah Timbangan & Langkah">
+  <div class="wrap">
+    <span class="eyebrow">Materi 2 — Bekal Sebelum Bertarung</span>
+    <h2 class="title">Kaidah Timbangan ⚖️ &amp; Langkah Penyelesaian</h2>
+    <p class="lead">Persamaan itu seperti timbangan seimbang. Apa pun yang kamu lakukan pada ruas kiri, <b>wajib</b> kamu lakukan juga pada ruas kanan agar tetap seimbang.</p>
+    <div class="grid4">
+      <div class="card" style="text-align:center"><div style="font-size:1.7rem">➕➖</div><b>Tambah / Kurangi</b><p style="font-size:.88rem;color:var(--mut)">Kedua ruas boleh ditambah atau dikurangi bilangan yang sama.</p></div>
+      <div class="card" style="text-align:center"><div style="font-size:1.7rem">✖️➗</div><b>Kali / Bagi</b><p style="font-size:.88rem;color:var(--mut)">Kedua ruas boleh dikali atau dibagi bilangan sama, asal bukan nol.</p></div>
+      <div class="card" style="text-align:center"><div style="font-size:1.7rem">⇄</div><b>Berpindah Ruas</b><p style="font-size:.88rem;color:var(--mut)">Suku yang pindah ruas tandanya berubah: + menjadi −, − menjadi +.</p></div>
+      <div class="card" style="text-align:center"><div style="font-size:1.7rem">🔁</div><b>Sederhanakan</b><p style="font-size:.88rem;color:var(--mut)">Buka kurung dan gabungkan suku sejenis sebelum berpindah ruas.</p></div>
+    </div>
+    <div class="card mt">
+      <h3>🪜 Langkah umum menyelesaikan PLSV</h3>
+      <ol style="margin:10px 0 0 20px" class="bahas-list">
+        <li><b>Sederhanakan tiap ruas</b> — buka kurung, gabungkan suku sejenis.</li>
+        <li><b>Kumpulkan variabel</b> di satu ruas dan <b>konstanta</b> di ruas lain (pindah ruas = ubah tanda).</li>
+        <li><b>Bagi kedua ruas</b> dengan koefisien variabel → dapat nilai variabel.</li>
+        <li><b>Periksa dengan substitusi</b> — masukkan jawaban ke persamaan awal. Harus sama! ✅</li>
+      </ol>
+    </div>
+    <div class="note mt">⭐ <b>Rahasia jawaban benar:</b> langkah ke-4 (substitusi) sering dilewatkan siswa — padahal itu cara paling ampuh mencegah salah hitung. Biasakan!</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 6: LEVEL 1 MUDAH ============ -->
+<section class="slide" data-title="Lv 1 — Soal Mudah">
+  <div class="wrap">
+    <span class="eyebrow">Menentukan Nilai Variabel</span>
+    <h2 class="title">Level 1 — Pemanasan 💪 (Mudah)</h2>
+    <p class="lead">Variabel sendirian di satu ruas, angka di ruas lain. Cukup satu langkah.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Contoh 1</h3>
+        <div class="math mt">
+          <div class="eqstep"><span><var>x</var> + 7 = 15</span><span class="eqnote">persamaan awal</span></div>
+          <div class="eqstep"><span><var>x</var> + 7 − 7 = 15 − 7</span><span class="eqnote">kedua ruas dikurangi 7</span></div>
+          <div class="eqstep eqresult"><span><var>x</var> = 8</span><span class="eqnote">selesai!</span></div>
+        </div>
+        <div class="note green mt">✅ Cek: 8 + 7 = 15 &nbsp;(benar — ruas kiri = ruas kanan)</div>
+        <p class="mt" style="font-size:.9rem;color:var(--mut)">Cara pintas: +7 pindah ruas menjadi −7 → <var>x</var> = 15 − 7.</p>
+      </div>
+      <div class="card">
+        <h3>Contoh 2</h3>
+        <div class="math mt">
+          <div class="eqstep"><span><var>y</var> − 4 = 9</span><span class="eqnote">persamaan awal</span></div>
+          <div class="eqstep"><span><var>y</var> − 4 + 4 = 9 + 4</span><span class="eqnote">kedua ruas ditambah 4</span></div>
+          <div class="eqstep eqresult"><span><var>y</var> = 13</span><span class="eqnote">selesai!</span></div>
+        </div>
+        <div class="note green mt">✅ Cek: 13 − 4 = 9 &nbsp;(benar)</div>
+        <p class="mt" style="font-size:.9rem;color:var(--mut)">Cara pintas: −4 pindah ruas menjadi +4 → <var>y</var> = 9 + 4.</p>
+      </div>
+    </div>
+    <div class="note mt">💡 <b>Intuisi:</b> pada level ini kamu tinggal "membalikkan" operasi yang terjadi pada variabel. Ditambah 7? Balik dengan dikurangi 7.</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 7: LEVEL 2 SEDANG ============ -->
+<section class="slide" data-title="Lv 2 — Soal Sedang">
+  <div class="wrap">
+    <span class="eyebrow">Menentukan Nilai Variabel</span>
+    <h2 class="title">Level 2 — Naik Kelas 🙂 (Sedang)</h2>
+    <p class="lead">Sekarang variabel dikalikan atau dibagi angka — bahkan dua langkah sekaligus.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Contoh 1 — satu langkah</h3>
+        <div class="math mt">
+          <div class="eqstep"><span>3<var>x</var> = 21</span><span class="eqnote">3x berarti 3 × x</span></div>
+          <div class="eqstep"><span>3<var>x</var> ÷ 3 = 21 ÷ 3</span><span class="eqnote">kedua ruas dibagi 3</span></div>
+          <div class="eqstep eqresult"><span><var>x</var> = 7</span></div>
+        </div>
+        <div class="note green mt">✅ Cek: 3 × 7 = 21 (benar)</div>
+      </div>
+      <div class="card">
+        <h3>Contoh 2 — dua langkah</h3>
+        <div class="math mt">
+          <div class="eqstep"><span>2<var>x</var> + 5 = 17</span></div>
+          <div class="eqstep"><span>2<var>x</var> = 17 − 5</span><span class="eqnote">+5 pindah ruas → −5 (hilangkan ➕ dulu)</span></div>
+          <div class="eqstep"><span>2<var>x</var> = 12</span></div>
+          <div class="eqstep"><span><var>x</var> = 12 ÷ 2</span><span class="eqnote">baru hilangkan ✖️</span></div>
+          <div class="eqstep eqresult"><span><var>x</var> = 6</span></div>
+        </div>
+        <div class="note green mt">✅ Cek: 2(6) + 5 = 12 + 5 = 17 (benar)</div>
+      </div>
+    </div>
+    <div class="card mt">
+      <h3>Contoh 3 — variabel sebagai pembilang</h3>
+      <div class="math mt">
+        <div class="eqstep"><span class="fr"><span class="frt"><var>x</var></span><span class="frb">4</span></span> = 5<span class="eqnote">x dibagi 4</span></div>
+        <div class="eqstep"><span class="fr"><span class="frt"><var>x</var></span><span class="frb">4</span></span> × 4 = 5 × 4<span class="eqnote">kedua ruas dikali 4 (menghilangkan ÷4)</span></div>
+        <div class="eqstep eqresult"><span><var>x</var> = 20</span></div>
+      </div>
+      <div class="note green mt">✅ Cek: 20 ÷ 4 = 5 (benar)</div>
+    </div>
+    <div class="note mt">⚠️ <b>Urutan penting:</b> hilangkan ➕➖ terlebih dahulu, baru ✖️➗. Bayangkan "membongkar" persamaan dari operasi yang terakhir dikerjakan.</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 8: LEVEL 3 SULIT ============ -->
+<section class="slide" data-title="Lv 3 — Soal Sulit">
+  <div class="wrap">
+    <span class="eyebrow">Menentukan Nilai Variabel</span>
+    <h2 class="title">Level 3 — Sulit 😤 (Variabel di Dua Ruas &amp; Kurung)</h2>
+    <p class="lead">Variabel muncul di kiri dan kanan. Strategi: kumpulkan semua variabel di satu ruas, semua angka di ruas lain.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Contoh 1</h3>
+        <div class="math mt">
+          <div class="eqstep"><span>5<var>x</var> − 3 = 2<var>x</var> + 9</span></div>
+          <div class="eqstep"><span>5<var>x</var> − 2<var>x</var> = 9 + 3</span><span class="eqnote">2x pindah kiri (−2x), −3 pindah kanan (+3)</span></div>
+          <div class="eqstep"><span>3<var>x</var> = 12</span><span class="eqnote">gabungkan suku sejenis</span></div>
+          <div class="eqstep eqresult"><span><var>x</var> = 4</span><span class="eqnote">kedua ruas dibagi 3</span></div>
+        </div>
+        <div class="note green mt">✅ Cek kiri: 5(4) − 3 = 17 &nbsp;|&nbsp; Cek kanan: 2(4) + 9 = 17 &nbsp;(sama!)</div>
+      </div>
+      <div class="card">
+        <h3>Contoh 2 — pakai sifat distributif</h3>
+        <div class="math mt">
+          <div class="eqstep"><span>2(<var>x</var> − 3) = 3<var>x</var> − 8</span></div>
+          <div class="eqstep"><span>2<var>x</var> − 6 = 3<var>x</var> − 8</span><span class="eqnote">distributif: 2 × (x − 3)</span></div>
+          <div class="eqstep"><span>2<var>x</var> − 3<var>x</var> = −8 + 6</span><span class="eqnote">kumpulkan variabel kiri, angka kanan</span></div>
+          <div class="eqstep"><span>−<var>x</var> = −2</span></div>
+          <div class="eqstep eqresult"><span><var>x</var> = 2</span><span class="eqnote">kedua ruas dikali (−1)</span></div>
+        </div>
+        <div class="note green mt">✅ Cek kiri: 2(2 − 3) = −2 &nbsp;|&nbsp; Cek kanan: 3(2) − 8 = −2 &nbsp;(sama!)</div>
+      </div>
+    </div>
+    <div class="note mt">🧰 <b>Alat bantu level ini:</b> <b>Sifat distributif</b> <var>a</var>(<var>b</var> + <var>c</var>) = <var>ab</var> + <var>ac</var>. Jika depan variabel menjadi negatif (−<var>x</var> = −2), kalikan kedua ruas dengan −1 agar tanda variabel positif.</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 9: LEVEL 4 SANGAT SULIT ============ -->
+<section class="slide" data-title="Lv 4 — Sangat Sulit">
+  <div class="wrap">
+    <span class="eyebrow">Menentukan Nilai Variabel</span>
+    <h2 class="title">Level 4 — Sangat Sulit 🌋 (Pecahan &amp; Multi-Langkah)</h2>
+    <p class="lead">Senjata rahasia level ini: <b>kalikan kedua ruas dengan KPK semua penyebut</b> supaya pecahan hilang, lalu kerjakan seperti level 3.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Contoh 1</h3>
+        <div class="math mt">
+          <div class="eqstep"><span class="fr"><span class="frt"><var>x</var></span><span class="frb">2</span></span> + <span class="fr"><span class="frt"><var>x</var></span><span class="frb">3</span></span> = 10</div>
+          <div class="eqstep"><span>3<var>x</var> + 2<var>x</var> = 60</span><span class="eqnote">kalikan kedua ruas dengan KPK = 6</span></div>
+          <div class="eqstep"><span>5<var>x</var> = 60</span></div>
+          <div class="eqstep eqresult"><span><var>x</var> = 12</span></div>
+        </div>
+        <div class="note green mt">✅ Cek: 12/2 + 12/3 = 6 + 4 = 10 (benar)</div>
+      </div>
+      <div class="card">
+        <h3>Contoh 2</h3>
+        <div class="math mt">
+          <div class="eqstep"><span class="fr"><span class="frt">2<var>x</var> + 1</span><span class="frb">3</span></span> = <span class="fr"><span class="frt"><var>x</var> − 2</span><span class="frb">2</span></span></div>
+          <div class="eqstep"><span>2(2<var>x</var> + 1) = 3(<var>x</var> − 2)</span><span class="eqnote">kalikan kedua ruas dengan KPK = 6</span></div>
+          <div class="eqstep"><span>4<var>x</var> + 2 = 3<var>x</var> − 6</span><span class="eqnote">distributif</span></div>
+          <div class="eqstep"><span>4<var>x</var> − 3<var>x</var> = −6 − 2</span></div>
+          <div class="eqstep eqresult"><span><var>x</var> = −8</span></div>
+        </div>
+        <div class="note green mt">✅ Cek: (2(−8)+1)/3 = −15/3 = −5 dan (−8−2)/2 = −10/2 = −5 (sama!)</div>
+      </div>
+    </div>
+    <div class="card mt">
+      <h3>Contoh 3 — Level Boss 👑 (kurung + pecahan sekaligus)</h3>
+      <div class="math mt">
+        <div class="eqstep"><span class="fr"><span class="frt">3(<var>x</var> − 2)</span><span class="frb">4</span></span> − 1 = <span class="fr"><span class="frt"><var>x</var> + 5</span><span class="frb">2</span></span></div>
+        <div class="eqstep"><span>3(<var>x</var> − 2) − 4 = 2(<var>x</var> + 5)</span><span class="eqnote">kalikan kedua ruas dengan KPK = 4</span></div>
+        <div class="eqstep"><span>3<var>x</var> − 6 − 4 = 2<var>x</var> + 10</span><span class="eqnote">distributif</span></div>
+        <div class="eqstep"><span>3<var>x</var> − 10 = 2<var>x</var> + 10</span><span class="eqnote">gabungkan suku sejenis</span></div>
+        <div class="eqstep"><span><var>x</var> = 20</span><span class="eqnote">3x − 2x = 10 + 10</span></div>
+      </div>
+      <div class="note green mt">✅ Cek: 3(18)/4 − 1 = 13,5 − 1 = 12,5 dan (20 + 5)/2 = 12,5 (sama!)</div>
+    </div>
+    <div class="note mt">🔥 <b>Strategi menghadapi soal sulit:</b> Jangan panik! Hapus pecahan dengan KPK → buka semua kurung dengan distributif → kumpulkan suku sejenis → pindah ruas → bagi koefisien → cek. Semua soal PLSV selesai dengan resep yang sama.</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 10: DARI CERITA KE PERSAMAAN ============ -->
+<section class="slide" data-title="Dari Cerita ke Persamaan">
+  <div class="wrap">
+    <span class="eyebrow">Materi 3</span>
+    <h2 class="title">Membentuk PLSV dari Soal Cerita 📖➡️🧮</h2>
+    <p class="lead">Soal cerita adalah persamaan yang menyamar. Tugas kita: membuka samarannya, langkah demi langkah.</p>
+    <div class="grid4 mb">
+      <div class="card" style="text-align:center"><div style="font-size:1.6rem">📖</div><b>1. Baca &amp; pahami</b><p style="font-size:.85rem;color:var(--mut)">Tandai informasi penting dan apa yang ditanya.</p></div>
+      <div class="card" style="text-align:center"><div style="font-size:1.6rem">🔤</div><b>2. Tetapkan variabel</b><p style="font-size:.85rem;color:var(--mut)">Misal: <var>x</var> = harga satu buku.</p></div>
+      <div class="card" style="text-align:center"><div style="font-size:1.6rem">🧩</div><b>3. Bentuk persamaan</b><p style="font-size:.85rem;color:var(--mut)">Terjemahkan kalimat menjadi model PLSV.</p></div>
+      <div class="card" style="text-align:center"><div style="font-size:1.6rem">🧮</div><b>4. Selesaikan &amp; jawab</b><p style="font-size:.85rem;color:var(--mut)">Kerjakan persamaan, kembalikan ke konteks + satuan.</p></div>
+    </div>
+    <h3 style="margin-bottom:8px">🔤 Kamus frasa → matematika</h3>
+    <div class="tblwrap mb">
+      <table>
+        <tr><th>Frasa dalam soal cerita</th><th>Arti matematika</th></tr>
+        <tr><td>"5 tahun <b>lebih tua</b>" / "5 <b>lebihnya</b>"</td><td>+ 5</td></tr>
+        <tr><td>"3 tahun <b>kurangnya</b>" / "lebih muda 3 tahun"</td><td>− 3</td></tr>
+        <tr><td>"<b>2 kali</b> bilangan itu"</td><td>2<var>x</var></td></tr>
+        <tr><td>"<b>seperdua</b> dari uangnya"</td><td><var>x</var>/2</td></tr>
+        <tr><td>"<b>jumlah</b> ... <b>adalah</b> ..."</td><td>... + ... = ...</td></tr>
+        <tr><td>"dikurangkan <b>dari</b> 25"</td><td>25 − <var>x</var> &nbsp;⚠️ urutan terbalik!</td></tr>
+        <tr><td>"harga 3 buku"</td><td>3<var>b</var></td></tr>
+        <tr><td>"keliling persegi / persegi panjang"</td><td>4<var>s</var> &nbsp;|&nbsp; 2(<var>p</var> + <var>l</var>)</td></tr>
+      </table>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>🎯 Latihan mini (klik untuk cek)</h3>
+        <p class="mt"><b>1.</b> Umur Ani (<var>a</var>) 5 tahun lebih tua dari Budi (<var>b</var>). Tulis modelnya!</p>
+        <details class="sol"><summary>Lihat model</summary><div class="solbody"><div class="math"><var>a</var> = <var>b</var> + 5</div></div></details>
+        <p class="mt"><b>2.</b> Harga 4 buku sama dengan Rp48.000. Tulis modelnya!</p>
+        <details class="sol"><summary>Lihat model</summary><div class="solbody"><div class="math">4<var>b</var> = 48.000</div></div></details>
+        <p class="mt"><b>3.</b> Uang Sari (<var>s</var>) Rp2.000 kurangnya dari dua kali uang Tono (<var>t</var>). Modelnya?</p>
+        <details class="sol"><summary>Lihat model</summary><div class="solbody"><div class="math"><var>s</var> = 2<var>t</var> − 2.000</div></div></details>
+      </div>
+      <div class="note red" style="align-self:start">
+        <b>⚠️ Jebakan favorit soal cerita:</b>
+        <ul style="margin:8px 0 0 20px">
+          <li>"<var>x</var> lebih muda 3 tahun dari Budi" → <var>x</var> = Budi − 3, <b>bukan</b> 3 − Budi.</li>
+          <li>"dikurangkan dari 25" → 25 − <var>x</var>, <b>bukan</b> <var>x</var> − 25.</li>
+          <li>Jangan lupa satuan saat menjawab (Rp, cm, tahun, orang).</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 11: CONTOH SOAL CERITA ============ -->
+<section class="slide" data-title="Contoh Soal Cerita">
+  <div class="wrap">
+    <span class="eyebrow">Materi 3</span>
+    <h2 class="title">Contoh Lengkap: Dari Cerita Sampai Jawaban ✨</h2>
+    <p class="lead">Perhatikan bagaimana 5 langkah bekerja pada tiga cerita berikut. Klik kartu untuk membuka penyelesaian.</p>
+    <div class="card mb">
+      <h3>👧 Contoh 1 — Umur</h3>
+      <p class="mt" style="font-weight:600">Umur kakak 5 tahun lebih tua dari umur adik. Jumlah umur mereka 25 tahun. Berapa umur adik?</p>
+      <details class="sol"><summary>👁 Lihat model &amp; penyelesaian</summary>
+        <div class="solbody">
+          <p><b>Tetapkan variabel:</b> <var>x</var> = umur adik → umur kakak = <var>x</var> + 5.</p>
+          <div class="math mt">
+            <div class="eqstep"><span><var>x</var> + (<var>x</var> + 5) = 25</span><span class="eqnote">jumlah umur = 25</span></div>
+            <div class="eqstep"><span>2<var>x</var> + 5 = 25</span><span class="eqnote">gabungkan</span></div>
+            <div class="eqstep"><span>2<var>x</var> = 20</span><span class="eqnote">+5 pindah ruas</span></div>
+            <div class="eqstep"><span><var>x</var> = 10</span><span class="eqnote">dibagi 2</span></div>
+          </div>
+          <div class="answerbox">✅ Umur adik 10 tahun dan umur kakak 15 tahun. Cek: 10 + 15 = 25 ✔</div>
+        </div>
+      </details>
+    </div>
+    <div class="card mb">
+      <h3>🛒 Contoh 2 — Harga belanja</h3>
+      <p class="mt" style="font-weight:600">Ibu membeli 3 kg gula dan 2 kg tepung seharga Rp57.000. Jika harga 1 kg tepung Rp9.000, berapa harga 1 kg gula?</p>
+      <details class="sol"><summary>👁 Lihat model &amp; penyelesaian</summary>
+        <div class="solbody">
+          <p><b>Tetapkan variabel:</b> <var>g</var> = harga 1 kg gula (dalam rupiah).</p>
+          <div class="math mt">
+            <div class="eqstep"><span>3<var>g</var> + 2(9.000) = 57.000</span><span class="eqnote">model belanja</span></div>
+            <div class="eqstep"><span>3<var>g</var> + 18.000 = 57.000</span></div>
+            <div class="eqstep"><span>3<var>g</var> = 39.000</span><span class="eqnote">18.000 pindah ruas</span></div>
+            <div class="eqstep"><span><var>g</var> = 13.000</span><span class="eqnote">dibagi 3</span></div>
+          </div>
+          <div class="answerbox">✅ Harga 1 kg gula Rp13.000. Cek: 3(13.000) + 2(9.000) = 39.000 + 18.000 = 57.000 ✔</div>
+        </div>
+      </details>
+    </div>
+    <div class="card">
+      <h3>📐 Contoh 3 — Geometri</h3>
+      <p class="mt" style="font-weight:600">Sebuah persegi panjang memiliki panjang 3 cm lebihnya dari lebarnya. Kelilingnya 26 cm. Tentukan panjang dan lebarnya!</p>
+      <details class="sol"><summary>👁 Lihat model &amp; penyelesaian</summary>
+        <div class="solbody">
+          <p><b>Tetapkan variabel:</b> <var>l</var> = lebar → panjang = <var>l</var> + 3. Keliling = 2(panjang + lebar).</p>
+          <div class="math mt">
+            <div class="eqstep"><span>2(<var>l</var> + <var>l</var> + 3) = 26</span></div>
+            <div class="eqstep"><span>2(2<var>l</var> + 3) = 26</span><span class="eqnote">distributif dalam</span></div>
+            <div class="eqstep"><span>4<var>l</var> + 6 = 26</span><span class="eqnote">distributif</span></div>
+            <div class="eqstep"><span>4<var>l</var> = 20</span></div>
+            <div class="eqstep"><span><var>l</var> = 5</span></div>
+          </div>
+          <div class="answerbox">✅ Lebar 5 cm dan panjang 8 cm. Cek: 2(5 + 8) = 26 cm ✔</div>
+        </div>
+      </details>
+    </div>
+    <div class="note mt">🎬 Sekarang giliranmu! Lanjut ke tiga slide <b>Latihan</b> berikutnya — 5 soal per materi, dengan tombol cek jawaban dan pembahasan lengkap.</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 12: LATIHAN 1 ============ -->
+<section class="slide" data-title="Latihan 1 — Mengenal PLSV">
+  <div class="wrap">
+    <span class="eyebrow">Latihan Materi 1</span>
+    <h2 class="title">Latihan 1 — Mengenal PLSV ✏️ <span class="solvedcount">0/5 selesai</span></h2>
+    <p class="lead">Pilih satu jawaban, lalu tekan <b>Cek Jawaban</b>. Kalau ragu, buka <b>Pembahasan</b>.</p>
+
+    <div class="ex" data-type="mc" data-answer="C">
+      <div class="ex-head"><span class="ex-num">1</span><p class="ex-q">Manakah di antara kalimat berikut yang merupakan <b>persamaan linear satu variabel</b>?</p></div>
+      <div class="opts">
+        <button class="opt" data-k="A" type="button">2<var>x</var> + 3<var>y</var> = 15</button>
+        <button class="opt" data-k="B" type="button"><var>x</var>² − 4 = 5</button>
+        <button class="opt" data-k="C" type="button">4<var>x</var> − 7 = 13</button>
+        <button class="opt" data-k="D" type="button">5 + 2 = 7</button>
+      </div>
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p><b>Jawaban: C.</b> 4<var>x</var> − 7 = 13 memuat satu variabel (<var>x</var>) berpangkat satu dan tanda "=". A memuat dua variabel (<var>x</var> dan <var>y</var>); B pangkat variabelnya 2; D tidak memuat variabel sama sekali.</p></div>
+    </div>
+
+    <div class="ex" data-type="mc" data-answer="C">
+      <div class="ex-head"><span class="ex-num">2</span><p class="ex-q">Mengapa <var>x</var>² + 2<var>x</var> = 8 <b>bukan</b> PLSV?</p></div>
+      <div class="opts">
+        <button class="opt" data-k="A" type="button">Karena tidak memuat tanda " = "</button>
+        <button class="opt" data-k="B" type="button">Karena memuat dua variabel</button>
+        <button class="opt" data-k="C" type="button">Karena pangkat variabel bukan satu</button>
+        <button class="opt" data-k="D" type="button">Karena tidak memuat konstanta</button>
+      </div>
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p><b>Jawaban: C.</b> Kalimat itu memuat <var>x</var>² (pangkat dua), sehingga tidak linear. Ciri khas PLSV: pangkat tertinggi variabel adalah <b>1</b>.</p></div>
+    </div>
+
+    <div class="ex" data-type="mc" data-answer="B">
+      <div class="ex-head"><span class="ex-num">3</span><p class="ex-q">Kalimat 3(<var>p</var> − 2) = 15 <b>termasuk</b> PLSV karena...</p></div>
+      <div class="opts">
+        <button class="opt" data-k="A" type="button">memuat tanda kurung</button>
+        <button class="opt" data-k="B" type="button">memuat satu variabel <var>p</var> berpangkat satu</button>
+        <button class="opt" data-k="C" type="button">angkanya banyak</button>
+        <button class="opt" data-k="D" type="button">tidak bisa disederhanakan</button>
+      </div>
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p><b>Jawaban: B.</b> Meskipun ada kurung, hanya ada satu variabel (<var>p</var>) dengan pangkat 1. Setelah dibuka: 3<var>p</var> − 6 = 15 — tetap PLSV. Kurung tidak mengubah jenis persamaan.</p></div>
+    </div>
+
+    <div class="ex" data-type="mc" data-answer="C">
+      <div class="ex-head"><span class="ex-num">4</span><p class="ex-q">Koefisien dari <var>x</var> pada persamaan 7 − 3<var>x</var> = 4 adalah...</p></div>
+      <div class="opts">
+        <button class="opt" data-k="A" type="button">7</button>
+        <button class="opt" data-k="B" type="button">3</button>
+        <button class="opt" data-k="C" type="button">−3</button>
+        <button class="opt" data-k="D" type="button">4</button>
+      </div>
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p><b>Jawaban: C.</b> Suku yang memuat <var>x</var> adalah −3<var>x</var>, jadi koefisiennya <b>−3</b> (tanda ikut suku). 7 dan 4 adalah konstanta.</p></div>
+    </div>
+
+    <div class="ex" data-type="mc" data-answer="B">
+      <div class="ex-head"><span class="ex-num">5</span><p class="ex-q">Himpunan penyelesaian dari <var>x</var> + 5 = 5 adalah...</p></div>
+      <div class="opts">
+        <button class="opt" data-k="A" type="button">{5}</button>
+        <button class="opt" data-k="B" type="button">{0}</button>
+        <button class="opt" data-k="C" type="button">{1}</button>
+        <button class="opt" data-k="D" type="button">{−5}</button>
+      </div>
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p><b>Jawaban: B.</b> <var>x</var> = 5 − 5 = 0. Substitusi: 0 + 5 = 5 ✔. Jadi HP = {0}. Nol juga boleh menjadi penyelesaian!</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 13: LATIHAN 2 ============ -->
+<section class="slide" data-title="Latihan 2 — Nilai Variabel">
+  <div class="wrap">
+    <span class="eyebrow">Latihan Materi 2</span>
+    <h2 class="title">Latihan 2 — Menentukan Nilai Variabel 🧮 <span class="solvedcount">0/5 selesai</span></h2>
+    <p class="lead">Dari mudah sampai sangat sulit. Tulis jawabanmu di kotak (boleh pakai tanda minus), lalu tekan <b>Cek Jawaban</b>.</p>
+
+    <div class="ex" data-type="num" data-answer="8">
+      <div class="ex-head"><span class="ex-num">1</span><p class="ex-q">Tentukan nilai <var>x</var> dari <var>x</var> + 9 = 17.</p></div>
+      <input class="ans-input" type="text" placeholder="Tulis jawabanmu, mis. 8">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p><var>x</var> = 17 − 9 = <b>8</b>. Cek: 8 + 9 = 17 ✔</p></div>
+    </div>
+
+    <div class="ex" data-type="num" data-answer="9">
+      <div class="ex-head"><span class="ex-num">2</span><p class="ex-q">Tentukan nilai <var>x</var> dari 4<var>x</var> = 36.</p></div>
+      <input class="ans-input" type="text" placeholder="Tulis jawabanmu">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p>Kedua ruas dibagi 4: <var>x</var> = 36 ÷ 4 = <b>9</b>. Cek: 4 × 9 = 36 ✔</p></div>
+    </div>
+
+    <div class="ex" data-type="num" data-answer="11">
+      <div class="ex-head"><span class="ex-num">3</span><p class="ex-q">Tentukan nilai <var>x</var> dari 2<var>x</var> − 7 = 15.</p></div>
+      <input class="ans-input" type="text" placeholder="Tulis jawabanmu">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p>2<var>x</var> = 15 + 7 = 22 → <var>x</var> = 22 ÷ 2 = <b>11</b>. Cek: 2(11) − 7 = 15 ✔</p></div>
+    </div>
+
+    <div class="ex" data-type="num" data-answer="-7">
+      <div class="ex-head"><span class="ex-num">4</span><p class="ex-q">Tentukan nilai <var>x</var> dari 6<var>x</var> + 4 = 5<var>x</var> − 3. <i>(Hati-hati, jawabannya negatif!)</i></p></div>
+      <input class="ans-input" type="text" placeholder="Tulis jawabanmu">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p>6<var>x</var> − 5<var>x</var> = −3 − 4 → <var>x</var> = <b>−7</b>. Cek kiri: 6(−7) + 4 = −38; cek kanan: 5(−7) − 3 = −38 ✔ (sama)</p></div>
+    </div>
+
+    <div class="ex" data-type="num" data-answer="11">
+      <div class="ex-head"><span class="ex-num">5</span><p class="ex-q">🔥 <b>Level boss:</b> Tentukan nilai <var>x</var> dari <span class="fr"><span class="frt">2<var>x</var> − 1</span><span class="frb">3</span></span> + 1 = <span class="fr"><span class="frt"><var>x</var> + 5</span><span class="frb">2</span></span>.</p></div>
+      <input class="ans-input" type="text" placeholder="Tulis jawabanmu">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p>Kalikan kedua ruas dengan KPK penyebut = 6: 2(2<var>x</var> − 1) + 6 = 3(<var>x</var> + 5). Buka kurung: 4<var>x</var> − 2 + 6 = 3<var>x</var> + 15 → 4<var>x</var> + 4 = 3<var>x</var> + 15 → <var>x</var> = <b>11</b>. Cek: (22 − 1)/3 + 1 = 7 + 1 = 8 dan (11 + 5)/2 = 8 ✔</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 14: LATIHAN 3 ============ -->
+<section class="slide" data-title="Latihan 3 — Soal Cerita">
+  <div class="wrap">
+    <span class="eyebrow">Latihan Materi 3</span>
+    <h2 class="title">Latihan 3 — Membentuk PLSV dari Cerita 📖 <span class="solvedcount">0/5 selesai</span></h2>
+    <p class="lead">Tulis jawaban dalam bentuk <b>angka saja</b> (tanpa satuan), misalnya <b>2500</b> atau <b>13</b>.</p>
+
+    <div class="ex" data-type="num" data-answer="27">
+      <div class="ex-head"><span class="ex-num">1</span><p class="ex-q">Hasil penjumlahan suatu bilangan dengan 15 adalah 42. Berapa bilangan itu?</p></div>
+      <input class="ans-input" type="text" placeholder="Tulis angkanya saja">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p>Model: <var>x</var> + 15 = 42 → <var>x</var> = 42 − 15 = <b>27</b>. Cek: 27 + 15 = 42 ✔</p></div>
+    </div>
+
+    <div class="ex" data-type="num" data-answer="13">
+      <div class="ex-head"><span class="ex-num">2</span><p class="ex-q">Jumlah umur kakak dan adik 30 tahun. Umur kakak 4 tahun lebih tua dari umur adik. Berapa <b>umur adik</b>? (dalam tahun)</p></div>
+      <input class="ans-input" type="text" placeholder="Tulis angkanya saja">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p>Misal umur adik = <var>x</var>, umur kakak = <var>x</var> + 4. Model: <var>x</var> + (<var>x</var> + 4) = 30 → 2<var>x</var> + 4 = 30 → 2<var>x</var> = 26 → <var>x</var> = <b>13</b>. Umur adik 13 tahun, kakak 17 tahun. Cek: 13 + 17 = 30 ✔</p></div>
+    </div>
+
+    <div class="ex" data-type="num" data-answer="2500">
+      <div class="ex-head"><span class="ex-num">3</span><p class="ex-q">Ani membeli 5 pensil yang harganya sama dan membayar Rp12.500. Berapa harga satu pensil? (tulis angkanya saja, mis. 2500)</p></div>
+      <input class="ans-input" type="text" placeholder="Tulis angkanya saja">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p>Model: 5<var>p</var> = 12.500 → <var>p</var> = 12.500 ÷ 5 = <b>2.500</b>. Cek: 5 × 2.500 = 12.500 ✔</p></div>
+    </div>
+
+    <div class="ex" data-type="num" data-answer="10">
+      <div class="ex-head"><span class="ex-num">4</span><p class="ex-q">Keliling sebuah persegi panjang 48 cm. Panjangnya 4 cm lebihnya dari lebarnya. Berapa <b>lebar</b> persegi panjang itu? (dalam cm)</p></div>
+      <input class="ans-input" type="text" placeholder="Tulis angkanya saja">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p>Misal lebar = <var>x</var>, panjang = <var>x</var> + 4. Model: 2(<var>x</var> + <var>x</var> + 4) = 48 → 2(2<var>x</var> + 4) = 48 → 4<var>x</var> + 8 = 48 → 4<var>x</var> = 40 → <var>x</var> = <b>10</b>. Lebar 10 cm, panjang 14 cm. Cek: 2(10 + 14) = 48 ✔</p></div>
+    </div>
+
+    <div class="ex" data-type="num" data-answer="25">
+      <div class="ex-head"><span class="ex-num">5</span><p class="ex-q">🔥 Di kelas VII-A, banyak siswa laki-laki 5 orang kurangnya dari dua kali banyak siswa perempuan. Jumlah seluruh siswa 40 orang. Berapa <b>banyak siswa laki-laki</b>? (tulis angkanya saja)</p></div>
+      <input class="ans-input" type="text" placeholder="Tulis angkanya saja">
+      <div class="ex-actions"><button class="btn small primary act-cek" type="button">✔ Cek Jawaban</button><button class="btn small ghost act-bahas" type="button">💡 Pembahasan</button></div>
+      <div class="feedback"></div>
+      <div class="bahas"><h4>💡 Pembahasan</h4><p>Misal perempuan = <var>P</var>, maka laki-laki = 2<var>P</var> − 5. Model: <var>P</var> + (2<var>P</var> − 5) = 40 → 3<var>P</var> − 5 = 40 → 3<var>P</var> = 45 → <var>P</var> = 15. Laki-laki = 2(15) − 5 = <b>25</b> orang. Cek: 15 + 25 = 40 ✔</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 15: KUIS INTRO ============ -->
+<section class="slide" data-title="Kuis Akhir 30 Soal">
+  <div class="wrap">
+    <span class="eyebrow">Ujian Mini</span>
+    <h2 class="title">Kuis Akhir — 30 Soal 🏆</h2>
+    <p class="lead">Saatnya menguji seluruh materi! Baca aturannya, lalu tekan <b>Mulai Kuis</b>.</p>
+    <div class="grid2 mb">
+      <div class="card">
+        <h3>📋 Isi kuis</h3>
+        <ul style="margin:8px 0 0 20px">
+          <li><b>8 soal konsep</b> — pengertian &amp; ciri PLSV</li>
+          <li><b>12 soal persamaan</b> — menentukan nilai variabel (mudah → sangat sulit)</li>
+          <li><b>10 soal cerita</b> — membentuk &amp; menyelesaikan model</li>
+          <li>Semua soal pilihan ganda (A–D)</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h3>⚙️ Aturan &amp; fitur</h3>
+        <ul style="margin:8px 0 0 20px">
+          <li>⏱️ Waktu maksimal <b>20 menit</b>, waktu habis = kuis otomatis diakhiri</li>
+          <li>➕ Butuh waktu tambahan? Gunakan tombol <b>+1 Menit</b></li>
+          <li>💾 <b>Simpan Jawaban</b> menyimpan progres (jawaban juga tersimpan otomatis)</li>
+          <li>⏹ <b>Akhiri Kuis</b> kapan saja → hasil langsung muncul</li>
+          <li>📊 Hasil: skor, predikat, rincian tiap soal + pembahasan</li>
+        </ul>
+      </div>
+    </div>
+    <div id="resumeInfo" class="note blue hidden" style="margin-bottom:14px"></div>
+    <div class="ex-actions">
+      <button class="btn primary big" id="btnQuizStart" type="button">▶ Mulai Kuis</button>
+      <button class="btn warn big hidden" id="btnQuizResume" type="button">⏩ Lanjutkan Kuis</button>
+      <button class="btn ghost big hidden" id="btnQuizResult" type="button">📊 Lihat Hasil Terakhir</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 16: RUANG KUIS ============ -->
+<section class="slide" data-title="Ruang Kuis">
+  <div class="wrap">
+    <div id="quizArea" class="hidden">
+      <div class="quiz-top">
+        <div class="timer" id="qTimer">20:00</div>
+        <div class="quiz-top-btns">
+          <button id="btnPlus" class="btn small warn" type="button">➕ +1 Menit</button>
+          <button id="btnSaveQ" class="btn small ghost" type="button">💾 Simpan Jawaban</button>
+          <button id="btnEnd" class="btn small danger" type="button">⏹ Akhiri Kuis</button>
+        </div>
+      </div>
+      <details class="qgridwrap">
+        <summary id="qSummary">🗺️ Peta Soal — terjawab 0/30 (klik untuk membuka)</summary>
+        <div class="qgrid" id="qGrid"></div>
+      </details>
+      <div class="card mt">
+        <span class="qtag" id="qTag">Konsep</span>
+        <div class="qnum" id="qNum">Soal 1 dari 30</div>
+        <p class="qtext" id="qText"></p>
+        <div class="opts qopts" id="qOpts"></div>
+        <div class="quiz-nav">
+          <button id="qPrev" class="btn ghost" type="button">← Sebelumnya</button>
+          <button id="qNext" class="btn primary" type="button">Berikutnya →</button>
+        </div>
+      </div>
+    </div>
+    <div id="quizPlaceholder" class="qph">🏁 Kuis belum dimulai.<br>Buka slide <b>“Kuis Akhir 30 Soal”</b> (sebelum slide ini) lalu tekan <b>▶ Mulai Kuis</b>.</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 17: HASIL KUIS ============ -->
+<section class="slide" data-title="Hasil Kuis">
+  <div class="wrap">
+    <span class="eyebrow">Hasil Pengerjaan Siswa</span>
+    <h2 class="title">Hasil Kuis Kamu 📊</h2>
+    <div id="hasilLock" class="qph">🔒 Hasil belum tersedia.<br>Selesaikan kuis (slide <b>“Ruang Kuis”</b>) untuk melihat skor, predikat, dan pembahasan.</div>
+    <div id="hasilBody" class="hidden"></div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 18: KESIMPULAN ============ -->
+<section class="slide" data-title="Kesimpulan">
+  <div class="wrap">
+    <span class="eyebrow">Kesimpulan</span>
+    <h2 class="title">Apa yang Sudah Kita Pelajari Hari Ini? 🎓</h2>
+    <p class="lead">Lima poin emas — hafalkan dan pakai!</p>
+    <div class="grid2">
+      <div class="card"><b>1. Definisi PLSV</b><p class="mt">Kalimat terbuka dengan tanda " = ", <b>satu variabel</b>, pangkat tertinggi <b>satu</b>. Bentuk umum: <var>ax</var> + <var>b</var> = <var>c</var> (<var>a</var> ≠ 0).</p></div>
+      <div class="card"><b>2. Kaidah timbangan</b><p class="mt">Operasi apa pun harus dilakukan <b>sama di kedua ruas</b>. Suku yang pindah ruas tandanya berubah (+ ⇄ −).</p></div>
+      <div class="card"><b>3. Langkah penyelesaian</b><p class="mt">Sederhanakan → kumpulkan variabel &amp; konstanta → bagi dengan koefisien → <b>cek dengan substitusi</b>.</p></div>
+      <div class="card"><b>4. Persenjataan soal sulit</b><p class="mt">Sifat distributif untuk kurung, KPK penyebut untuk menghapus pecahan, kalikan −1 jika variabel negatif.</p></div>
+      <div class="card" style="grid-column:1/-1"><b>5. Soal cerita</b><p class="mt">Baca &amp; pahami → tetapkan variabel → bentuk model PLSV → selesaikan → jawab dengan satuan dan cek ke masalah aslinya. Frasa kunci: "lebih" (+), "kurang" (−), "kali" (×), "dikurangkan dari" (urutan terbalik!).</p></div>
+    </div>
+    <div class="note green mt">🌟 <b>Ingat:</b> keahlian menyelesaikan PLSV adalah fondasi untuk materi berikutnya — pertidaksamaan linear, persamaan garis lurus, sampai PLDV. Kuasai baik-baik!</div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 19: REFLEKSI ============ -->
+<section class="slide" data-title="Refleksi">
+  <div class="wrap">
+    <span class="eyebrow">Refleksi</span>
+    <h2 class="title">Cek Diri Sendiri 🪞</h2>
+    <p class="lead">Centang kemampuan yang sudah kamu kuasai, pilih perasaanmu, dan tulis refleksi. Refleksi tersimpan di perangkatmu.</p>
+    <div class="card mb">
+      <h3>✅ Kemampuan saya</h3>
+      <label class="chk mt"><input type="checkbox" class="refchk" value="1"> Saya bisa menjelaskan apa itu PLSV dan contohnya.</label>
+      <label class="chk"><input type="checkbox" class="refchk" value="2"> Saya bisa menentukan nilai variabel dari PLSV.</label>
+      <label class="chk"><input type="checkbox" class="refchk" value="3"> Saya bisa menyelesaikan PLSV berpecahan dan berkurung.</label>
+      <label class="chk"><input type="checkbox" class="refchk" value="4"> Saya bisa membentuk model PLSV dari soal cerita.</label>
+    </div>
+    <div class="card mb">
+      <h3>😊 Bagaimana perasaanmu?</h3>
+      <div class="moods mt">
+        <button class="mood" data-mood="😄 Mantap, saya paham semua!" type="button">😄 Paham semua</button>
+        <button class="mood" data-mood="🙂 Sebagian besar paham" type="button">🙂 Sebagian paham</button>
+        <button class="mood" data-mood="🤔 Masih bingung di beberapa bagian" type="button">🤔 Bingung sebagian</button>
+        <button class="mood" data-mood="😅 Perlu belajar lagi dari awal" type="button">😅 Perlu belajar lagi</button>
+      </div>
+    </div>
+    <div class="card">
+      <h3>✍️ Tulis refleksimu</h3>
+      <p style="font-size:.9rem;color:var(--mut);margin:6px 0 10px">Bagian mana yang paling menantang? Apa yang akan kamu lakukan agar lebih paham?</p>
+      <textarea id="refText" placeholder="Contoh: Saya masih sering salah tanda saat memindahkan ruas. Besok saya akan berlatih 5 soal pindah ruas setiap hari..."></textarea>
+      <div class="ex-actions"><button class="btn primary" id="btnSaveRef" type="button">💾 Simpan Refleksi</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SLIDE 20: PENUTUP ============ -->
+<section class="slide" data-title="Thank You for Today">
+  <span class="float" style="top:12%;left:8%;font-size:clamp(2rem,6vw,3.6rem)">🎉</span>
+  <span class="float" style="top:68%;right:9%;font-size:clamp(1.8rem,5vw,3rem);animation-delay:1.2s">⭐</span>
+  <div class="wrap thanks">
+    <span class="cover-badge">Perjalanan Hari Ini</span>
+    <h2 style="margin-top:14px">Thank You for Today! 🌟</h2>
+    <p class="sub" style="text-align:center">Kamu telah menyelesaikan <b>20 slide</b>, <b>15 latihan terbimbing</b>, dan <b>30 soal kuis</b>. Kerja bagus!</p>
+    <div class="chips" style="justify-content:center;margin-bottom:22px">
+      <span class="chip">🧠 Konsep PLSV</span>
+      <span class="chip">⚖️ Kaidah timbangan</span>
+      <span class="chip">🌋 Level boss: pecahan</span>
+      <span class="chip">📖 Soal cerita</span>
+    </div>
+    <p style="color:var(--mut);font-style:italic;margin-bottom:26px">"Matematika bukan tentang angka, tetapi tentang berpikir runtut untuk memecahkan masalah."<br>Sampai jumpa di petualangan matematika berikutnya! 🚀</p>
+    <div class="ex-actions" style="justify-content:center">
+      <button class="btn ghost" id="btnToQuiz" type="button">🔁 Kerjakan Ulang Kuis</button>
+      <button class="btn primary" id="btnRestart" type="button">🏠 Mulai Lagi dari Awal</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============ NAVBAR ============ -->
+<footer class="navbar">
+  <button id="btnPrev" class="btn ghost" type="button">← Kembali</button>
+  <span id="navTitle" class="navtitle">Cover</span>
+  <button id="btnNext" class="btn primary" type="button">Lanjut →</button>
+</footer>
+</div>
+
+<!-- ============ MENU OVERLAY ============ -->
+<div id="menuOverlay" class="overlay hidden">
+  <div class="overlay-card">
+    <div class="overlay-head"><b>📚 Daftar Slide</b><button id="btnCloseMenu" class="iconbtn" type="button" aria-label="Tutup">✕</button></div>
+    <div id="menuList" class="menu-list"></div>
+  </div>
+</div>
+
+<!-- ============ MODAL KONFIRMASI ============ -->
+<div id="modal" class="overlay hidden">
+  <div class="modal-card">
+    <p id="modalMsg">Yakin?</p>
+    <div class="modal-btns">
+      <button id="modalYes" class="btn danger" type="button">Ya, lanjutkan</button>
+      <button id="modalNo" class="btn ghost" type="button">Batal</button>
+    </div>
+  </div>
+</div>
+
+<div id="toastWrap" class="toastwrap"></div>
+
+<script>
+(function(){
+'use strict';
+/* ================= UTIL ================= */
+var $=function(id){return document.getElementById(id);};
+function lsGet(k){try{return localStorage.getItem(k);}catch(e){return null;}}
+function lsSet(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function lsDel(k){try{localStorage.removeItem(k);}catch(e){}}
+function fmt(sec){sec=Math.max(0,Math.round(sec));var m=Math.floor(sec/60),s=sec%60;return (m<10?'0':'')+m+':'+(s<10?'0':'')+s;}
+function toast(msg){var t=document.createElement('div');t.className='toast';t.textContent=msg;$('toastWrap').appendChild(t);setTimeout(function(){t.remove();},2800);}
+function plain(h){var d=document.createElement('div');d.innerHTML=h;return (d.textContent||'').replace(/\s+/g,' ').trim();}
+function parseNum(s){
+  if(!s)return null;
+  s=s.toLowerCase().replace(/[\u2212\u2013\u2014]/g,'-').replace(/\s+/g,'');
+  s=s.replace(/^x\s*=?\s*/,'').replace(/^jawab(an)?[:=]?/,'');
+  s=s.replace(/[a-z]/g,'');
+  s=s.replace(/\.(?=\d{3}(\D|$))/g,'');
+  s=s.replace(/,/g,'.');
+  s=s.replace(/[^0-9.\/\-]/g,'');
+  if(!s||s==='-')return null;
+  if(s.indexOf('/')>-1){var p=s.split('/');var a=parseFloat(p[0]),b=parseFloat(p[1]);if(b)return a/b;return null;}
+  var v=parseFloat(s);
+  return isNaN(v)?null:v;
+}
+
+/* ================= SLIDE NAVIGATION ================= */
+var slides=[].slice.call(document.querySelectorAll('.slide'));
+var cur=0;
+var IDX_INTRO=slides.findIndex(function(s){return s.dataset.title==='Kuis Akhir 30 Soal';});
+var IDX_QUIZ=slides.findIndex(function(s){return s.dataset.title==='Ruang Kuis';});
+var IDX_HASIL=slides.findIndex(function(s){return s.dataset.title==='Hasil Kuis';});
+var PH_ORIGINAL=$('quizPlaceholder').innerHTML;
+
+function buildMenu(){
+  var list=$('menuList');
+  slides.forEach(function(s,i){
+    var b=document.createElement('button');
+    b.type='button';b.className='menu-item'+(i===cur?' cur':'');
+    b.innerHTML='<span class="menu-num">'+(i+1)+'</span><span>'+s.dataset.title+'</span>';
+    b.onclick=function(){go(i);$('menuOverlay').classList.add('hidden');};
+    list.appendChild(b);
+  });
+}
+function refreshUI(){
+  $('progFill').style.width=((cur+1)/slides.length*100)+'%';
+  $('slideCounter').textContent=(cur+1)+'/'+slides.length;
+  $('navTitle').textContent=slides[cur].dataset.title;
+  $('btnPrev').disabled=cur===0;
+  $('btnNext').disabled=cur===slides.length-1;
+  var items=$('menuList').children;
+  for(var i=0;i<items.length;i++){items[i].classList.toggle('cur',i===cur);}
+}
+function go(i){
+  i=Math.max(0,Math.min(slides.length-1,i));
+  slides[cur].classList.remove('active');
+  cur=i;
+  var s=slides[cur];
+  s.classList.add('active');
+  s.scrollTop=0;
+  refreshUI();
+}
+$('btnPrev').onclick=function(){go(cur-1);};
+$('btnNext').onclick=function(){go(cur+1);};
+$('btnStart').onclick=function(){go(1);};
+$('btnToQuiz').onclick=function(){go(IDX_INTRO);};
+$('btnRestart').onclick=function(){go(0);};
+$('btnMenu').onclick=function(){$('menuOverlay').classList.remove('hidden');};
+$('btnCloseMenu').onclick=function(){$('menuOverlay').classList.add('hidden');};
+$('menuOverlay').addEventListener('click',function(e){if(e.target===this)this.classList.add('hidden');});
+document.addEventListener('keydown',function(e){
+  var tag=(e.target.tagName||'').toLowerCase();
+  if(tag==='input'||tag==='textarea')return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'){go(cur+1);}
+  else if(e.key==='ArrowLeft'||e.key==='PageUp'){go(cur-1);}
+  else if(e.key==='Escape'){$('menuOverlay').classList.add('hidden');$('modal').classList.add('hidden');}
+});
+var tX=0,tY=0;
+$('deck').addEventListener('touchstart',function(e){tX=e.changedTouches[0].clientX;tY=e.changedTouches[0].clientY;},{passive:true});
+$('deck').addEventListener('touchend',function(e){
+  var dx=e.changedTouches[0].clientX-tX,dy=e.changedTouches[0].clientY-tY;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){if(dx<0)go(cur+1);else go(cur-1);}
+},{passive:true});
+
+/* ================= MODAL ================= */
+var modalCb=null;
+function confirmBox(msg,cb){$('modalMsg').textContent=msg;modalCb=cb;$('modal').classList.remove('hidden');}
+$('modalYes').onclick=function(){$('modal').classList.add('hidden');if(modalCb){var f=modalCb;modalCb=null;f();}};
+$('modalNo').onclick=function(){modalCb=null;$('modal').classList.add('hidden');};
+
+/* ================= LATIHAN (CEK JAWABAN) ================= */
+function updateCounts(){
+  slides.forEach(function(s){
+    var sc=s.querySelector('.solvedcount');
+    if(!sc)return;
+    var n=s.querySelectorAll('.ex.solved').length;
+    sc.textContent=n+'/5 selesai';
+  });
+}
+function handleCek(ex){
+  if(ex.classList.contains('solved')){toast('✅ Soal ini sudah kamu kerjakan dengan benar!');return;}
+  var fb=ex.querySelector('.feedback');
+  var bahas=ex.querySelector('.bahas');
+  if(ex.dataset.type==='mc'){
+    var sel=ex.querySelector('.opt.sel');
+    if(!sel){toast('Pilih salah satu jawaban dulu! 👆');return;}
+    var ok=sel.dataset.k===ex.dataset.answer;
+    ex.querySelectorAll('.opt').forEach(function(o){
+      o.classList.remove('sel');
+      if(o.dataset.k===ex.dataset.answer)o.classList.add('correct');
+    });
+    if(!ok)sel.classList.add('wrong');
+    if(ok){
+      fb.className='feedback show ok';fb.textContent='✅ Benar! Jawabanmu tepat, hebat! 🎉';
+      ex.classList.add('solved');updateCounts();
+    }else{
+      fb.className='feedback show no';fb.textContent='❌ Belum tepat. Jawaban benar: '+ex.dataset.answer+'. Baca pembahasan di bawah, ya!';
+    }
+    bahas.classList.add('show');
+  }else{
+    var inp=ex.querySelector('.ans-input');
+    var v=parseNum(inp.value);
+    if(v===null){toast('Isi jawabanmu dulu! ✍️');return;}
+    var target=parseFloat(ex.dataset.answer);
+    var ok2=Math.abs(v-target)<1e-6;
+    if(ok2){
+      fb.className='feedback show ok';fb.textContent='✅ Benar! '+inp.value.trim()+' memang jawabannya. 🎉';
+      ex.classList.add('solved');inp.disabled=true;updateCounts();
+    }else{
+      fb.className='feedback show no';fb.textContent='❌ Belum tepat. Coba periksa lagi hitunganmu, atau buka pembahasan.';
+    }
+    bahas.classList.add('show');
+  }
+}
+document.addEventListener('click',function(e){
+  var opt=e.target.closest('.opt');
+  if(opt){var ex0=opt.closest('.ex');
+    if(ex0&&ex0.dataset.type==='mc'){
+      ex0.querySelectorAll('.opt').forEach(function(o){o.classList.remove('sel');});
+      opt.classList.add('sel');
+    }
+    return;
+  }
+  var cek=e.target.closest('.act-cek');
+  if(cek){handleCek(cek.closest('.ex'));return;}
+  var bah=e.target.closest('.act-bahas');
+  if(bah){var b=bah.closest('.ex').querySelector('.bahas');b.classList.toggle('show');return;}
+});
+
+/* ================= DATA KUIS (30 SOAL) ================= */
+var TAGS={konsep:'Konsep PLSV',persamaan:'Nilai Variabel',cerita:'Soal Cerita'};
+var QUIZ=[
+{t:'konsep',q:'Manakah di antara kalimat berikut yang merupakan persamaan linear satu variabel?',o:['x² − 4 = 5','2x + 3 = 11','3a + 2b = 10','7 − 2 = 5'],a:1,ex:'B memuat satu variabel (x) berpangkat satu dan tanda "=". A pangkatnya 2; C memuat dua variabel; D tidak memuat variabel.'},
+{t:'konsep',q:'Variabel pada persamaan 5p − 12 = 3p + 4 adalah...',o:['12','5 dan 3','p','4'],a:2,ex:'Huruf yang mewakili nilai yang belum diketahui adalah p. Angka 5 dan 3 adalah koefisien; 12 dan 4 konstanta.'},
+{t:'konsep',q:'Persamaan 4x − 7 = 2x + 9 memuat variabel...',o:['dua, yaitu 4x dan 2x','tiga, yaitu x, 2x, dan 4x','satu, yaitu x (muncul di kedua ruas)','tidak ada variabel'],a:2,ex:'4x dan 2x memuat variabel yang sama (x), jadi persamaan itu tetap persamaan SATU variabel.'},
+{t:'konsep',q:'Pangkat tertinggi variabel pada persamaan linear adalah...',o:['3','2','0','1'],a:3,ex:'"Linear" berarti pangkat satu — tidak ada x², x³, atau variabel di penyebut.'},
+{t:'konsep',q:'Manakah yang BUKAN persamaan linear satu variabel?',o:['x + 4 = 9','2y = 18','3(x − 1) = 12','x² − 1 = 8'],a:3,ex:'D memuat x² (pangkat dua) sehingga bukan linear. Tiga lainnya satu variabel pangkat satu.'},
+{t:'konsep',q:'Bentuk umum PLSV (dengan a ≠ 0) adalah...',o:['ax + b = c','ax² + b = c','ax + by = c','a/x + b = c'],a:0,ex:'ax + b = c dengan a koefisien (≠ 0), b dan c konstanta, dan hanya satu variabel x berpangkat satu.'},
+{t:'konsep',q:'Pada persamaan 3x + 7 = 19, konstanta pada ruas kiri adalah...',o:['3','7','x','19'],a:1,ex:'Suku tanpa variabel di ruas kiri adalah 7 → konstanta. 3 adalah koefisien; 19 adalah konstanta ruas kanan.'},
+{t:'konsep',q:'Jika kedua ruas persamaan dikalikan bilangan yang sama dan bukan nol, maka...',o:['nilai variabelnya berubah','persamaan menjadi tidak bermakna','hubungan "=" tetap berlaku','variabelnya hilang'],a:2,ex:'Sifat perkalian persamaan: operasi yang sama pada kedua ruas (kali/bagi dengan bilangan ≠ 0) tidak mengubah penyelesaian.'},
+{t:'persamaan',q:'Nilai x dari x + 12 = 30 adalah...',o:['18','42','16','20'],a:0,ex:'x = 30 − 12 = 18. Cek: 18 + 12 = 30 ✔'},
+{t:'persamaan',q:'Nilai y dari y − 8 = 25 adalah...',o:['17','30','33','35'],a:2,ex:'y = 25 + 8 = 33. Cek: 33 − 8 = 25 ✔'},
+{t:'persamaan',q:'Nilai x dari 6x = 54 adalah...',o:['48','60','8','9'],a:3,ex:'x = 54 ÷ 6 = 9. Cek: 6 × 9 = 54 ✔'},
+{t:'persamaan',q:'Nilai x dari <span class="fr"><span class="frt">x</span><span class="frb">5</span></span> = 7 adalah...',o:['12','2','35','40'],a:2,ex:'Kalikan kedua ruas dengan 5: x = 7 × 5 = 35. Cek: 35 ÷ 5 = 7 ✔'},
+{t:'persamaan',q:'Nilai x dari 2x + 9 = 25 adalah...',o:['8','17','16','34'],a:0,ex:'2x = 25 − 9 = 16 → x = 8. (17 adalah jebakan: 16 masih harus dibagi 2!)'},
+{t:'persamaan',q:'Nilai x dari 3x − 5 = 16 adalah...',o:['4','11','7','8'],a:2,ex:'3x = 16 + 5 = 21 → x = 7. Cek: 3(7) − 5 = 16 ✔'},
+{t:'persamaan',q:'Nilai x dari 4x + 3 = 2x + 15 adalah...',o:['9','12','4','6'],a:3,ex:'4x − 2x = 15 − 3 → 2x = 12 → x = 6. Cek: ruas kiri 27, ruas kanan 27 ✔'},
+{t:'persamaan',q:'Nilai x dari 7 − 2x = 1 adalah...',o:['−3','3','−4','4'],a:1,ex:'−2x = 1 − 7 = −6 → x = −6 ÷ (−2) = 3. Cek: 7 − 6 = 1 ✔'},
+{t:'persamaan',q:'Nilai x dari 5(x − 2) = 20 adalah...',o:['6','2','10','4'],a:0,ex:'5x − 10 = 20 → 5x = 30 → x = 6. Cara cepat: x − 2 = 20 ÷ 5 = 4 → x = 6.'},
+{t:'persamaan',q:'Nilai x dari 3(x + 4) = 2x + 17 adalah...',o:['29','13','5','3'],a:2,ex:'3x + 12 = 2x + 17 → x = 5. Cek: ruas kiri 3(9) = 27, ruas kanan 2(5) + 17 = 27 ✔'},
+{t:'persamaan',q:'🔥 Nilai x dari <span class="fr"><span class="frt">2x − 1</span><span class="frb">3</span></span> + 1 = <span class="fr"><span class="frt">x + 5</span><span class="frb">2</span></span> adalah...',o:['11','9','5','13'],a:0,ex:'Kalikan kedua ruas dengan 6: 2(2x − 1) + 6 = 3(x + 5) → 4x + 4 = 3x + 15 → x = 11. Cek: 21/3 + 1 = 8 dan 16/2 = 8 ✔'},
+{t:'persamaan',q:'🔥 Nilai x dari 2(x + 1) − 3(x − 2) = x + 4 adalah...',o:['4','−2','8','2'],a:3,ex:'2x + 2 − 3x + 6 = x + 4 → −x + 8 = x + 4 → −2x = −4 → x = 2. Cek: 2(3) − 3(0) = 6 dan 2 + 4 = 6 ✔'},
+{t:'cerita',q:'Suatu bilangan jika dijumlahkan dengan 9 hasilnya 21. Bilangan itu adalah...',o:['30','12','11','−12'],a:1,ex:'Model: x + 9 = 21 → x = 12. Cek: 12 + 9 = 21 ✔'},
+{t:'cerita',q:'Umur Rian 3 tahun lebih muda daripada kakaknya yang berumur 19 tahun. Jika umur Rian = r, model PLSV-nya adalah...',o:['3r = 19','r − 3 = 19','r + 3 = 19','r = 3 − 19'],a:2,ex:'"Lebih muda 3 tahun" berarti umur Rian + 3 = umur kakak → r + 3 = 19, sehingga r = 16.'},
+{t:'cerita',q:'Jika suatu bilangan dikurangkan dari 25, hasilnya 10. Bilangan itu adalah...',o:['35','−15','12','15'],a:3,ex:'Model: 25 − x = 10 → x = 25 − 10 = 15. Hati-hati: "dikurangkan DARI 25" berarti 25 − x, bukan x − 25.'},
+{t:'cerita',q:'Harga 3 buku tulis dan 2 pensil adalah Rp19.000. Jika harga 1 pensil Rp2.000, harga 1 buku tulis adalah...',o:['Rp4.000','Rp6.000','Rp5.000','Rp6.333'],a:2,ex:'Model: 3b + 2(2.000) = 19.000 → 3b = 15.000 → b = 5.000. Cek: 3(5.000) + 2(2.000) = 19.000 ✔'},
+{t:'cerita',q:'Keliling sebuah persegi 36 cm (model: 4s = 36). Panjang sisinya adalah...',o:['12 cm','6 cm','8 cm','9 cm'],a:3,ex:'4s = 36 → s = 9 cm. Keliling persegi = 4 × sisi.'},
+{t:'cerita',q:'Jumlah dua bilangan 45. Bilangan pertama 7 lebihnya dari bilangan kedua. Bilangan kedua adalah...',o:['26','19','21','38'],a:1,ex:'Model: x + (x + 7) = 45 → 2x = 38 → x = 19. (Bilangan pertama 26; cek 19 + 26 = 45 ✔)'},
+{t:'cerita',q:'Umur Ibu 4 kali umur anaknya. Jumlah umur mereka 40 tahun. Umur anak adalah...',o:['10 tahun','32 tahun','8 tahun','12 tahun'],a:2,ex:'Model: 4x + x = 40 → 5x = 40 → x = 8. Umur anak 8 tahun, Ibu 32 tahun. Cek: 8 + 32 = 40 ✔'},
+{t:'cerita',q:'Panjang persegi panjang 5 cm lebihnya dari lebarnya, kelilingnya 30 cm. Panjang persegi panjang itu adalah...',o:['5 cm','12,5 cm','15 cm','10 cm'],a:3,ex:'Lebar x: 2(x + x + 5) = 30 → 4x + 10 = 30 → x = 5 → panjang = 5 + 5 = 10 cm. Cek: 2(10 + 5) = 30 ✔'},
+{t:'cerita',q:'Sebuah bilangan dikalikan 4 lalu dikurangi 6, hasilnya 18. Bilangan itu adalah...',o:['9','6','3','48'],a:1,ex:'Model: 4x − 6 = 18 → 4x = 24 → x = 6. Cek: 4(6) − 6 = 18 ✔'},
+{t:'cerita',q:'🔥 Uang Budi <span class="fr"><span class="frt">2</span><span class="frb">3</span></span> dari uang Cici. Jumlah uang mereka Rp30.000. Uang Budi adalah...',o:['Rp12.000','Rp18.000','Rp15.000','Rp10.000'],a:0,ex:'Model: (2/3)c + c = 30.000 → (5/3)c = 30.000 → c = 18.000 → uang Budi = (2/3) × 18.000 = Rp12.000. Cek: 12.000 + 18.000 = 30.000 ✔'}
+];
+
+/* ================= STATE KUIS ================= */
+var QKEY='plsv_quiz_v1';
+var qz={start:false,done:false,ans:new Array(30).fill(null),rem:1200,extra:0,idx:0,timeUsed:0,auto:false};
+var timerId=null;
+function loadState(){try{var s=JSON.parse(lsGet(QKEY)||'null');return s&&typeof s==='object'?s:null;}catch(e){return null;}}
+function persist(){lsSet(QKEY,JSON.stringify(qz));}
+function answeredCount(s){return s.ans.filter(function(v){return v!==null;}).length;}
+function updateTimerUI(){
+  var t=fmt(qz.rem);
+  $('qTimer').textContent=t;
+  $('qTimer').classList.toggle('low',qz.rem<300);
+  if(qz.start&&!qz.done){$('topTimer').classList.remove('hidden');$('topTimer').textContent='⏱ '+t;}
+  else{$('topTimer').classList.add('hidden');}
+}
+function tick(){
+  if(!qz.start||qz.done)return;
+  qz.rem--;
+  if(qz.rem<=0){qz.rem=0;updateTimerUI();persist();endQuiz(true);return;}
+  updateTimerUI();persist();
+}
+function startTimer(){if(timerId)clearInterval(timerId);timerId=setInterval(tick,1000);}
+function renderQ(){
+  if(qz.done){
+    $('quizArea').classList.add('hidden');
+    $('quizPlaceholder').classList.remove('hidden');
+    $('quizPlaceholder').innerHTML='✅ Kuis sudah selesai. Lihat hasilnya di slide <b>“Hasil Kuis”</b> (slide berikutnya).';
+    return;
+  }
+  $('quizArea').classList.remove('hidden');
+  $('quizPlaceholder').classList.add('hidden');
+  var item=QUIZ[qz.idx];
+  $('qTag').textContent=TAGS[item.t];
+  $('qNum').textContent='Soal '+(qz.idx+1)+' dari 30';
+  $('qText').innerHTML=item.q;
+  var opts=$('qOpts');opts.innerHTML='';
+  item.o.forEach(function(txt,i){
+    var b=document.createElement('button');
+    b.type='button';
+    b.className='opt'+(qz.ans[qz.idx]===i?' sel':'');
+    b.innerHTML='<b>'+'ABCD'[i]+'.</b> '+txt;
+    b.onclick=function(){qz.ans[qz.idx]=i;persist();renderQ();};
+    opts.appendChild(b);
+  });
+  $('qPrev').disabled=qz.idx===0;
+  $('qNext').textContent=qz.idx===29?'⏹ Akhiri Kuis':'Berikutnya →';
+  var grid=$('qGrid');grid.innerHTML='';
+  QUIZ.forEach(function(_,i){
+    var d=document.createElement('button');
+    d.type='button';
+    d.className='qd'+(qz.ans[i]!==null?' ans':'')+(i===qz.idx?' cur':'');
+    d.textContent=i+1;
+    d.title='Soal '+(i+1)+(qz.ans[i]!==null?' — sudah dijawab':' — belum dijawab');
+    d.onclick=function(){qz.idx=i;renderQ();};
+    grid.appendChild(d);
+  });
+  $('qSummary').textContent='🗺️ Peta Soal — terjawab '+answeredCount(qz)+'/30 (klik untuk membuka)';
+}
+function enterQuiz(navigate){
+  $('quizPlaceholder').classList.add('hidden');
+  $('quizArea').classList.remove('hidden');
+  startTimer();
+  updateTimerUI();
+  renderQ();
+  if(navigate)go(IDX_QUIZ);
+}
+function startQuiz(){
+  var saved=loadState();
+  var doStart=function(){
+    qz={start:true,done:false,ans:new Array(30).fill(null),rem:1200,extra:0,idx:0,timeUsed:0,auto:false};
+    persist();
+    enterQuiz(true);
+    toast('▶ Kuis dimulai! Waktu 20:00. Semangat! 💪');
+  };
+  if(saved&&saved.start&&!saved.done){confirmBox('Ada kuis tersimpan yang belum selesai. Memulai kuis baru akan menghapus simpanan itu. Lanjut mulai baru?',doStart);}
+  else{doStart();}
+}
+function resumeQuiz(){enterQuiz(true);toast('⏩ Kuis dilanjutkan. Tetap semangat! 💪');}
+function endQuiz(auto){
+  if(!qz.start||qz.done)return;
+  if(timerId)clearInterval(timerId);
+  qz.done=true;qz.auto=!!auto;
+  qz.timeUsed=Math.max(0,(1200+qz.extra*60)-qz.rem);
+  persist();
+  updateTimerUI();
+  renderResults();
+  go(IDX_HASIL);
+  toast(auto?'⏰ Waktu habis! Kuis diakhiri otomatis.':'✅ Kuis diakhiri. Ini hasil kerjamu!');
+}
+function predicate(p){
+  if(p>=90)return['A','Luar biasa! Kamu menguasai PLSV 🌟','#10b981'];
+  if(p>=80)return['B','Bagus sekali! Terus berkembang 🎉','#10b981'];
+  if(p>=70)return['C','Baik, masih bisa diasah 👍','#f59e0b'];
+  if(p>=60)return['D','Cukup, ayo lebih gigih lagi 💪','#f59e0b'];
+  return['E','Jangan menyerah — ulangi latihannya! 🔥','#ef4444'];
+}
+function renderResults(){
+  var correct=0,wrong=0;
+  qz.ans.forEach(function(v,i){if(v===null)return;if(v===QUIZ[i].a)correct++;else wrong++;});
+  var blank=30-correct-wrong;
+  var pct=Math.round(correct/30*100);
+  var pred=predicate(pct);
+  var topics=[['Konsep PLSV',0,8],['Nilai Variabel',8,12],['Soal Cerita',20,10]];
+  var html='';
+  html+='<div class="card mb"><div class="scorewrap">';
+  html+='<div class="scorecircle" style="background:conic-gradient('+pred[2]+' '+pct+'%, #e2e8f0 0)"><div style="background:#fff;border-radius:50%;width:76%;height:76%;display:flex;flex-direction:column;align-items:center;justify-content:center"><span class="big" style="color:'+pred[2]+'">'+pct+'</span><span class="small" style="color:#64748b">SKOR /100</span></div></div>';
+  html+='<div class="statgrid">';
+  html+='<div class="stat"><b style="color:#10b981">'+correct+'</b><span>Benar</span></div>';
+  html+='<div class="stat"><b style="color:#ef4444">'+wrong+'</b><span>Salah</span></div>';
+  html+='<div class="stat"><b style="color:#94a3b8">'+blank+'</b><span>Tidak dijawab</span></div>';
+  html+='<div class="stat"><b>'+fmt(qz.timeUsed)+'</b><span>Waktu dipakai'+(qz.auto?' (waktu habis)':'')+'</span></div>';
+  html+='<div class="stat"><b>+'+qz.extra+' mnt</b><span>Menit ekstra dipakai</span></div>';
+  html+='<div class="stat"><b style="color:'+pred[2]+'">'+pred[0]+'</b><span>Predikat</span></div>';
+  html+='</div></div>';
+  html+='<p style="text-align:center;font-weight:700;font-size:1.05rem">'+pred[1]+'</p></div>';
+  html+='<div class="card mb"><h3>📊 Per mata materi</h3>';
+  topics.forEach(function(tp){
+    var c=0;for(var i=tp[1];i<tp[1]+tp[2];i++){if(qz.ans[i]===QUIZ[i].a)c++;}
+    var p2=Math.round(c/tp[2]*100);
+    html+='<div class="topicbar"><div class="lbl"><span>'+tp[0]+'</span><span>'+c+'/'+tp[2]+'</span></div><div class="bar"><i style="width:'+p2+'%"></i></div></div>';
+  });
+  html+='</div>';
+  html+='<h3 style="margin:4px 0 12px">📝 Rincian per soal</h3>';
+  QUIZ.forEach(function(item,i){
+    var v=qz.ans[i];
+    var cls,klass,label;
+    if(v===null){cls='skip';klass='n';label='Tidak dijawab';}
+    else if(v===item.a){cls='good';klass='g';label='Benar';}
+    else{cls='bad';klass='r';label='Salah';}
+    html+='<div class="rev '+cls+'">';
+    html+='<span class="tagpill '+klass+'">'+label+'</span> <b>Soal '+(i+1)+'</b> <span style="color:#64748b;font-size:.8rem">— '+TAGS[item.t]+'</span>';
+    html+='<div class="rq">'+item.q+'</div>';
+    if(v===null){
+      html+='<div class="ra">Jawabanmu: <b>—</b> &nbsp;|&nbsp; Kunci: <b class="ok">'+'ABCD'[item.a]+'. '+item.o[item.a]+'</b></div>';
+    }else{
+      var mine='<b class="'+(v===item.a?'ok':'no')+'">'+'ABCD'[v]+'. '+item.o[v]+'</b>';
+      html+='<div class="ra">Jawabanmu: '+mine+' &nbsp;|&nbsp; Kunci: <b class="ok">'+'ABCD'[item.a]+'. '+item.o[item.a]+'</b></div>';
+    }
+    html+='<details class="sol"><summary>💡 Pembahasan</summary><div class="solbody"><p>'+item.ex+'</p></div></details>';
+    html+='</div>';
+  });
+  html+='<div class="ex-actions" style="justify-content:center;margin-top:8px"><button class="btn ghost" id="btnRedo" type="button">🔄 Ulangi Kuis</button><button class="btn primary" id="btnDownload" type="button">⬇️ Unduh Hasil (.txt)</button></div>';
+  $('hasilLock').classList.add('hidden');
+  var hb=$('hasilBody');
+  hb.classList.remove('hidden');
+  hb.innerHTML=html;
+  $('btnRedo').onclick=function(){confirmBox('Ulangi kuis dari awal? Hasil saat ini akan dihapus.',resetQuiz);};
+  $('btnDownload').onclick=downloadResults;
+}
+function downloadResults(){
+  var correct=0,wrong=0;
+  qz.ans.forEach(function(v,i){if(v===null)return;if(v===QUIZ[i].a)correct++;else wrong++;});
+  var blank=30-correct-wrong;
+  var pct=Math.round(correct/30*100);
+  var pred=predicate(pct);
+  var lines=[];
+  lines.push('HASIL KUIS — PERSAMAAN LINEAR SATU VARIABEL');
+  lines.push('Tanggal: '+new Date().toLocaleString('id-ID'));
+  lines.push('Skor: '+pct+'/100  (Predikat '+pred[0]+' — '+pred[1]+')');
+  lines.push('Benar: '+correct+' | Salah: '+wrong+' | Tidak dijawab: '+blank);
+  lines.push('Waktu dipakai: '+fmt(qz.timeUsed)+' | Menit ekstra: +'+qz.extra);
+  lines.push('');
+  lines.push('RINCIAN PER SOAL:');
+  QUIZ.forEach(function(item,i){
+    var v=qz.ans[i];
+    var st=v===null?'TIDAK DIJAWAB':(v===item.a?'BENAR':'SALAH');
+    var mine=v===null?'-':plain('ABCD'[v]+'. '+item.o[v]);
+    lines.push((i+1)+'. ['+st+'] Jawabanmu: '+mine+' | Kunci: '+plain('ABCD'[item.a]+'. '+item.o[item.a]));
+    lines.push('   Soal: '+plain(item.q));
+    lines.push('   Pembahasan: '+plain(item.ex));
+  });
+  var blob=new Blob([lines.join('\n')],{type:'text/plain;charset=utf-8'});
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='hasil-kuis-plsv.txt';
+  document.body.appendChild(a);a.click();a.remove();
+  toast('⬇️ Hasil diunduh sebagai hasil-kuis-plsv.txt');
+}
+function resetQuiz(){
+  if(timerId)clearInterval(timerId);
+  qz={start:false,done:false,ans:new Array(30).fill(null),rem:1200,extra:0,idx:0,timeUsed:0,auto:false};
+  lsDel(QKEY);
+  $('topTimer').classList.add('hidden');
+  $('quizArea').classList.add('hidden');
+  $('quizPlaceholder').classList.remove('hidden');
+  $('quizPlaceholder').innerHTML=PH_ORIGINAL;
+  $('hasilBody').classList.add('hidden');
+  $('hasilBody').innerHTML='';
+  $('hasilLock').classList.remove('hidden');
+  updateIntro();
+  go(IDX_INTRO);
+  toast('🔄 Kuis direset. Siap mencoba lagi?');
+}
+function updateIntro(){
+  var saved=loadState();
+  if(saved&&saved.start&&!saved.done){
+    $('resumeInfo').innerHTML='📦 Kuis tersimpan ditemukan: <b>'+answeredCount(saved)+'/30</b> soal terjawab, sisa waktu <b>'+fmt(saved.rem)+'</b>. Klik "Lanjutkan Kuis" untuk meneruskan.';
+    $('resumeInfo').classList.remove('hidden');
+    $('btnQuizResume').classList.remove('hidden');
+  }else{
+    $('resumeInfo').classList.add('hidden');
+    $('btnQuizResume').classList.add('hidden');
+  }
+  if(saved&&saved.done){$('btnQuizResult').classList.remove('hidden');}
+  else{$('btnQuizResult').classList.add('hidden');}
+}
+$('btnQuizStart').onclick=startQuiz;
+$('btnQuizResume').onclick=resumeQuiz;
+$('btnQuizResult').onclick=function(){renderResults();go(IDX_HASIL);};
+$('btnPlus').onclick=function(){
+  if(!qz.start||qz.done)return;
+  qz.rem+=60;qz.extra++;
+  persist();updateTimerUI();
+  toast('➕ +1 menit! Total tambahan: '+qz.extra+' menit. ⏱ '+fmt(qz.rem));
+};
+$('btnSaveQ').onclick=function(){
+  if(!qz.start||qz.done)return;
+  persist();
+  toast('💾 Jawaban tersimpan! ('+answeredCount(qz)+'/30 soal) — progres aman walau halaman ditutup.');
+};
+$('btnEnd').onclick=function(){if(!qz.start||qz.done)return;confirmBox('Akhiri kuis sekarang dan lihat hasilnya? Soal yang belum dijawab dihitung salah.',function(){endQuiz(false);});};
+$('qPrev').onclick=function(){if(qz.idx>0){qz.idx--;renderQ();}};
+$('qNext').onclick=function(){
+  if(qz.idx===29){confirmBox('Ini soal terakhir. Akhiri kuis dan lihat hasil?',function(){endQuiz(false);});}
+  else{qz.idx++;renderQ();}
+};
+$('topTimer').onclick=function(){go(IDX_QUIZ);};
+
+/* ================= REFLEKSI ================= */
+var RKEY='plsv_refleksi_v1';
+var selMood=null;
+document.querySelectorAll('.mood').forEach(function(m){
+  m.onclick=function(){
+    document.querySelectorAll('.mood').forEach(function(x){x.classList.remove('sel');});
+    m.classList.add('sel');
+    selMood=m.dataset.mood;
+  };
+});
+$('btnSaveRef').onclick=function(){
+  var checks=[].slice.call(document.querySelectorAll('.refchk:checked')).map(function(c){return c.value;});
+  lsSet(RKEY,JSON.stringify({checks:checks,mood:selMood,text:$('refText').value}));
+  toast('💾 Refleksi tersimpan di perangkatmu! 🌟');
+};
+(function loadRef(){
+  try{
+    var r=JSON.parse(lsGet(RKEY)||'null');
+    if(!r)return;
+    (r.checks||[]).forEach(function(v){
+      var c=document.querySelector('.refchk[value="'+v+'"]');
+      if(c)c.checked=true;
+    });
+    if(r.mood){selMood=r.mood;
+      document.querySelectorAll('.mood').forEach(function(m){if(m.dataset.mood===r.mood)m.classList.add('sel');});
+    }
+    if(r.text)$('refText').value=r.text;
+  }catch(e){}
+})();
+
+/* ================= INIT ================= */
+buildMenu();
+go(0);
+updateCounts();
+var saved=loadState();
+if(saved&&saved.start){
+  qz=saved;
+  qz.ans=(saved.ans&&saved.ans.length===30)?saved.ans:new Array(30).fill(null);
+}
+updateIntro();
+if(qz.start&&!qz.done){enterQuiz(false);}
+if(qz.done){renderResults();}
+})();
+</script>
+</body>
+</html>
